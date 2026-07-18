@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bank To Tally — Statement Conversion Service</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231a56db'/%3E%3Cpath d='M16 5L27 11.5H5L16 5Z' fill='white'/%3E%3Crect x='7' y='13' width='2.4' height='9' fill='white'/%3E%3Crect x='12.3' y='13' width='2.4' height='9' fill='white'/%3E%3Crect x='17.6' y='13' width='2.4' height='9' fill='white'/%3E%3Crect x='22.9' y='13' width='2.4' height='9' fill='white'/%3E%3Crect x='5' y='23' width='22' height='2.4' rx='1' fill='white'/%3E%3Ccircle cx='25' cy='8' r='4.2' fill='%2334d399' stroke='white' stroke-width='1.3'/%3E%3Cpath d='M22.8 8h3.6M24.6 6.1l1.9 1.9-1.9 1.9' stroke='white' stroke-width='1.1' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
+<style>
+  :root{
+    --blue:#1a56db;
+    --blue-dark:#1341aa;
+    --green:#0d9f6e;
+    --green-light:#34d399;
+    --amber:#d97706;
+    --amber-light:#fffbeb;
+    --amber-border:#fef3c7;
+    --ink:#111827;
+    --gray:#6b7280;
+    --gray-light:#9ca3af;
+    --border:#e5e7eb;
+    --bg:#f9fafb;
+    --wa:#25d366;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased;
+  }
+  .app{max-width:520px;margin:0 auto;min-height:100vh;background:#fff;display:flex;flex-direction:column;box-shadow:0 0 40px rgba(0,0,0,0.06);}
+
+  /* Header */
+  header{
+    background:linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
+    color:#fff; padding:20px 20px 24px; position:relative;
+  }
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand svg{flex-shrink:0;}
+  .brand-name{font-size:19px;font-weight:700;letter-spacing:-0.2px;}
+  .brand-tag{font-size:11.5px;opacity:0.85;margin-top:1px;}
+
+  .header-top{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;}
+  .lang-select{
+    background:rgba(255,255,255,0.15); color:#fff; border:1px solid rgba(255,255,255,0.35);
+    border-radius:8px; padding:6px 8px; font-size:12px; font-weight:600; font-family:inherit;
+    cursor:pointer;
+  }
+  .lang-select option{color:#111827;}
+  .theme-toggle{
+    background:rgba(255,255,255,0.15); color:#fff; border:1px solid rgba(255,255,255,0.35);
+    border-radius:8px; padding:6px 10px; font-size:12px; font-weight:600; font-family:inherit;
+    cursor:pointer; display:flex; align-items:center; gap:5px;
+  }
+  body.dark{background:#0b1220;}
+  body.dark .app{background:#0f172a;}
+  body.dark h1{color:#f1f5f9;}
+  body.dark .sub{color:#94a3b8;}
+  body.dark .plan{background:#141f38;border-color:#243149;}
+  body.dark .plan-name{color:#f1f5f9;}
+  body.dark .plan-desc{color:#94a3b8;}
+  body.dark .summary-box{background:#141f38;border-color:#243149;}
+  body.dark .summary-box .value{color:#f1f5f9;}
+  body.dark .summary-box .label{color:#94a3b8;}
+  body.dark .field input{background:#141f38;border-color:#243149;color:#f1f5f9;}
+  body.dark .field label{color:#e2e8f0;}
+  body.dark .qr-wrap{background:#141f38;border-color:#243149;}
+  body.dark .upi-id-new{background:#0f172a;color:#93b4f7;}
+  body.dark .upi-label,body.dark .upi-payee{color:#94a3b8;}
+  body.dark .qr-instruction{color:#94a3b8; border-top-color:#243149;}
+  body.dark .narration-row{background:#0f172a; border-color:#243149;}
+  body.dark .narration-remove{background:#141f38; border-color:#243149;}
+  body.dark .btn-add-narration{background:#141f38;}
+  body.dark .privacy-note{background:#141f38;color:#94a3b8;}
+  body.dark .step-body span{color:#94a3b8;}
+  body.dark .step-body b{color:#f1f5f9;}
+  body.dark .steps li{border-color:#243149;}
+  body.dark footer{background:#0f172a;border-color:#243149;}
+  body.dark .footer-back{background:#141f38;border-color:#243149;}
+  body.dark .contact-strip{background:#141f38;border-color:#243149;color:#94a3b8;}
+
+  /* Nav dots (page progress) */
+  .nav{display:flex;gap:6px;margin-top:18px;}
+  .nav-step{flex:1;height:4px;border-radius:2px;background:rgba(255,255,255,0.28);transition:background .25s;}
+  .nav-step.active{background:#fff;}
+
+  main{flex:1;padding:22px 20px 100px;}
+  .page{display:none;animation:fadeIn .3s ease;}
+  .page.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+  h1{font-size:21px;font-weight:800;margin:0 0 6px;line-height:1.3;}
+  .sub{color:var(--gray);font-size:14px;line-height:1.5;margin:0 0 20px;}
+
+  /* Value strip */
+  .promise{
+    display:flex; align-items:center; gap:10px;
+    background:var(--amber-light); border:1px solid var(--amber-border);
+    border-radius:10px; padding:11px 14px; margin-bottom:20px;
+  }
+  .promise svg{flex-shrink:0;}
+  .promise-text{font-size:13px; font-weight:600; color:var(--amber);}
+  .promise-sub{font-size:11.5px;color:#92400e;font-weight:400;margin-top:1px;}
+
+  /* How it works mini steps on home */
+  .flow{display:flex;justify-content:space-between;margin-bottom:22px;gap:6px;}
+  .flow-step{flex:1;text-align:center;}
+  .flow-icon{
+    width:44px;height:44px;border-radius:12px;background:#eff4ff;
+    display:flex;align-items:center;justify-content:center;margin:0 auto 8px;
+  }
+  .flow-label{font-size:11px;color:var(--gray);font-weight:600;line-height:1.3;}
+
+  /* Pricing cards */
+  .plans{display:flex;flex-direction:column;gap:12px;margin-bottom:22px;}
+  .plan{
+    border:1.5px solid var(--border); border-radius:14px; padding:16px 16px 14px;
+    position:relative; cursor:pointer; transition:border-color .15s, box-shadow .15s;
+  }
+  .plan:active{transform:scale(0.99);}
+  .plan.selected{border-color:var(--blue); box-shadow:0 0 0 3px rgba(26,86,219,0.12);}
+  .plan-badge{
+    position:absolute; top:-9px; right:14px; background:var(--green);
+    color:#fff; font-size:10px; font-weight:700; padding:3px 9px; border-radius:20px;
+    letter-spacing:0.3px;
+  }
+  .plan-top{display:flex;justify-content:space-between;align-items:baseline;}
+  .plan-name{font-size:14px;font-weight:700;color:var(--ink);}
+  .plan-price{font-size:22px;font-weight:800;color:var(--blue);}
+  .plan-price span{font-size:12px;font-weight:500;color:var(--gray);}
+  .plan-desc{font-size:12.5px;color:var(--gray);margin-top:4px;}
+  .plan-radio{
+    width:18px;height:18px;border-radius:50%;border:2px solid var(--border);
+    position:absolute; top:16px; left:16px; display:none;
+  }
+
+  /* Buttons */
+  .btn{
+    width:100%; padding:14px; border:none; border-radius:12px; font-size:15px;
+    font-weight:700; cursor:pointer; text-align:center; transition:transform .1s, opacity .15s;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .btn:active{transform:scale(0.98);}
+  .btn-primary{background:var(--blue); color:#fff;}
+  .btn-primary:hover{background:var(--blue-dark);}
+  .btn-wa{background:var(--wa); color:#fff;}
+  .btn-ghost{background:transparent; color:var(--blue); border:1.5px solid var(--border); margin-top:10px;}
+
+  /* Steps list (page 2) */
+  .steps{list-style:none; padding:0; margin:0 0 24px;}
+  .how-it-works-section{
+    margin-top:24px; padding-top:20px; border-top:1px solid var(--border);
+  }
+  .how-it-works-section .steps{margin-bottom:0;}
+  body.dark .how-it-works-section{border-top-color:#243149;}
+  .steps li{
+    display:flex; gap:12px; padding:14px 0; border-bottom:1px solid var(--border);
+  }
+  .steps li:last-child{border-bottom:none;}
+  .step-num{
+    width:26px;height:26px;border-radius:50%; background:var(--blue); color:#fff;
+    font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .step-body b{display:block; font-size:13.5px; margin-bottom:2px;}
+  .step-body span{font-size:12.5px; color:var(--gray); line-height:1.4;}
+
+  .summary-box{
+    background:var(--bg); border:1px solid var(--border); border-radius:12px;
+    padding:14px 16px; margin-bottom:18px; display:flex; justify-content:space-between; align-items:center;
+  }
+  .summary-box .label{font-size:12.5px;color:var(--gray);}
+  .summary-box .value{font-size:16px;font-weight:800;color:var(--ink);}
+
+  /* Form */
+  .field{margin-bottom:14px;}
+  .field label{display:block; font-size:12.5px; font-weight:600; color:var(--ink); margin-bottom:6px;}
+  .field input{
+    width:100%; padding:12px 13px; border:1.5px solid var(--border); border-radius:10px;
+    font-size:14px; font-family:inherit; color:var(--ink);
+  }
+  .field input:focus{outline:none; border-color:var(--blue);}
+
+  /* Payment page */
+  #page-2{
+    background:linear-gradient(180deg, #eff4ff 0%, #ffffff 220px);
+    margin:-22px -20px 0; padding:22px 20px 100px; border-radius:0 0 20px 20px;
+  }
+  body.dark #page-2{background:linear-gradient(180deg, #0f1f3d 0%, #0f172a 220px);}
+  .qr-wrap{
+    background:#fff; border:1.5px solid var(--border); border-radius:16px;
+    padding:20px; margin-bottom:18px; box-shadow:0 4px 18px rgba(26,86,219,0.08);
+  }
+  .qr-row{display:flex; align-items:center; gap:18px;}
+  .qr-wrap img{width:132px; height:132px; flex-shrink:0; border-radius:8px; border:1px solid var(--border);}
+  .upi-side{flex:1; text-align:left;}
+  .upi-label{font-size:11px; font-weight:700; color:var(--gray); text-transform:uppercase; letter-spacing:0.4px; margin-bottom:4px;}
+  .upi-id-new{
+    font-size:16px; font-weight:700; color:var(--blue); font-family:monospace;
+    background:var(--bg); padding:7px 10px; border-radius:8px; display:inline-block; word-break:break-all;
+  }
+  .upi-payee{font-size:12px; color:var(--gray); margin-top:6px;}
+  .qr-instruction{
+    font-size:12.5px; color:var(--gray); line-height:1.5; margin-top:14px;
+    border-top:1px solid var(--border); padding-top:12px;
+  }
+  .privacy-note{
+    display:flex; gap:8px; font-size:11.5px; color:var(--gray); line-height:1.5;
+    background:var(--bg); border-radius:10px; padding:12px 13px; margin-top:16px;
+  }
+  .privacy-note svg{flex-shrink:0; margin-top:1px;}
+  .contact-strip{
+    display:flex; align-items:center; justify-content:center; gap:7px;
+    background:var(--bg); border:1px solid var(--border); border-radius:10px;
+    padding:10px 12px; margin-top:14px; font-size:12.5px; color:var(--gray); font-weight:600;
+  }
+  .checklist-box{
+    background:var(--amber-light); border:1px solid var(--amber-border); border-radius:12px;
+    padding:14px 16px; margin-bottom:18px;
+  }
+  .details-form{
+    background:#fff; border:1.5px solid var(--border); border-radius:14px;
+    padding:16px 16px 18px; margin-bottom:18px; box-shadow:0 4px 18px rgba(26,86,219,0.06);
+  }
+  .details-title{font-size:14.5px; font-weight:700; color:var(--ink); margin-bottom:2px;}
+  .details-sub{font-size:12px; color:var(--gray); margin-bottom:14px;}
+  .field-row{display:flex; gap:12px;}
+  .field-row .field{flex:1;}
+  .narration-title{font-size:13px; font-weight:700; color:var(--ink); margin:16px 0 2px; display:flex; align-items:center; gap:6px;}
+  .narration-sub{font-size:11.5px; color:var(--gray); margin-bottom:12px;}
+  .narration-row{
+    display:flex; gap:10px; align-items:flex-end; margin-bottom:12px;
+    background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:10px;
+  }
+  .narration-row .field{flex:1; margin-bottom:0;}
+  .narration-row .field label{font-size:11px;}
+  .narration-remove{
+    flex-shrink:0; width:34px; height:34px; border-radius:8px; border:1px solid var(--border);
+    background:#fff; color:#dc2626; cursor:pointer; font-size:16px; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .btn-add-narration{
+    display:flex; align-items:center; gap:6px; background:#eff4ff; color:var(--blue);
+    border:1.5px dashed var(--blue); border-radius:10px; padding:10px 14px;
+    font-size:12.5px; font-weight:700; cursor:pointer; width:100%; justify-content:center;
+    font-family:inherit;
+  }
+  body.dark .details-form{background:#141f38; border-color:#243149;}
+  body.dark .details-title{color:#f1f5f9;}
+  body.dark .details-sub{color:#94a3b8;}
+  .optional-tag{
+    font-size:10px; font-weight:700; color:var(--gray); background:var(--bg);
+    border:1px solid var(--border); border-radius:5px; padding:2px 6px; margin-left:6px;
+    text-transform:uppercase; letter-spacing:0.3px;
+  }
+  body.dark .optional-tag{background:#0f172a; border-color:#243149; color:#94a3b8;}
+
+  .terms-box{
+    border:1px solid var(--border); border-radius:12px; padding:14px 16px; margin-bottom:18px;
+  }
+  .terms-title{
+    display:flex; align-items:center; gap:8px; font-size:13.5px; font-weight:700;
+    color:var(--ink); margin-bottom:10px;
+  }
+  .terms-list{margin:0; padding-left:18px;}
+  .terms-list li{font-size:12px; color:var(--gray); line-height:1.7;}
+  body.dark .terms-box{border-color:#243149;}
+  body.dark .terms-title{color:#f1f5f9;}
+  body.dark .terms-list li{color:#94a3b8;}
+
+  .license-badge{
+    display:flex; align-items:center; gap:8px; background:#eff4ff; border:1px solid #c7d8fb;
+    border-radius:10px; padding:10px 13px; margin-bottom:18px; font-size:11.5px; color:var(--blue-dark);
+    font-weight:600; line-height:1.5;
+  }
+  body.dark .license-badge{background:#141f38; border-color:#1e3a6f; color:#93b4f7;}
+
+  .usage-box{
+    display:flex; align-items:center; gap:10px; background:#ecfdf5; border:1px solid #a7f3d0;
+    border-radius:10px; padding:11px 14px; margin-bottom:18px;
+  }
+  .usage-icon{flex-shrink:0;}
+  .usage-count{font-size:13px; font-weight:700; color:var(--green);}
+  .usage-sub{font-size:11px; color:#0d9f6e; opacity:0.8; margin-top:1px;}
+  body.dark .usage-box{background:#0d2a20; border-color:#155e40;}
+  .checklist-title{font-size:13px; font-weight:700; color:var(--amber); margin-bottom:8px;}
+  .checklist{margin:0; padding-left:18px;}
+  .checklist li{font-size:12.5px; color:#92400e; line-height:1.7;}
+  body.dark .checklist-box{background:#241a08; border-color:#3d2a0d;}
+  body.dark .checklist-title{color:#fbbf24;}
+  body.dark .checklist li{color:#fcd34d;}
+
+  footer{
+    max-width:520px; margin:0 auto; position:fixed; bottom:0; left:0; right:0;
+    background:#fff; border-top:1px solid var(--border); padding:12px 20px;
+    display:flex; gap:10px;
+  }
+  .footer-back{
+    flex:0 0 44px; height:44px; border-radius:12px; border:1.5px solid var(--border);
+    background:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer;
+  }
+  .hidden{display:none !important;}
+
+  /* Inline login (on page 1, below plans) */
+  .inline-login{
+    background:var(--bg); border:1px solid var(--border); border-radius:14px;
+    padding:16px; margin-bottom:14px;
+  }
+  .login-error{color:#dc2626; font-size:12px; font-weight:600; margin:-6px 0 6px; min-height:14px; text-align:left;}
+  .login-note{
+    font-size:11px; color:var(--gray-light); margin-top:14px; line-height:1.5;
+  }
+  body.dark .inline-login{background:#141f38; border-color:#243149;}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="app-body" id="app-body">
+  <header>
+    <div class="header-top">
+      <select class="lang-select" id="lang-select" onchange="changeLanguage(this.value)">
+        <option value="en">English</option>
+        <option value="hi">हिन्दी</option>
+        <option value="gu">ગુજરાતી</option>
+      </select>
+      <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" id="theme-icon"><path d="M12 3a9 9 0 109 9c0-.46-.04-.92-.1-1.36a5.4 5.4 0 01-7.54-7.54A9 9 0 0012 3z" fill="white"/></svg>
+        <span id="theme-label">Dark</span>
+      </button>
+    </div>
+    <div class="brand">
+      <svg width="38" height="38" viewBox="0 0 32 32" fill="none">
+        <rect width="32" height="32" rx="8" fill="white" fill-opacity="0.15"/>
+        <path d="M16 5L27 11.5H5L16 5Z" fill="white"/>
+        <rect x="7" y="13" width="2.4" height="9" fill="white"/>
+        <rect x="12.3" y="13" width="2.4" height="9" fill="white"/>
+        <rect x="17.6" y="13" width="2.4" height="9" fill="white"/>
+        <rect x="22.9" y="13" width="2.4" height="9" fill="white"/>
+        <rect x="5" y="23" width="22" height="2.4" rx="1" fill="white"/>
+        <circle cx="25" cy="8" r="4.2" fill="#34d399" stroke="white" stroke-width="1.3"/>
+        <path d="M22.8 8h3.6M24.6 6.1l1.9 1.9-1.9 1.9" stroke="white" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+      <div>
+        <div class="brand-name">Bank To Tally</div>
+        <div class="brand-tag">Statement Conversion Service</div>
+      </div>
+    </div>
+    <div class="nav">
+      <div class="nav-step active" id="navdot-1"></div>
+      <div class="nav-step" id="navdot-2"></div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- PAGE 1: HOME -->
+    <section class="page active" id="page-1">
+      <div class="usage-box" id="usage-box">
+        <div class="usage-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="#0d9f6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="#0d9f6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div>
+          <div class="usage-count"><span id="usage-number">0</span> statements processed with us so far</div>
+          <div class="usage-sub">Your personal usage on this device</div>
+        </div>
+      </div>
+
+      <h1>Send us your statement.<br>We send back your Tally file.</h1>
+      <p class="sub">No software. No installation. Just your bank statement in, a ready-to-import Tally XML file out.</p>
+
+      <div class="promise">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#d97706" stroke-width="1.8"/><path d="M12 7v5l3.5 2" stroke="#d97706" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div>
+          <div class="promise-text" id="promise-text">Delivered within 24 hours</div>
+          <div class="promise-sub">Every file, every time — guaranteed turnaround</div>
+        </div>
+      </div>
+
+      <div class="flow">
+        <div class="flow-step">
+          <div class="flow-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="#1a56db" stroke-width="1.7" stroke-linejoin="round"/><path d="M14 2v6h6" stroke="#1a56db" stroke-width="1.7" stroke-linejoin="round"/></svg></div>
+          <div class="flow-label">Send<br>Statement</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 12h18M14 6l6 6-6 6" stroke="#1a56db" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="flow-label">We<br>Process</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#0d9f6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="flow-label">Get<br>Tally XML</div>
+        </div>
+      </div>
+
+      <div class="plans">
+        <div class="plan" data-plan="9" data-label="1 Statement — Quick" data-hours="3" onclick="selectPlan(this)">
+          <div class="plan-badge" style="background:var(--amber);">3-HR QUICK</div>
+          <div class="plan-top">
+            <div class="plan-name">Quick — 1 Statement</div>
+            <div class="plan-price">₹9</div>
+          </div>
+          <div class="plan-desc">1 bank statement converted, delivered in just 3 hours</div>
+        </div>
+
+        <div class="plan selected" data-plan="99" data-label="15 Statements" data-hours="24" onclick="selectPlan(this)">
+          <div class="plan-badge" style="background:var(--green);">MOST POPULAR</div>
+          <div class="plan-top">
+            <div class="plan-name">Professional</div>
+            <div class="plan-price">₹99</div>
+          </div>
+          <div class="plan-desc">Up to 15 bank statements converted, one-time</div>
+        </div>
+
+        <div class="plan" data-plan="999" data-label="Up to 150 Statements (1 Year)" data-hours="24" onclick="selectPlan(this)">
+          <div class="plan-badge" style="background:var(--green);">BEST VALUE</div>
+          <div class="plan-top">
+            <div class="plan-name">Unlimited — 1 Year</div>
+            <div class="plan-price">₹999<span>/year</span></div>
+          </div>
+          <div class="plan-desc">Up to 150 bank statements in 1 year — huge saving vs paying per statement</div>
+        </div>
+      </div>
+
+      <div class="inline-login">
+        <div class="field">
+          <label>Your Name</label>
+          <input type="text" id="login-name" placeholder="e.g. Rakesh Shah">
+        </div>
+        <div class="field">
+          <label>WhatsApp Number</label>
+          <input type="tel" id="login-number" placeholder="e.g. 98765 43210" maxlength="10">
+        </div>
+        <div class="login-error" id="login-error"></div>
+      </div>
+
+      <button class="btn btn-primary" onclick="startOrder()">
+        Get Started
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+
+      <div class="login-note" style="text-align:center; margin-top:10px;">
+        By continuing, you agree that our team may contact you on this number regarding your order.
+      </div>
+
+      <div class="contact-strip">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--wa)"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.29-1.39a9.9 9.9 0 004.75 1.21h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2z"/></svg>
+        Questions? Call/WhatsApp: +91 63558 13151
+      </div>
+    </section>
+
+    <section class="page" id="page-2">
+      <h1>Complete your payment</h1>
+      <p class="sub">Scan the QR code with any UPI app, then send us your statement.</p>
+
+      <div class="summary-box">
+        <div>
+          <div class="label">Plan</div>
+          <div class="value" id="summary-label-2">Professional — 15 Statements</div>
+        </div>
+        <div class="value" id="summary-price-2">₹99</div>
+      </div>
+
+      <div class="qr-wrap">
+        <div class="qr-row">
+          <img id="qr-image" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnYAAAJ2CAIAAABdNliuAAAOZUlEQVR4nO3du5Hr1hZFUVHVEchTBso/mpfB85QClIF0DM7adx+MYXeBJD49C9b6PM/zGwDwbb9PfwEAuJPEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEg8VMc9I8//yoOe5m///+/6a/wZfdd9+IanZ+l2U8vzN7zb74/7/vtheL+9BYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQSJZ2zlmbmfr04swXux9b1mZmf1Fhy/cszvx99+e5Ldf93Oz59BYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQGF7aOffm9YktyzBbvuebV4a27KjM3kvFMWfvz8Kb/yef8xYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQWLO0w4nZVZwtmzzntuzn3Pfbt5x5+HfeYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABKWdq5SrI7M7qjMmj2fhdnrvmURaIstz9GbeYsFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABIrFnasSnxXcWOSmHL3suW83mu+J7FMbes92y57ufu+0UFb7EAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwCJ4aWdYiXjzazNfNd959Mxf32zz9GWs7SFt1gASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYBEsrSzZUeFE1v2c2YXQu7b5Jk1u8lzbsvOz5brfh9vsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAIlkaafYvpjdqSic/3YrGd81u+Jy39W87yne8j3P3feLtjxH3mIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASn+d5Bj9+yybPllWHLYrrPmt2yeS+rZtzW/4z3HfmC8XzPvvfxlssACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAYs3SzrnZbZb71jyKT5895rkt57Nw33M0a8s9f+6+/94Fb7EAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwCJZGlndnHl3Jbtiy3n89yW617YsiFz39Nx7r69l3Nb/jNs4S0WABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEg8VMcdMveS2F2deTc7I7KlnWU2au5ZXXkvuvOieK633eHeIsFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABIfJ7n+fpBZ9cStmzdzK4M+e2/vi1nafaJ23KWCm/+T7vl/7y3WABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgMRPcdBiq6FQbDXMbl+c2/I937yKs+W3z37PLU9H8elb/i+9+enwFgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJD4PM8z/R2+rNipmHXfSsa5N1+jwuwuTXHXbTnmuS3bQVuezVneYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABLJ0s6WlYzC7PfcsvdS2LL7cd/myZYtpjef+Tc/HeeKs+QtFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBIDG8tHNudpfmvk8v2Pk5MbtDtcWW/RxnfsqWlTZvsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAImf6S/wfbP7D/et92zZ0yjct+Ky5Xy+ecGmsOVe2vI9z3mLBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASHye5xn8+C27NOeKHZX7fvu5Lddoy6ef23KWzm154maXYQpv/u3eYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABLDSzvniq2G2WPOml202LLNssWWO3nLDtW5Ld9z1n335zlvsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAIlkaWfLKs597ltHmV0uum/3Y8v3LGx5Ogr3fc9zs+3wFgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJD4mf4C3ze7FHHuvgWbLbtJW7ZEtqzibLmaW878ll90bnaLafbTvcUCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkPs/zfP2gW5Y3CrOrDue2bIkUn36f2W2W2TP/5ntpy/+6N9+f3mIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASydLOuS1LEedmNyUK9+2oFO5bCCl4Or7rvgWb+66mt1gASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYDEmqWdLas4s59e7FTY0/iu2Wu0Zbno3JY9ojdf9y3/QyztAMAaEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBIJEs7cwu2JyzOjLlvt2PWVtWXN68DDNry//k+3iLBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASPwUB53d6CgUn15sicyeT+sofMuW/yFbPn32mOe2XPdz3mIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASn+d5vn7QYqthy05F4b71iVm2RL776W9233rPrPt+u7dYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAxM/sx29ZSzhX7KjM2rL3cv7pW+662XvpvvWe4nze9xTP2rJDdc5bLAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQGJ4aefcll2FYtFi9phv3g4qbNnPue/Tt1z3WbNbN1v+z5/zFgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJBYs7SzZVdhy6bE+afft31x3/e8b0Nmy3NU8Itu4i0WABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgsWZpZ8tWQ7F5suW3n9vyi7Z8z/uuOydm/9sUiidu9in2FgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJD4PM8z/R34D7PbF1tWXLaY3f0o7qUtd8iW375l38mdfMJbLAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQOKnOOjsMswW56sO5385e+a3bF8UCyFbjnluy/ecPfNbWO+Z4i0WABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgkSztnNuylnCu2Oi4b/ejYJfmpmNueY62PJtb/tNueY7OeYsFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABIDC/tnJtdtNiyU3HuvsWV2Y2O2WNucf7bZ8/S7PN+/ovuu0Nm15CK6+4tFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBILFmaQf+3ZaNjvuOWdiyIfPmnZ/Z+3MLb7EAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJSztXefP2xZZdmtmtmy3XfcsiUOHN9+d9vMUCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAk1iztbNl7KRS/fcv5nP3ts7s0WzZPLMOcKL7nfWfp3JbNKG+xAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsAic/zPF8/6Jathllb9l7OzX7PLZ9+bss6ijv51z/mufvO/CxvsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAIlkaQcA8BYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJA4h+OT7F8+B/B/QAAAABJRU5ErkJggg==" alt="UPI QR Code">
+          <div class="upi-side">
+            <div class="upi-label">UPI ID</div>
+            <div class="upi-id-new">hp181285@okaxis</div>
+            <div class="upi-payee">BankToTally</div>
+          </div>
+        </div>
+        <div class="qr-instruction">Open Google Pay, PhonePe, Paytm, or any UPI app and scan this code — your payment option will open instantly.</div>
+      </div>
+
+      <div class="details-form">
+        <div class="details-title">Enter Your Tally Details</div>
+        <div class="details-sub">We'll use this exactly as it appears in your Tally</div>
+
+        <div class="field">
+          <label>Company Name (in Tally)</label>
+          <input type="text" id="input-company" placeholder="e.g. My Company">
+        </div>
+        <div class="field">
+          <label>Bank Ledger Name (in Tally)</label>
+          <input type="text" id="input-bankledger" placeholder="e.g. Bank Account">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Debit — Ledger Name (in Tally)</label>
+            <input type="text" id="input-debit-ledger" placeholder="e.g. Suspense A/c">
+          </div>
+          <div class="field">
+            <label>Credit — Ledger Name (in Tally)</label>
+            <input type="text" id="input-credit-ledger" placeholder="e.g. Suspense A/c">
+          </div>
+        </div>
+        <div class="narration-title">Narration-wise Ledger <span class="optional-tag">Optional</span></div>
+        <div class="narration-sub">Add a narration and the ledger it should map to — add more if needed</div>
+        <div id="narration-list"></div>
+        <button type="button" class="btn-add-narration" onclick="addNarrationRow()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#1a56db" stroke-width="2" stroke-linecap="round"/></svg>
+          Add Narration
+        </button>
+      </div>
+
+      <div class="checklist-box">
+        <div class="checklist-title">After payment, please send us:</div>
+        <ul class="checklist">
+          <li>Your bank statement (PDF, password removed if locked)</li>
+          <li>A screenshot of your payment</li>
+        </ul>
+      </div>
+
+      <div class="terms-box">
+        <div class="terms-title">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4M12 3l8 3.5v6c0 5-3.5 8.5-8 10.5-4.5-2-8-5.5-8-10.5v-6L12 3z" stroke="#111827" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          Terms &amp; Conditions
+        </div>
+        <ul class="terms-list">
+          <li>1 bank statement = up to 5 pages. Statements longer than 5 pages will be counted as multiple statements.</li>
+          <li>Turnaround time starts once payment and statement are both received.</li>
+          <li>Payments once made are final and non-refundable.</li>
+          <li>Files are prepared based only on the details you provide — please verify ledger names before sending.</li>
+          <li>The Yearly plan covers up to 150 bank statements, valid for 1 year from the date of activation.</li>
+          <li>We do not store or share your bank statement beyond the time needed to prepare your file.</li>
+        </ul>
+      </div>
+
+      <div class="license-badge">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="flex-shrink:0"><rect x="4" y="10" width="16" height="10" rx="2" stroke="#1341aa" stroke-width="1.7"/><path d="M8 10V7a4 4 0 018 0v3" stroke="#1341aa" stroke-width="1.7" stroke-linecap="round"/><circle cx="12" cy="15" r="1.4" fill="#1341aa"/></svg>
+        <span>Secured order — every request is verified and processed manually by our team before your file is prepared.</span>
+      </div>
+
+      <button class="btn btn-wa" onclick="sendOnWhatsApp()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.29-1.39a9.9 9.9 0 004.75 1.21h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2z"/></svg>
+        I've Paid — Send Details on WhatsApp
+      </button>
+
+      <div class="privacy-note">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" style="margin-top:2px"><path d="M12 2l8 3.5v6c0 5-3.5 8.5-8 10.5-4.5-2-8-5.5-8-10.5v-6L12 2z" stroke="#6b7280" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        <span>Your bank statement is used only to generate your Tally file. We do not store, share, or reuse your data beyond this purpose.</span>
+      </div>
+
+      <div class="contact-strip">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--wa)"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.29-1.39a9.9 9.9 0 004.75 1.21h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2z"/></svg>
+        Questions? Call/WhatsApp: +91 63558 13151
+      </div>
+
+      <div class="how-it-works-section">
+        <div class="details-title">How It Works</div>
+        <ul class="steps">
+          <li>
+            <div class="step-num">1</div>
+            <div class="step-body"><b>Pay for your plan</b><span>Choose Quick (₹9), Professional (₹99), or Unlimited Yearly (₹999) and pay via UPI.</span></div>
+          </li>
+          <li>
+            <div class="step-num">2</div>
+            <div class="step-body"><b>Send your statement on WhatsApp</b><span>Share your bank statement PDF directly with us after payment.</span></div>
+          </li>
+          <li>
+            <div class="step-num">3</div>
+            <div class="step-body"><b>Receive your Tally XML file</b><span>We convert it and send your ready-to-import file back within <span id="step3-hours">24</span> hours.</span></div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="footer-back" id="back-btn" onclick="goBack()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <button class="btn btn-primary" id="footer-cta" onclick="handleFooterCta()" style="display:none;">Continue</button>
+  </footer>
+
+  </div>
+
+</div>
+
+<script>
+const WHATSAPP_NUMBER = "916355813151";
+const QR_9 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnYAAAJ2CAIAAABdNliuAAAObUlEQVR4nO3du40rVxRFQVGYCJ6nDJR/NMpA3kuhFYKuwYWDc7vKHnDYPy60tT/P8/wBAHzbn9NfAADuJLEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEj8FB/666+/i4+9zO9//zn8y/Pzef6ZhdnrPnvs54qrueWJ23JEns13Kq6Rt1gASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYBEsrRzbss6yrli0WLLWdqyT7Jl6+a+tZnClu+55Zdhy6/Nudnr7i0WABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgMby0c27LmscWs+fz3Ow+yZZ1lHOO6LufuWXnp+A3+YS3WABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgMSapZ03e/OixeyOyrniLG1ZGSqOfcuCzZZ7iSneYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABKWdl5qy5LJlgWbwpsXV1wj7uAtFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBILFmaceixYliP2fLJs+s4thnr+aWjaM33/Ozv4p+k094iwWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEgML+28eZvlzWbXUc5tWXF582duseXY7zvzs7zFAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJD7P80x/B/7H7NrMuWKjY8s+SWHLsd93120xe+Y54S0WABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgkSzt3LcMc9/myew1mt3kOffmO+TN7rs/t9jyFJ/zFgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJD4mf33W5YitmwHFbYce/E971suum/n574jmjV7z2/5tTnnLRYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASCRLO0UuwqztixFbPnvhfuOqPjvW57N2WOfdd9TfN9+zjlvsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAIlkaWfW7FaD/36iWN7YsuaxZV3qXHE+ZxeBZnd+Zu/5N28xFbzFAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJIaXdopVh9nFlTfvvRRrHoXZjY4tSyaz12iWX4YTW+6Q2e/pLRYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASDxeZ7n6x86u+JSLEXMfuZ9LJmc2HKW3vx0zF6jgmv0Xd5iASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEj/TX+CUHZUpW7ZZZv/7rGLzZMuOyrktV3PLL9isLc+7t1gASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYDE53mer3/o7LJBsRSxZaPjnD2N737mm215OrZczfvO5+zv/Oz59BYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQSJZ2zt231TC75nHfWXrzmT+3ZXXkzd68ALbleS/Op7dYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAxM/0F/i++5ZhtuxpnNuynzNryz7Jufu+5+xnnttyL933vHuLBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASHye5/n6h85uyNy31XDfek9xjbYckXv+JrNXc8u99OZNM2+xAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsAiWRp59yWxZXZ/YdzW469+O/n7tvk2XJ/nrvv2LfcdYUtx25pBwDWkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAImf6S+ww+zux7niv9+3zbLF7L3kun/3v7/5LM3eybO8xQJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACTWLO3M7tKcu28p4tzsNZq9mlsWlgrFWZo9osKWX4Ytz9EW3mIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASa5Z2tuw/zC6uzCqOfct6z31Xs7BlZWh2YWn2rpu9RlvukHPeYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABLJ0s7s+sS5LRsds7Zczdmtmy1X89yWZZhzW57N+7ZuCluOyFssACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAIlnaOTe7lrBlvWdWcea3rHmce/OKy5ZlmDcva933xJ2brYy3WABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgMTneZ6vf+iWtZliJWPL7se5+/ZJZq974b4n7tyWa7TFlnupYGkHANaQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsAiZ/Zf//mZZjZtZnZfZIt1+jclr2XLStDs3svW1awzt13ROdm7yVvsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAIlkaefNWyJv3uQ5t2WjgynFPX/fnbzliLbsUBW8xQJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACSSpZ3CllWcc1s2eWaXN84V171w3+rI7BFtuT9nf8HebPYseYsFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABIJEs7xU5FYcvmyewi0LnZ/ZxZW7ZZttzz56xgffczC2++P73FAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJJKlnWID4XyBYXbzpLBlU+Kc1ZETs/f8rC37OVu8eetm9oi8xQJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACSSpZ3C7HrPudkdlfv+e2HL6siW71n89y17RFvWZmbdt95zzlssACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAIlnamd1ROXffLs19Z/4+W1ZHttxLWxTnc/YabbmTZ3mLBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASCRLO/ftKmw5omK951zxmcWZn11Dmr1Gs4qz9OZrdN8W033rPd5iASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEsnSzn0LIYXZDZlzWxYtClt2P7Zco/t2k7bYciffx1ssACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAIlnaOXffqsOWrZvz73nf6kixuLJlyeS++/O+35DClrvuvjUkb7EAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwCJ4aWdc7O7Clt2Kmbdd5ZmN3m2mD2iLb8Mxffcci8VvwxbNnm8xQJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACTWLO28WbFTcb4+4b9/9y/PbdkOKmy57luu0exnFrZ8T2+xAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACUs7V5ldR7lv92PLmseW77nlGr35fBZmt61mr6a3WABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgMSapZ0tmxJMKVaGtuyozC4sbdnP2eK+q1mYPUvnvMUCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkhpd2tqwlzHrz6si5Ypdmdr2nuO73PXFvfjrefN3PzV53b7EAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwCJz/M8098BAC7kLRYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYDEfyRXg/dvEHZNAAAAAElFTkSuQmCC";
+const QR_99 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnYAAAJ2CAIAAABdNliuAAAOZUlEQVR4nO3du5Hr1hZFUVHVEchTBso/mpfB85QClIF0DM7adx+MYXeBJD49C9b6PM/zGwDwbb9PfwEAuJPEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEg8VMc9I8//yoOe5m///+/6a/wZfdd9+IanZ+l2U8vzN7zb74/7/vtheL+9BYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQSJZ2zlmbmfr04swXux9b1mZmf1Fhy/cszvx99+e5Ldf93Oz59BYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQGF7aOffm9YktyzBbvuebV4a27KjM3kvFMWfvz8Kb/yef8xYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQWLO0w4nZVZwtmzzntuzn3Pfbt5x5+HfeYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABKWdq5SrI7M7qjMmj2fhdnrvmURaIstz9GbeYsFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABIrFnasSnxXcWOSmHL3suW83mu+J7FMbes92y57ufu+0UFb7EAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwCJ4aWdYiXjzazNfNd959Mxf32zz9GWs7SFt1gASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYBEsrSzZUeFE1v2c2YXQu7b5Jk1u8lzbsvOz5brfh9vsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAIlkaafYvpjdqSic/3YrGd81u+Jy39W87yne8j3P3feLtjxH3mIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASn+d5Bj9+yybPllWHLYrrPmt2yeS+rZtzW/4z3HfmC8XzPvvfxlssACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAYs3SzrnZbZb71jyKT5895rkt57Nw33M0a8s9f+6+/94Fb7EAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwCJZGlndnHl3Jbtiy3n89yW617YsiFz39Nx7r69l3Nb/jNs4S0WABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEg8VMcdMveS2F2deTc7I7KlnWU2au5ZXXkvuvOieK633eHeIsFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABIfJ7n+fpBZ9cStmzdzK4M+e2/vi1nafaJ23KWCm/+T7vl/7y3WABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgMRPcdBiq6FQbDXMbl+c2/I937yKs+W3z37PLU9H8elb/i+9+enwFgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJD4PM8z/R2+rNipmHXfSsa5N1+jwuwuTXHXbTnmuS3bQVuezVneYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABLJ0s6WlYzC7PfcsvdS2LL7cd/myZYtpjef+Tc/HeeKs+QtFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBIDG8tHNudpfmvk8v2Pk5MbtDtcWW/RxnfsqWlTZvsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAImf6S/wfbP7D/et92zZ0yjct+Ky5Xy+ecGmsOVe2vI9z3mLBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASHye5xn8+C27NOeKHZX7fvu5Lddoy6ef23KWzm154maXYQpv/u3eYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABLDSzvniq2G2WPOml202LLNssWWO3nLDtW5Ld9z1n335zlvsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAIlkaWfLKs597ltHmV0uum/3Y8v3LGx5Ogr3fc9zs+3wFgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJD4mf4C3ze7FHHuvgWbLbtJW7ZEtqzibLmaW878ll90bnaLafbTvcUCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkPs/zfP2gW5Y3CrOrDue2bIkUn36f2W2W2TP/5ntpy/+6N9+f3mIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASydLOuS1LEedmNyUK9+2oFO5bCCl4Or7rvgWb+66mt1gASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYDEmqWdLas4s59e7FTY0/iu2Wu0Zbno3JY9ojdf9y3/QyztAMAaEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBIJEs7cwu2JyzOjLlvt2PWVtWXN68DDNry//k+3iLBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASPwUB53d6CgUn15sicyeT+sofMuW/yFbPn32mOe2XPdz3mIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASn+d5vn7QYqthy05F4b71iVm2RL776W9233rPrPt+u7dYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAxM/sx29ZSzhX7KjM2rL3cv7pW+662XvpvvWe4nze9xTP2rJDdc5bLAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQGJ4aefcll2FYtFi9phv3g4qbNnPue/Tt1z3WbNbN1v+z5/zFgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJBYs7SzZVdhy6bE+afft31x3/e8b0Nmy3NU8Itu4i0WABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgsWZpZ8tWQ7F5suW3n9vyi7Z8z/uuOydm/9sUiidu9in2FgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJD4PM8z/R34D7PbF1tWXLaY3f0o7qUtd8iW375l38mdfMJbLAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQOKnOOjsMswW56sO5385e+a3bF8UCyFbjnluy/ecPfNbWO+Z4i0WABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgkSztnNuylnCu2Oi4b/ejYJfmpmNueY62PJtb/tNueY7OeYsFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABIDC/tnJtdtNiyU3HuvsWV2Y2O2WNucf7bZ8/S7PN+/ovuu0Nm15CK6+4tFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBILFmaQf+3ZaNjvuOWdiyIfPmnZ/Z+3MLb7EAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJSztXefP2xZZdmtmtmy3XfcsiUOHN9+d9vMUCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAk1iztbNl7KRS/fcv5nP3ts7s0WzZPLMOcKL7nfWfp3JbNKG+xAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsAic/zPF8/6Jathllb9l7OzX7PLZ9+bss6ijv51z/mufvO/CxvsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAIlkaQcA8BYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJA4h+OT7F8+B/B/QAAAABJRU5ErkJggg==";
+const QR_999 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnYAAAJ2CAIAAABdNliuAAAOa0lEQVR4nO3du5HrVhRFQVE1ETxPGSj/aJSBPKWAl8I1uOroXHTbUyQ+xKyCtT/P8/wBAHzbn9MHAAB3klgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACR+ig/99dffxcde5r9//zn8y/PrueUzmeJu3sTd/K7z63nOWywAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkAiWdo5VywbzHrzosV9Oz+zZ/RmxVWafTa3rOLc9/ucvZ7eYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABLDSzvn3rw+sWX7Yst+zrktZ1T8Qt78qyu+/dx9V76w5Sp5iwWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEisWdp5s9ktkcLsRse5LQs29y0CbdnP2fLEMcVbLAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQMLSzgKzax73rY7M7vzct2Bz/pnFuc9ez3P3PUec8BYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQWLO0Y31iSrG4UnjzOsrslS943v//3KMT3mIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASw0s79y2EFLbsvZy7b72nuEezn1nYcu73feY5/5O/y1ssACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAIlna2bL3woktOz/37dIUtuy9FGbv++z13HKP7uMtFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBIJEs7WzZPNmyuLLlKs3acjfPbbnvWzZ5tjwds/8/7zujc8W5e4sFgITEAkBCYgEgIbEAkJBYAEhILAAk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0Nmdii0bHcW3n5vdpdlyPbdcpTdzj068eX/M0g4AXEhiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkfooPnV022LLqUHz77MbRuS3HeW7Les+5Lffovit/bsv/kPuu/DlvsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAInP8zyDX79l62bLpsSW/ZxzW678uS1ntOW3VBynX/J3bTn34rfkLRYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAxvLTDidnVkXP3HWdhy+rIufu2rbbcozc/RwVLOwCwhsQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEj8FB963wJDYctKRnGcs+soxWfet7iy5Sku7tGWcz83+7zP/j5n/9N6iwWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEgkSzvnZjcQCjY6phRXvjj3LddzyxltWW26b4tp1pbfp7dYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAxPDSzrk371RsWcnYsjK05W7ObsjM3s3ZjaPi22ePc9bs3ZzlLRYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASCxZmnnzbasDBV7GvfZsp/z5ns0a8vd3LKfM/tL9hYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQsLTDgPvWZmbXkM7NLq6cK45zy3bQfb+l2TOa3SPyFgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJBYs7SzZSWjcN86yuzyxuxx3nc3i8+cXUOa/cxZW35LW668t1gASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYDE8NLO7OLKFm9exbnPm+9m8e1bFlfc9xNb9ojOeYsFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABIfJ7nmT4GALiQt1gASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASvwH244lsXY/SfgAAAABJRU5ErkJggg==";
+
+let currentPage = 1;
+let selectedPlan = { amount: 99, label: "Professional — 15 Statements", hours: 24 };
+let customerName = "";
+let customerNumber = "";
+
+const PLAN_LABELS = {
+  "9": "Quick — 1 Statement",
+  "99": "Professional — 15 Statements",
+  "999": "Yearly — Up to 150 Statements"
+};
+const PLAN_QR = { "9": QR_9, "99": QR_99, "999": QR_999 };
+
+function selectPlan(el){
+  document.querySelectorAll('.plan').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedPlan.amount = el.dataset.plan;
+  selectedPlan.label = PLAN_LABELS[el.dataset.plan];
+  selectedPlan.hours = el.dataset.hours;
+  updateSummaries();
+}
+
+function updateSummaries(){
+  document.getElementById('summary-label-2').textContent = selectedPlan.label;
+  document.getElementById('summary-price-2').textContent = "₹" + selectedPlan.amount;
+  document.getElementById('qr-image').src = PLAN_QR[selectedPlan.amount];
+  document.getElementById('promise-text').textContent = "Delivered within " + selectedPlan.hours + " hours";
+  document.getElementById('step3-hours').textContent = selectedPlan.hours;
+}
+
+function goToPage(n){
+  document.getElementById('page-' + currentPage).classList.remove('active');
+  document.getElementById('page-' + n).classList.add('active');
+  document.getElementById('navdot-' + currentPage).classList.remove('active');
+  document.getElementById('navdot-' + n).classList.add('active');
+  currentPage = n;
+  window.scrollTo(0,0);
+  document.getElementById('back-btn').style.display = n === 1 ? 'none' : 'flex';
+}
+
+function goBack(){
+  if(currentPage > 1) goToPage(currentPage - 1);
+}
+
+function handleFooterCta(){}
+
+const TRANSLATIONS = {
+  en: {
+    tag: "Statement Conversion Service",
+    h1: "Send us your statement.<br>We send back your Tally file.",
+    sub: "No software. No installation. Just your bank statement in, a ready-to-import Tally XML file out.",
+    getStarted: "Get Started",
+    howTitle: "How it works",
+    howSub: "Three simple steps — no account, no software.",
+    proceed: "Proceed to Payment",
+    payTitle: "Complete your payment",
+    paySub: "Scan the QR code with any UPI app, then send us your statement.",
+    qrNote: "Open Google Pay, PhonePe, Paytm, or any UPI app and scan this code — your payment option will open instantly.",
+    waBtn: "I've Paid — Send Statement on WhatsApp",
+    privacy: "Your bank statement is used only to generate your Tally file. We do not store, share, or reuse your data beyond this purpose."
+  },
+  hi: {
+    tag: "स्टेटमेंट कन्वर्जन सेवा",
+    h1: "अपना स्टेटमेंट भेजिए।<br>हम आपकी Tally फ़ाइल वापस भेजेंगे।",
+    sub: "कोई सॉफ्टवेयर नहीं। कोई इंस्टॉलेशन नहीं। बस अपना बैंक स्टेटमेंट भेजिए, तैयार Tally XML फ़ाइल पाइए।",
+    getStarted: "शुरू करें",
+    howTitle: "यह कैसे काम करता है",
+    howSub: "तीन आसान स्टेप्स — कोई अकाउंट नहीं, कोई सॉफ्टवेयर नहीं।",
+    proceed: "पेमेंट की ओर बढ़ें",
+    payTitle: "अपना भुगतान पूरा करें",
+    paySub: "किसी भी UPI ऐप से QR कोड स्कैन करें, फिर अपना स्टेटमेंट भेजें।",
+    qrNote: "Google Pay, PhonePe, Paytm या कोई भी UPI ऐप खोलें और इस कोड को स्कैन करें — पेमेंट का विकल्प तुरंत खुल जाएगा।",
+    waBtn: "भुगतान हो गया — WhatsApp पर स्टेटमेंट भेजें",
+    privacy: "आपके बैंक स्टेटमेंट का उपयोग केवल आपकी Tally फ़ाइल बनाने के लिए किया जाता है। हम इसे स्टोर, शेयर या दोबारा उपयोग नहीं करते।"
+  },
+  gu: {
+    tag: "સ્ટેટમેન્ટ કન્વર્ઝન સેવા",
+    h1: "તમારું સ્ટેટમેન્ટ મોકલો.<br>અમે તમારી Tally ફાઇલ પાછી મોકલીશું.",
+    sub: "કોઈ સોફ્ટવેર નહીં. કોઈ ઇન્સ્ટોલેશન નહીં. ફક્ત તમારું બેંક સ્ટેટમેન્ટ મોકલો, તૈયાર Tally XML ફાઇલ મેળવો.",
+    getStarted: "શરૂ કરો",
+    howTitle: "આ કેવી રીતે કામ કરે છે",
+    howSub: "ત્રણ સરળ સ્ટેપ્સ — કોઈ એકાઉન્ટ નહીં, કોઈ સોફ્ટવેર નહીં.",
+    proceed: "પેમેન્ટ તરફ આગળ વધો",
+    payTitle: "તમારું પેમેન્ટ પૂર્ણ કરો",
+    paySub: "કોઈપણ UPI ઍપથી QR કોડ સ્કેન કરો, પછી તમારું સ્ટેટમેન્ટ મોકલો.",
+    qrNote: "Google Pay, PhonePe, Paytm અથવા કોઈપણ UPI ઍપ ખોલો અને આ કોડ સ્કેન કરો — પેમેન્ટનો વિકલ્પ તરત ખુલશે.",
+    waBtn: "પેમેન્ટ થઈ ગયું — WhatsApp પર સ્ટેટમેન્ટ મોકલો",
+    privacy: "તમારું બેંક સ્ટેટમેન્ટ ફક્ત તમારી Tally ફાઇલ બનાવવા માટે ઉપયોગમાં લેવાય છે. અમે તેને સ્ટોર, શેર કે ફરીથી ઉપયોગ કરતા નથી."
+  }
+};
+
+function changeLanguage(lang){
+  const t = TRANSLATIONS[lang] || TRANSLATIONS.en;
+  document.querySelector('.brand-tag').textContent = t.tag;
+  document.querySelector('#page-1 h1').innerHTML = t.h1;
+  document.querySelector('#page-1 .sub').textContent = t.sub;
+  document.querySelectorAll('#page-1 .btn-primary')[0].childNodes[0].textContent = t.getStarted + " ";
+  document.querySelector('#page-2 h1').textContent = t.howTitle;
+  document.querySelector('#page-2 .sub').textContent = t.howSub;
+  document.querySelectorAll('#page-2 .btn-primary')[0].childNodes[0].textContent = t.proceed + " ";
+  document.querySelector('#page-2 h1').textContent = t.payTitle;
+  document.querySelector('#page-2 .sub').textContent = t.paySub;
+  document.querySelector('.qr-instruction').textContent = t.qrNote;
+  document.querySelector('.btn-wa').childNodes[1].textContent = " " + t.waBtn;
+  document.querySelector('.privacy-note span').textContent = t.privacy;
+}
+
+function getUsageCount(){
+  try{
+    const v = localStorage.getItem('bt_usage_count');
+    return v ? parseInt(v, 10) : 0;
+  }catch(e){ return 0; }
+}
+
+function setUsageCount(n){
+  try{ localStorage.setItem('bt_usage_count', String(n)); }catch(e){}
+}
+
+function refreshUsageDisplay(){
+  const el = document.getElementById('usage-number');
+  if(el) el.textContent = getUsageCount();
+}
+
+function incrementUsageForPlan(planAmount){
+  // Quick and Professional plans count as +1 order; Yearly plan is tracked separately by you, so we just log an order event.
+  const current = getUsageCount();
+  setUsageCount(current + 1);
+  refreshUsageDisplay();
+}
+
+function startOrder(){
+  const name = document.getElementById('login-name').value.trim();
+  const number = document.getElementById('login-number').value.trim();
+  const errorBox = document.getElementById('login-error');
+
+  if(!name){
+    errorBox.textContent = "Please enter your name.";
+    return;
+  }
+  if(!/^[6-9]\d{9}$/.test(number)){
+    errorBox.textContent = "Please enter a valid 10-digit mobile number.";
+    return;
+  }
+  errorBox.textContent = "";
+
+  customerName = name;
+  customerNumber = number;
+
+  const msg = `Hi, I'd like to start my Bank To Tally order.\n\nName: ${name}\nWhatsApp Number: ${number}\nPlan Selected: ${selectedPlan.label} (₹${selectedPlan.amount})`;
+  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
+
+  goToPage(2);
+}
+
+function toggleTheme(){
+  const isDark = document.body.classList.toggle('dark');
+  document.getElementById('theme-label').textContent = isDark ? 'Light' : 'Dark';
+}
+
+let narrationRowCount = 0;
+
+function addNarrationRow(){
+  narrationRowCount++;
+  const id = narrationRowCount;
+  const wrap = document.createElement('div');
+  wrap.className = 'narration-row';
+  wrap.id = 'narration-row-' + id;
+  wrap.innerHTML = `
+    <div class="field">
+      <label>Narration (as client sends it)</label>
+      <input type="text" class="narration-text" placeholder="e.g. UPI-XXXX-Rent">
+    </div>
+    <div class="field">
+      <label>Ledger Name (in Tally) for this Narration</label>
+      <input type="text" class="narration-ledger" placeholder="e.g. Rent A/c">
+    </div>
+    <button type="button" class="narration-remove" onclick="removeNarrationRow(${id})">&times;</button>
+  `;
+  document.getElementById('narration-list').appendChild(wrap);
+}
+
+function removeNarrationRow(id){
+  const row = document.getElementById('narration-row-' + id);
+  if(row) row.remove();
+}
+
+function sendOnWhatsApp(){
+  const name = customerName;
+  const company = document.getElementById('input-company').value.trim();
+  const bankLedger = document.getElementById('input-bankledger').value.trim();
+  const debitLedger = document.getElementById('input-debit-ledger').value.trim();
+  const creditLedger = document.getElementById('input-credit-ledger').value.trim();
+
+  let msg = `Hi, maine Bank To Tally ka ₹${selectedPlan.amount} payment kiya hai (${selectedPlan.label}).\n\n`;
+  if(name) msg += `Name: ${name}\n`;
+  if(customerNumber) msg += `WhatsApp Number: ${customerNumber}\n`;
+  msg += `\n--- Tally Details ---\n`;
+  msg += `Company Name (in Tally): ${company || '-'}\n`;
+  msg += `Bank Ledger Name (in Tally): ${bankLedger || '-'}\n`;
+  msg += `Debit — Ledger Name (in Tally): ${debitLedger || '-'}\n`;
+  msg += `Credit — Ledger Name (in Tally): ${creditLedger || '-'}\n`;
+
+  const narrationRows = document.querySelectorAll('.narration-row');
+  const narrationPairs = [];
+  narrationRows.forEach(row => {
+    const text = row.querySelector('.narration-text').value.trim();
+    const ledger = row.querySelector('.narration-ledger').value.trim();
+    if(text || ledger) narrationPairs.push({text, ledger});
+  });
+  if(narrationPairs.length > 0){
+    msg += `\n--- Narration-wise Ledger ---\n`;
+    narrationPairs.forEach((p, i) => {
+      msg += `${i+1}. Narration: ${p.text || '-'}  →  Ledger: ${p.ledger || '-'}\n`;
+    });
+  }
+
+  msg += `\nMain apna bank statement bhej raha hoon, please Tally XML file ${selectedPlan.hours} ghante mein bhej dein.`;
+
+  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+  incrementUsageForPlan(selectedPlan.amount);
+  window.open(url, '_blank');
+}
+
+
+// init
+document.getElementById('back-btn').style.display = 'none';
+updateSummaries();
+refreshUsageDisplay();
+addNarrationRow();
+</script>
+</body>
+</html>
