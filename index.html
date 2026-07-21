@@ -40,9 +40,11 @@
   *{box-sizing:border-box;}
   body{
     margin:0; font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-    background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased;
+    background:repeating-linear-gradient(135deg, #dbe8ff 0%, #d5f5e8 25%, #dbe8ff 50%);
+    background-attachment:fixed;
+    color:var(--ink); -webkit-font-smoothing:antialiased;
   }
-  .app{max-width:520px;margin:0 auto;min-height:100vh;background:#fff;display:flex;flex-direction:column;box-shadow:0 0 40px rgba(0,0,0,0.06);}
+  .app{max-width:520px;margin:0 auto;min-height:100vh;background:linear-gradient(180deg, #ffffff 0%, #fbfdff 55%, #f7fdfa 100%);display:flex;flex-direction:column;box-shadow:0 0 40px rgba(26,86,219,0.1);}
 
   /* Header */
   header{
@@ -66,8 +68,8 @@
     border-radius:8px; padding:6px 10px; font-size:12px; font-weight:600; font-family:inherit;
     cursor:pointer; display:flex; align-items:center; gap:5px;
   }
-  body.dark{background:#0b1220;}
-  body.dark .app{background:#0f172a;}
+  body.dark{background:repeating-linear-gradient(135deg, #0d1a30 0%, #0d211b 25%, #0d1a30 50%); background-attachment:fixed;}
+  body.dark .app{background:linear-gradient(180deg, #0f172a 0%, #101d1a 100%);}
   body.dark h1{color:#f1f5f9;}
   body.dark .sub{color:#94a3b8;}
   body.dark .plan{background:#141f38;border-color:#243149;}
@@ -103,7 +105,12 @@
   .page.active{display:block;}
   @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
 
-  h1{font-family:'Poppins',sans-serif; font-size:21px;font-weight:800;margin:0 0 6px;line-height:1.3; letter-spacing:-.01em;}
+  h1{
+    font-family:'Poppins',sans-serif; font-size:21px;font-weight:800;margin:0 0 6px;line-height:1.3; letter-spacing:-.01em;
+    background:repeating-linear-gradient(90deg, var(--blue) 0%, var(--green-light) 50%, var(--blue) 100%);
+    background-size:200% auto;
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:var(--blue);
+  }
   .sub{color:var(--gray);font-size:14px;line-height:1.5;margin:0 0 20px;}
 
   /* Value strip */
@@ -155,9 +162,9 @@
     display:flex; align-items:center; justify-content:center; gap:8px;
   }
   .btn:active{transform:scale(0.98);}
-  .btn-primary{background:var(--blue); color:#fff;}
+  .btn-primary{background:linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%); color:#fff; box-shadow:0 4px 14px rgba(26,86,219,0.25);}
   .btn-primary:hover{background:var(--blue-dark);}
-  .btn-wa{background:var(--wa); color:#fff;}
+  .btn-wa{background:linear-gradient(135deg, var(--wa) 0%, #128c4a 100%); color:#fff; box-shadow:0 4px 14px rgba(37,211,102,0.28);}
   .btn-ghost{background:transparent; color:var(--blue); border:1.5px solid var(--border); margin-top:10px;}
 
   /* Steps list (page 2) */
@@ -273,6 +280,32 @@
   .site-footer-links a{color:var(--blue); text-decoration:none; font-weight:600;}
   .site-footer-links span{color:var(--gray-light); margin:0 8px;}
   .site-footer-copy{font-size:10.5px; color:var(--gray-light); margin-top:8px;}
+  .site-footer-owner{margin-top:10px;}
+  .site-footer-owner a{font-size:10px; color:var(--gray-light); text-decoration:none;}
+  .site-footer-owner a:hover{color:var(--gray);}
+
+  .admin-gate{max-width:280px; margin:0 auto;}
+  .admin-toolbar{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;}
+  .btn-ghost-small{
+    background:none; border:1px solid var(--border); border-radius:8px; padding:6px 12px;
+    font-size:12px; font-weight:600; color:var(--blue); cursor:pointer; font-family:inherit;
+  }
+  .admin-updated{font-size:11px; color:var(--gray);}
+  .admin-order-card{
+    border:1px solid var(--border); border-radius:12px; padding:12px 14px; margin-bottom:10px;
+  }
+  .admin-order-top{display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;}
+  .admin-order-id{font-size:12px; font-weight:700; color:var(--ink); font-family:monospace;}
+  .admin-order-status{
+    font-size:10.5px; font-weight:700; padding:2px 9px; border-radius:20px; text-transform:uppercase;
+  }
+  .admin-order-status.status-pending{background:#fef3c7; color:#92400e;}
+  .admin-order-status.status-processing{background:#dbeafe; color:#1e40af;}
+  .admin-order-status.status-delivered{background:#d1fae5; color:#065f46;}
+  .admin-order-line{font-size:12px; color:var(--gray); line-height:1.6;}
+  .admin-empty{text-align:center; color:var(--gray); font-size:13px; padding:20px 0;}
+  body.dark .admin-order-card{border-color:#243149;}
+  body.dark .admin-order-id{color:#f1f5f9;}
   body.dark .site-footer{border-color:#243149;}
   body.dark .site-footer-brand{color:#f1f5f9;}
 
@@ -337,14 +370,28 @@
   }
   body.dark .license-badge{background:#141f38; border-color:#1e3a6f; color:#93b4f7;}
 
-  .usage-box{
-    display:flex; align-items:center; gap:10px; background:#ecfdf5; border:1px solid #a7f3d0;
-    border-radius:10px; padding:11px 14px; margin-bottom:18px;
+  .feedback-box{
+    position:relative; overflow:hidden;
+    background:linear-gradient(135deg, #eff4ff 0%, #ecfdf5 100%);
+    border:1px solid #c7d8fb; border-radius:14px; padding:16px; margin-bottom:18px; text-align:center;
   }
-  .usage-icon{flex-shrink:0;}
-  .usage-count{font-size:13px; font-weight:700; color:var(--green);}
-  .usage-sub{font-size:11px; color:#0d9f6e; opacity:0.8; margin-top:1px;}
-  body.dark .usage-box{background:#0d2a20; border-color:#155e40;}
+  .feedback-box::before{
+    content:""; position:absolute; top:-30px; right:-30px; width:90px; height:90px;
+    border-radius:50%; background:linear-gradient(135deg, var(--blue) 0%, var(--green-light) 100%);
+    opacity:0.12;
+  }
+  .feedback-title{font-size:13.5px; font-weight:700; color:var(--ink); margin-bottom:4px; position:relative;}
+  .feedback-sub{font-size:12px; color:var(--gray); line-height:1.5; margin:0 0 12px; position:relative;}
+  .btn-feedback{
+    display:inline-flex; align-items:center; gap:7px; background:#fff; color:var(--blue);
+    border:1.5px solid var(--blue); border-radius:10px; padding:9px 16px; font-size:12.5px;
+    font-weight:700; cursor:pointer; font-family:inherit; position:relative;
+  }
+  body.dark .feedback-box{background:linear-gradient(135deg, #141f38 0%, #0d2a20 100%); border-color:#1e3a6f;}
+  body.dark .feedback-title{color:#f1f5f9;}
+  body.dark .feedback-sub{color:#94a3b8;}
+  body.dark .btn-feedback{background:#141f38;}
+
   .checklist-title{font-size:13px; font-weight:700; color:var(--amber); margin-bottom:8px;}
   .checklist{margin:0; padding-left:18px;}
   .checklist li{font-size:12.5px; color:#92400e; line-height:1.7;}
@@ -390,6 +437,24 @@
   body.dark .confirmation-title{color:#f1f5f9;}
   body.dark .confirmation-text{color:#94a3b8;}
 
+  .feedback-modal-title{font-size:18px; font-weight:800; color:var(--ink); margin-bottom:6px;}
+  .feedback-modal-sub{font-size:12.5px; color:var(--gray); line-height:1.5; margin-bottom:16px;}
+  .feedback-select{
+    width:100%; padding:11px 13px; border:1.5px solid var(--border); border-radius:10px;
+    font-size:13.5px; font-family:inherit; color:var(--ink); background:#fff;
+  }
+  .feedback-textarea{
+    width:100%; padding:11px 13px; border:1.5px solid var(--border); border-radius:10px;
+    font-size:13.5px; font-family:inherit; color:var(--ink); min-height:80px; resize:vertical;
+  }
+  .btn-ghost-cancel{
+    width:100%; padding:11px; border:none; background:none; color:var(--gray);
+    font-size:13px; font-weight:600; cursor:pointer; margin-top:8px; font-family:inherit;
+  }
+  body.dark .feedback-modal-title{color:#f1f5f9;}
+  body.dark .feedback-modal-sub{color:#94a3b8;}
+  body.dark .feedback-select,body.dark .feedback-textarea{background:#0f172a; border-color:#243149; color:#f1f5f9;}
+
   /* Inline login (on page 1, below plans) */
   .inline-login{
     background:var(--bg); border:1px solid var(--border); border-radius:14px;
@@ -402,22 +467,28 @@
   }
   .reminder-banner.hidden{display:none;}
   body.dark .reminder-banner{background:#3a2a0f; border-color:#92600e; color:#fbbf24;}
-  .trust-badges{
-    display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px;
+
+  .resume-banner{
+    position:relative; display:flex; align-items:center; gap:11px;
+    background:linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
+    border-radius:14px; padding:13px 40px 13px 13px; margin-bottom:16px;
+    box-shadow:0 4px 14px rgba(26,86,219,0.25);
   }
-  .trust-badge{
-    display:flex; align-items:center; gap:6px; background:#ecfdf5; border:1px solid #a7f3d0;
-    border-radius:20px; padding:6px 12px; font-size:11.5px; font-weight:600; color:#065f46;
+  .resume-banner.verified{background:linear-gradient(135deg, var(--green) 0%, #0a7d57 100%); box-shadow:0 4px 14px rgba(13,159,110,0.25);}
+  .resume-icon{flex-shrink:0; width:34px; height:34px; border-radius:50%; background:rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center;}
+  .resume-text{flex:1; min-width:0;}
+  .resume-title{font-size:12.5px; font-weight:700; color:#fff; line-height:1.35;}
+  .resume-sub{font-size:11px; color:rgba(255,255,255,0.85); margin-top:2px; line-height:1.4;}
+  .resume-btn{
+    flex-shrink:0; background:#fff; color:var(--blue); border:none; border-radius:8px;
+    padding:7px 13px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit;
   }
-  body.dark .trust-badge{background:#0d2a20; border-color:#0d9f6e; color:#a7f3d0;}
-  .live-dot{
-    width:7px; height:7px; border-radius:50%; background:#0d9f6e; display:inline-block;
-    animation:pulse-dot 1.6s ease-in-out infinite;
+  .resume-dismiss{
+    position:absolute; top:6px; right:8px; background:none; border:none; color:rgba(255,255,255,0.7);
+    font-size:16px; cursor:pointer; padding:2px 6px; line-height:1; font-family:inherit;
   }
-  @keyframes pulse-dot{
-    0%,100%{ opacity:1; box-shadow:0 0 0 0 rgba(13,159,110,0.4); }
-    50%{ opacity:.7; box-shadow:0 0 0 4px rgba(13,159,110,0); }
-  }
+  .resume-banner.hidden{display:none;}
+
   .track-form{margin:20px 0 14px;}
   .track-input{
     width:100%; padding:13px 14px; border:1.5px solid var(--border); border-radius:10px;
@@ -483,6 +554,34 @@
     </div>
   </div>
 
+  <div class="confirmation-overlay hidden" id="feedback-overlay">
+    <div class="confirmation-card">
+      <div class="feedback-modal-title">Send Feedback</div>
+      <p class="feedback-modal-sub">Bug, feature idea, or something you want removed — let us know.</p>
+
+      <div class="field" style="text-align:left;">
+        <label>What's this about?</label>
+        <select id="feedback-type" class="feedback-select">
+          <option value="Bug">Something's not working (Bug)</option>
+          <option value="Feature Request">I'd like a new feature</option>
+          <option value="Remove/Change">Please remove or change something</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="field" style="text-align:left;">
+        <label>Details</label>
+        <textarea id="feedback-message" class="feedback-textarea" placeholder="Tell us what happened, or what you'd like to see..."></textarea>
+      </div>
+      <div class="field" style="text-align:left;">
+        <label>Your Name <span class="optional-tag">Optional</span></label>
+        <input type="text" id="feedback-name" placeholder="e.g. Rakesh Shah" autocomplete="off">
+      </div>
+
+      <button class="btn btn-primary" onclick="submitFeedback()">Send Feedback</button>
+      <button class="btn-ghost-cancel" onclick="closeFeedback()">Cancel</button>
+    </div>
+  </div>
+
   <div class="app-body" id="app-body">
   <header>
     <div class="header-top">
@@ -523,14 +622,16 @@
 
     <!-- PAGE 1: HOME -->
     <section class="page active" id="page-1">
-      <div class="usage-box" id="usage-box">
-        <div class="usage-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="#0d9f6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="#0d9f6e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="resume-banner hidden" id="resume-banner">
+        <button class="resume-dismiss" onclick="dismissPendingOrder()">&times;</button>
+        <div class="resume-icon" id="resume-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 8v4l3 2" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="white" stroke-width="2"/></svg>
         </div>
-        <div>
-          <div class="usage-count"><span id="usage-number">0</span> statements processed with us so far</div>
-          <div class="usage-sub">Your personal usage on this device</div>
+        <div class="resume-text">
+          <div class="resume-title" id="resume-title">You have an order in progress</div>
+          <div class="resume-sub" id="resume-sub">Pick up where you left off.</div>
         </div>
+        <button class="resume-btn" onclick="resumePendingOrder()">Resume</button>
       </div>
 
       <h1>Send us your statement.<br>We send back your Tally file.</h1>
@@ -559,25 +660,6 @@
         </div>
       </div>
 
-      <div class="trust-badges">
-        <div class="trust-badge">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4M12 3l8 3.5v6c0 5-3.5 8.5-8 10.5-4.5-2-8-5.5-8-10.5v-6L12 3z" stroke="#0d9f6e" stroke-width="1.6" stroke-linejoin="round"/></svg>
-          <span>GST-Compliant Conversions</span>
-        </div>
-        <div class="trust-badge">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="4" y="10" width="16" height="10" rx="2" stroke="#0d9f6e" stroke-width="1.6"/><path d="M8 10V7a4 4 0 018 0v3" stroke="#0d9f6e" stroke-width="1.6" stroke-linecap="round"/></svg>
-          <span>Secure &amp; Confidential</span>
-        </div>
-        <div class="trust-badge">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke="#0d9f6e" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span>Manually Verified Every Order</span>
-        </div>
-        <div class="trust-badge trust-badge-live">
-          <span class="live-dot"></span>
-          <span>Actively Processing Orders</span>
-        </div>
-      </div>
-
       <div class="plans">
         <div class="plan" data-plan="9" data-label="1 Statement — Quick" data-hours="3" onclick="selectPlan(this)">
           <div class="plan-badge" style="background:var(--amber);">3-HR QUICK</div>
@@ -591,7 +673,7 @@
         <div class="plan selected" data-plan="99" data-label="15 Statements" data-hours="24" onclick="selectPlan(this)">
           <div class="plan-badge" style="background:var(--green);">MOST POPULAR</div>
           <div class="plan-top">
-            <div class="plan-name">Professional</div>
+            <div class="plan-name">Smart — 1 Month</div>
             <div class="plan-price">₹99</div>
           </div>
           <div class="plan-desc">Up to 15 bank statements converted, one-time</div>
@@ -600,8 +682,8 @@
         <div class="plan" data-plan="899" data-label="Up to 150 Statements (1 Year)" data-hours="24" onclick="selectPlan(this)">
           <div class="plan-badge" style="background:var(--green);">BEST VALUE</div>
           <div class="plan-top">
-            <div class="plan-name">Unlimited — 1 Year</div>
-            <div class="plan-price">₹899<span>/year</span></div>
+            <div class="plan-name">Premium — 1 Year</div>
+            <div class="plan-price">₹899</div>
           </div>
           <div class="plan-desc">Up to 150 bank statements in 1 year — huge saving vs paying per statement</div>
         </div>
@@ -620,11 +702,11 @@
       <div class="inline-login" id="inline-login">
         <div class="field">
           <label>Your Name</label>
-          <input type="text" id="login-name" placeholder="e.g. Rakesh Shah">
+          <input type="text" id="login-name" placeholder="e.g. Rakesh Shah" autocomplete="off">
         </div>
         <div class="field">
           <label>WhatsApp Number</label>
-          <input type="tel" id="login-number" placeholder="e.g. 98765 43210" maxlength="10">
+          <input type="tel" id="login-number" placeholder="e.g. 98765 43210" maxlength="10" autocomplete="off">
         </div>
         <div class="login-error" id="login-error"></div>
       </div>
@@ -724,6 +806,7 @@
           <a href="#" onclick="event.preventDefault(); goToPage(5);">Track Order</a>
         </div>
         <div class="site-footer-copy">© 2026 Flash Consultancy. All rights reserved.</div>
+        <div class="site-footer-owner"><a href="#" onclick="event.preventDefault(); goToPage(6);">Owner Login</a></div>
       </div>
     </section>
 
@@ -734,7 +817,7 @@
       <div class="summary-box" id="summary-box-2">
         <div>
           <div class="label">Plan</div>
-          <div class="value" id="summary-label-2">Professional — 15 Statements</div>
+          <div class="value" id="summary-label-2">Smart — 15 Statements</div>
         </div>
         <div class="value" id="summary-price-2">₹99</div>
       </div>
@@ -767,20 +850,20 @@
 
         <div class="field">
           <label>Company Name (in Tally)</label>
-          <input type="text" id="input-company" placeholder="e.g. My Company">
+          <input type="text" id="input-company" placeholder="e.g. My Company" autocomplete="off">
         </div>
         <div class="field">
           <label>Bank Ledger Name (in Tally)</label>
-          <input type="text" id="input-bankledger" placeholder="e.g. Bank Account">
+          <input type="text" id="input-bankledger" placeholder="e.g. Bank Account" autocomplete="off">
         </div>
         <div class="field-row">
           <div class="field">
             <label>Debit — Ledger Name (in Tally)</label>
-            <input type="text" id="input-debit-ledger" placeholder="e.g. Suspense A/c">
+            <input type="text" id="input-debit-ledger" placeholder="e.g. Suspense A/c" autocomplete="off">
           </div>
           <div class="field">
             <label>Credit — Ledger Name (in Tally)</label>
-            <input type="text" id="input-credit-ledger" placeholder="e.g. Suspense A/c">
+            <input type="text" id="input-credit-ledger" placeholder="e.g. Suspense A/c" autocomplete="off">
           </div>
         </div>
         <div class="narration-title">Narration-wise Ledger <span class="optional-tag">Optional</span></div>
@@ -800,6 +883,53 @@
         </ul>
       </div>
 
+      <div class="license-badge">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="flex-shrink:0"><rect x="4" y="10" width="16" height="10" rx="2" stroke="#1341aa" stroke-width="1.7"/><path d="M8 10V7a4 4 0 018 0v3" stroke="#1341aa" stroke-width="1.7" stroke-linecap="round"/><circle cx="12" cy="15" r="1.4" fill="#1341aa"/></svg>
+        <span>Secured order — every request is verified and processed manually by our team before your file is prepared.</span>
+      </div>
+
+      <button class="btn btn-wa" id="wa-send-btn" onclick="sendOnWhatsApp()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.29-1.39a9.9 9.9 0 004.75 1.21h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2z"/></svg>
+        <span id="wa-send-label">Payment Done — Send My Statement Now</span>
+      </button>
+
+      <div class="privacy-note">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" style="margin-top:2px"><path d="M12 2l8 3.5v6c0 5-3.5 8.5-8 10.5-4.5-2-8-5.5-8-10.5v-6L12 2z" stroke="#6b7280" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        <span>Your bank statement is used only to generate your Tally file. We do not store, share, or reuse your data beyond this purpose.</span>
+      </div>
+
+      <div class="feedback-box">
+        <div class="feedback-title">Have a bug, idea, or something to remove?</div>
+        <p class="feedback-sub">Tell us what's not working, what feature you'd like, or what should go — directly to our team.</p>
+        <button class="btn btn-feedback" onclick="openFeedback()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" stroke="var(--blue)" stroke-width="1.7" stroke-linejoin="round"/></svg>
+          Send Feedback
+        </button>
+      </div>
+
+      <div class="contact-strip">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--wa)"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.29-1.39a9.9 9.9 0 004.75 1.21h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2z"/></svg>
+        Questions? Call/WhatsApp: +91 63558 13151
+      </div>
+
+      <div class="how-it-works-section">
+        <div class="details-title">How It Works</div>
+        <ul class="steps">
+          <li>
+            <div class="step-num">1</div>
+            <div class="step-body"><b>Pay for your plan</b><span>Choose Quick (₹9), Smart (₹99), or Premium Yearly (₹899) and pay via UPI.</span></div>
+          </li>
+          <li>
+            <div class="step-num">2</div>
+            <div class="step-body"><b>Send your statement on WhatsApp</b><span>Share your bank statement PDF directly with us after payment.</span></div>
+          </li>
+          <li>
+            <div class="step-num">3</div>
+            <div class="step-body"><b>Receive your Tally XML file</b><span>We convert it and send your ready-to-import file back within <span id="step3-hours">24</span> hours.</span></div>
+          </li>
+        </ul>
+      </div>
+
       <div class="terms-box">
         <div class="terms-title">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4M12 3l8 3.5v6c0 5-3.5 8.5-8 10.5-4.5-2-8-5.5-8-10.5v-6L12 3z" stroke="#111827" stroke-width="1.6" stroke-linejoin="round"/></svg>
@@ -814,44 +944,6 @@
           <li>We do not store or share your bank statement beyond the time needed to prepare your file.</li>
         </ul>
         <a href="#" onclick="event.preventDefault(); goToPage(4);" style="font-size:12px; font-weight:600; color:var(--blue); display:inline-block; margin-top:8px;">Read full Terms &amp; Conditions →</a>
-      </div>
-
-      <div class="license-badge">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="flex-shrink:0"><rect x="4" y="10" width="16" height="10" rx="2" stroke="#1341aa" stroke-width="1.7"/><path d="M8 10V7a4 4 0 018 0v3" stroke="#1341aa" stroke-width="1.7" stroke-linecap="round"/><circle cx="12" cy="15" r="1.4" fill="#1341aa"/></svg>
-        <span>Secured order — every request is verified and processed manually by our team before your file is prepared.</span>
-      </div>
-
-      <button class="btn btn-wa" onclick="sendOnWhatsApp()">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.29-1.39a9.9 9.9 0 004.75 1.21h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2z"/></svg>
-        <span id="wa-send-label">I've Paid — Send Details on WhatsApp</span>
-      </button>
-
-      <div class="privacy-note">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" style="margin-top:2px"><path d="M12 2l8 3.5v6c0 5-3.5 8.5-8 10.5-4.5-2-8-5.5-8-10.5v-6L12 2z" stroke="#6b7280" stroke-width="1.5" stroke-linejoin="round"/></svg>
-        <span>Your bank statement is used only to generate your Tally file. We do not store, share, or reuse your data beyond this purpose.</span>
-      </div>
-
-      <div class="contact-strip">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--wa)"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.29-1.39a9.9 9.9 0 004.75 1.21h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2z"/></svg>
-        Questions? Call/WhatsApp: +91 63558 13151
-      </div>
-
-      <div class="how-it-works-section">
-        <div class="details-title">How It Works</div>
-        <ul class="steps">
-          <li>
-            <div class="step-num">1</div>
-            <div class="step-body"><b>Pay for your plan</b><span>Choose Quick (₹9), Professional (₹99), or Unlimited Yearly (₹899) and pay via UPI.</span></div>
-          </li>
-          <li>
-            <div class="step-num">2</div>
-            <div class="step-body"><b>Send your statement on WhatsApp</b><span>Share your bank statement PDF directly with us after payment.</span></div>
-          </li>
-          <li>
-            <div class="step-num">3</div>
-            <div class="step-body"><b>Receive your Tally XML file</b><span>We convert it and send your ready-to-import file back within <span id="step3-hours">24</span> hours.</span></div>
-          </li>
-        </ul>
       </div>
     </section>
 
@@ -896,7 +988,7 @@
         <p>Bank To Tally converts bank statement PDFs into a Tally-compatible XML file based on the ledger details you provide.</p>
 
         <h3>Plans &amp; statement counting</h3>
-        <p>1 bank statement = up to 5 pages. Statements longer than 5 pages will be counted as multiple statements against your plan quota. The Quick plan covers 1 statement, the Professional plan covers 15 statements, and the Yearly plan covers up to 150 statements valid for 1 year from activation.</p>
+        <p>1 bank statement = up to 5 pages. Statements longer than 5 pages will be counted as multiple statements against your plan quota. The Quick plan covers 1 statement, the Smart plan covers 15 statements, and the Premium plan covers up to 150 statements valid for 1 year from activation.</p>
 
         <h3>Turnaround time</h3>
         <p>Turnaround time begins once both your payment and your bank statement have been received on WhatsApp.</p>
@@ -946,6 +1038,32 @@
       </button>
     </section>
 
+    <section class="page" id="page-6">
+      <h1>Owner Dashboard</h1>
+      <p class="sub">Recent orders from your Google Sheet, at a glance.</p>
+
+      <div class="admin-gate" id="admin-gate">
+        <div class="field" style="text-align:left;">
+          <label>Enter PIN</label>
+          <input type="password" id="admin-pin" placeholder="••••" maxlength="8" autocomplete="off" inputmode="numeric">
+        </div>
+        <div class="login-error" id="admin-error"></div>
+        <button class="btn btn-primary" onclick="unlockAdmin()">Unlock</button>
+      </div>
+
+      <div class="admin-content hidden" id="admin-content">
+        <div class="admin-toolbar">
+          <button class="btn-ghost-small" onclick="loadAdminOrders()">↻ Refresh</button>
+          <span class="admin-updated" id="admin-updated"></span>
+        </div>
+        <div id="admin-orders-list"></div>
+      </div>
+
+      <button class="btn btn-primary" onclick="goToPage(1)" style="margin-top:20px; background:transparent; color:var(--blue); box-shadow:none;">
+        Back to Home
+      </button>
+    </section>
+
   </main>
 
   <footer>
@@ -963,20 +1081,20 @@
 const WHATSAPP_NUMBER = "916355813151";
 const QR_9 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnYAAAJ2CAIAAABdNliuAAAObUlEQVR4nO3du40rVxRFQVGYCJ6nDJR/NMpA3kuhFYKuwYWDc7vKHnDYPy60tT/P8/wBAHzbn9NfAADuJLEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEj8FB/666+/i4+9zO9//zn8y/Pzef6ZhdnrPnvs54qrueWJ23JEns13Kq6Rt1gASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYBEsrRzbss6yrli0WLLWdqyT7Jl6+a+tZnClu+55Zdhy6/Nudnr7i0WABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgMby0c27LmscWs+fz3Ow+yZZ1lHOO6LufuWXnp+A3+YS3WABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgMSapZ03e/OixeyOyrniLG1ZGSqOfcuCzZZ7iSneYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABKWdl5qy5LJlgWbwpsXV1wj7uAtFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBILFmaceixYliP2fLJs+s4thnr+aWjaM33/Ozv4p+k094iwWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEgML+28eZvlzWbXUc5tWXF582duseXY7zvzs7zFAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJD7P80x/B/7H7NrMuWKjY8s+SWHLsd93120xe+Y54S0WABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgkSzt3LcMc9/myew1mt3kOffmO+TN7rs/t9jyFJ/zFgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJD4mf33W5YitmwHFbYce/E971suum/n574jmjV7z2/5tTnnLRYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASCRLO0UuwqztixFbPnvhfuOqPjvW57N2WOfdd9TfN9+zjlvsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAIlkaWfW7FaD/36iWN7YsuaxZV3qXHE+ZxeBZnd+Zu/5N28xFbzFAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJIaXdopVh9nFlTfvvRRrHoXZjY4tSyaz12iWX4YTW+6Q2e/pLRYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASDxeZ7n6x86u+JSLEXMfuZ9LJmc2HKW3vx0zF6jgmv0Xd5iASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEj/TX+CUHZUpW7ZZZv/7rGLzZMuOyrktV3PLL9isLc+7t1gASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYDE53mer3/o7LJBsRSxZaPjnD2N737mm215OrZczfvO5+zv/Oz59BYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQSJZ2zt231TC75nHfWXrzmT+3ZXXkzd68ALbleS/Op7dYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAxM/0F/i++5ZhtuxpnNuynzNryz7Jufu+5+xnnttyL933vHuLBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASHye5/n6h85uyNy31XDfek9xjbYckXv+JrNXc8u99OZNM2+xAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsAiWRp59yWxZXZ/YdzW469+O/n7tvk2XJ/nrvv2LfcdYUtx25pBwDWkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAImf6S+ww+zux7niv9+3zbLF7L3kun/3v7/5LM3eybO8xQJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACTWLO3M7tKcu28p4tzsNZq9mlsWlgrFWZo9osKWX4Ytz9EW3mIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASa5Z2tuw/zC6uzCqOfct6z31Xs7BlZWh2YWn2rpu9RlvukHPeYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABLJ0s7s+sS5LRsds7Zczdmtmy1X89yWZZhzW57N+7ZuCluOyFssACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAIlnaOTe7lrBlvWdWcea3rHmce/OKy5ZlmDcva933xJ2brYy3WABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgMTneZ6vf+iWtZliJWPL7se5+/ZJZq974b4n7tyWa7TFlnupYGkHANaQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsAiZ/Zf//mZZjZtZnZfZIt1+jclr2XLStDs3svW1awzt13ROdm7yVvsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAIlkaefNWyJv3uQ5t2WjgynFPX/fnbzliLbsUBW8xQJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACSSpZ3CllWcc1s2eWaXN84V171w3+rI7BFtuT9nf8HebPYseYsFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABIJEs7xU5FYcvmyewi0LnZ/ZxZW7ZZttzz56xgffczC2++P73FAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJJKlnWID4XyBYXbzpLBlU+Kc1ZETs/f8rC37OVu8eetm9oi8xQJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACSSpZ3C7HrPudkdlfv+e2HL6siW71n89y17RFvWZmbdt95zzlssACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAIlnamd1ROXffLs19Z/4+W1ZHttxLWxTnc/YabbmTZ3mLBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASCRLO/ftKmw5omK951zxmcWZn11Dmr1Gs4qz9OZrdN8W033rPd5iASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEsnSzn0LIYXZDZlzWxYtClt2P7Zco/t2k7bYciffx1ssACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAIlnaOXffqsOWrZvz73nf6kixuLJlyeS++/O+35DClrvuvjUkb7EAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwCJ4aWdc7O7Clt2Kmbdd5ZmN3m2mD2iLb8Mxffcci8VvwxbNnm8xQJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACTWLO28WbFTcb4+4b9/9y/PbdkOKmy57luu0exnFrZ8T2+xAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACUs7V5ldR7lv92PLmseW77nlGr35fBZmt61mr6a3WABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgMSapZ0tmxJMKVaGtuyozC4sbdnP2eK+q1mYPUvnvMUCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkhpd2tqwlzHrz6si5Ypdmdr2nuO73PXFvfjrefN3PzV53b7EAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwCJz/M8098BAC7kLRYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYDEfyRXg/dvEHZNAAAAAElFTkSuQmCC";
 const QR_99 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnYAAAJ2CAIAAABdNliuAAAOZUlEQVR4nO3du5Hr1hZFUVHVEchTBso/mpfB85QClIF0DM7adx+MYXeBJD49C9b6PM/zGwDwbb9PfwEAuJPEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEg8VMc9I8//yoOe5m///+/6a/wZfdd9+IanZ+l2U8vzN7zb74/7/vtheL+9BYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQSJZ2zlmbmfr04swXux9b1mZmf1Fhy/cszvx99+e5Ldf93Oz59BYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQGF7aOffm9YktyzBbvuebV4a27KjM3kvFMWfvz8Kb/yef8xYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQWLO0w4nZVZwtmzzntuzn3Pfbt5x5+HfeYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABKWdq5SrI7M7qjMmj2fhdnrvmURaIstz9GbeYsFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABIrFnasSnxXcWOSmHL3suW83mu+J7FMbes92y57ufu+0UFb7EAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwCJ4aWdYiXjzazNfNd959Mxf32zz9GWs7SFt1gASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYBEsrSzZUeFE1v2c2YXQu7b5Jk1u8lzbsvOz5brfh9vsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAIlkaafYvpjdqSic/3YrGd81u+Jy39W87yne8j3P3feLtjxH3mIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASn+d5Bj9+yybPllWHLYrrPmt2yeS+rZtzW/4z3HfmC8XzPvvfxlssACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAYs3SzrnZbZb71jyKT5895rkt57Nw33M0a8s9f+6+/94Fb7EAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwCJZGlndnHl3Jbtiy3n89yW617YsiFz39Nx7r69l3Nb/jNs4S0WABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEg8VMcdMveS2F2deTc7I7KlnWU2au5ZXXkvuvOieK633eHeIsFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABIfJ7n+fpBZ9cStmzdzK4M+e2/vi1nafaJ23KWCm/+T7vl/7y3WABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgMRPcdBiq6FQbDXMbl+c2/I937yKs+W3z37PLU9H8elb/i+9+enwFgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJD4PM8z/R2+rNipmHXfSsa5N1+jwuwuTXHXbTnmuS3bQVuezVneYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABLJ0s6WlYzC7PfcsvdS2LL7cd/myZYtpjef+Tc/HeeKs+QtFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBIDG8tHNudpfmvk8v2Pk5MbtDtcWW/RxnfsqWlTZvsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAImf6S/wfbP7D/et92zZ0yjct+Ky5Xy+ecGmsOVe2vI9z3mLBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASHye5xn8+C27NOeKHZX7fvu5Lddoy6ef23KWzm154maXYQpv/u3eYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABLDSzvniq2G2WPOml202LLNssWWO3nLDtW5Ld9z1n335zlvsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAIlkaWfLKs597ltHmV0uum/3Y8v3LGx5Ogr3fc9zs+3wFgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJD4mf4C3ze7FHHuvgWbLbtJW7ZEtqzibLmaW878ll90bnaLafbTvcUCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkPs/zfP2gW5Y3CrOrDue2bIkUn36f2W2W2TP/5ntpy/+6N9+f3mIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASydLOuS1LEedmNyUK9+2oFO5bCCl4Or7rvgWb+66mt1gASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYDEmqWdLas4s59e7FTY0/iu2Wu0Zbno3JY9ojdf9y3/QyztAMAaEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBIJEs7cwu2JyzOjLlvt2PWVtWXN68DDNry//k+3iLBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASPwUB53d6CgUn15sicyeT+sofMuW/yFbPn32mOe2XPdz3mIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASn+d5vn7QYqthy05F4b71iVm2RL776W9233rPrPt+u7dYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAxM/sx29ZSzhX7KjM2rL3cv7pW+662XvpvvWe4nze9xTP2rJDdc5bLAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQGJ4aefcll2FYtFi9phv3g4qbNnPue/Tt1z3WbNbN1v+z5/zFgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJBYs7SzZVdhy6bE+afft31x3/e8b0Nmy3NU8Itu4i0WABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgsWZpZ8tWQ7F5suW3n9vyi7Z8z/uuOydm/9sUiidu9in2FgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJD4PM8z/R34D7PbF1tWXLaY3f0o7qUtd8iW375l38mdfMJbLAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQOKnOOjsMswW56sO5385e+a3bF8UCyFbjnluy/ecPfNbWO+Z4i0WABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgkSztnNuylnCu2Oi4b/ejYJfmpmNueY62PJtb/tNueY7OeYsFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABIDC/tnJtdtNiyU3HuvsWV2Y2O2WNucf7bZ8/S7PN+/ovuu0Nm15CK6+4tFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBILFmaQf+3ZaNjvuOWdiyIfPmnZ/Z+3MLb7EAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJSztXefP2xZZdmtmtmy3XfcsiUOHN9+d9vMUCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAk1iztbNl7KRS/fcv5nP3ts7s0WzZPLMOcKL7nfWfp3JbNKG+xAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsAic/zPF8/6Jathllb9l7OzX7PLZ9+bss6ijv51z/mufvO/CxvsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAIlkaQcA8BYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJA4h+OT7F8+B/B/QAAAABJRU5ErkJggg==";
-const QR_999 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnYAAAJ2CAIAAABdNliuAAAOa0lEQVR4nO3du5HrVhRFQVE1ETxPGSj/aJSBPKWAl8I1uOroXHTbUyQ+xKyCtT/P8/wBAHzbn9MHAAB3klgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACR+ig/99dffxcde5r9//zn8y/PrueUzmeJu3sTd/K7z63nOWywAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkAiWdo5VywbzHrzosV9Oz+zZ/RmxVWafTa3rOLc9/ucvZ7eYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABLDSzvn3rw+sWX7Yst+zrktZ1T8Qt78qyu+/dx9V76w5Sp5iwWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEisWdp5s9ktkcLsRse5LQs29y0CbdnP2fLEMcVbLAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQMLSzgKzax73rY7M7vzct2Bz/pnFuc9ez3P3PUec8BYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQWLO0Y31iSrG4UnjzOsrslS943v//3KMT3mIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASw0s79y2EFLbsvZy7b72nuEezn1nYcu73feY5/5O/y1ssACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAIlna2bL3woktOz/37dIUtuy9FGbv++z13HKP7uMtFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBIJEs7WzZPNmyuLLlKs3acjfPbbnvWzZ5tjwds/8/7zujc8W5e4sFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABIJEs7922enCvOfctKRqE4o9mrtGUVpzjO+573c1vOfctxbuEtFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBIJEs7RS2bMi8eRXnXHHu52bv0ey5z9py7lvue/FLnv0fMvtsFrzFAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJD7P80wfw5Fi/6FYn7Cf812z933Wfasjbz6jc1tWcbbsZZ0rzshbLAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQGLN0k5hy4LNudmtm9mFEN8+5c17L/fZ8rwXLO0AwBoSCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEg8VN8aLHVMGvLgs3st29ZsLnvjM5tWcWZPc4tV+ncljO6rx3eYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABLJ0s4WWxZsZr/9zWszNk+mPrOw5b7PPnHntlzPc8VxeosFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABIvHpp59zspgQntuy9bFkdKTj3KVt2ae77/+ktFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBIPF5nmfw64sFm9lVnC2LFlv2Sc7N/kJmP/Pclt/SlsUVq00n3nyc3mIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASP8WHzm7dzK6jbFkI2bJcdG7LcW6xZYvpzbtJhS2rOOdmn3dvsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAIlkaWd2q6FYxdmyFDF7nFsWlu6zZUNmyz3acj3PbblHW34h57zFAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJJKlnWIpYna959x9SxHn7rtHs8tF57bsvRSc0dRnFu77n+wtFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBIJEs7WxZXCkU2xdb3LeKs+UezR7n7DIMJ7Y8m/fdd2+xAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsAiWRp59yW/Yct335uy6JFsdExu/vx5tWRLffo3H3P+/lxWj874S0WABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgMby0s2VLZMt6z31mz73Y6Hjz3Zx1326S9Z4Ts0+ct1gASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYDE53mer3/olvWJ+zZPZncqtnz7ls2TLcdZ2PJs3nfft3z7livvLRYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASDxM/v1963izO4/bLlKxXG+eSHk3OwvpDj3N1/Pc1uO874nzlssACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAIlna2bKBMLuKc9+5z3rz9Zz9JW9RPJtbrvyWBbDZK1/wFgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJBIlnYKW3YVzo9zyybPlt2PWbN3875VnOI5Orfl2Zy9Sm9eKjvnLRYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASCxZmnHksmJ2T2N82+fvZ5bVlzObdk82fL7LLz5Nz9r9oy8xQJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACSSpZ0tSybFPknxmYX7jvO+JZP7NqPuW20qbNlNKr69MPs/xFssACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAIlnaKVYd3vyZs2ZXMu67nvctmRT3aMvazJYrf9+3n5s9Tm+xAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsAic/zPF//0Nmdii0bHcW3n5vdpdlyPbdcpTdzj068eX/M0g4AXEhiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkfooPnV022LLqUHz77MbRuS3HeW7Les+5Lffovit/bsv/kPuu/DlvsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAInP8zyDX79l62bLpsSW/ZxzW678uS1ntOW3VBynX/J3bTn34rfkLRYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAxvLTDidnVkXP3HWdhy+rIufu2rbbcozc/RwVLOwCwhsQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEj8FB963wJDYctKRnGcs+soxWfet7iy5Sku7tGWcz83+7zP/j5n/9N6iwWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEgkSzvnZjcQCjY6phRXvjj3LddzyxltWW26b4tp1pbfp7dYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAxPDSzrk371RsWcnYsjK05W7ObsjM3s3ZjaPi22ePc9bs3ZzlLRYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASCxZmnnzbasDBV7GvfZsp/z5ns0a8vd3LKfM/tL9hYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQsLTDgPvWZmbXkM7NLq6cK45zy3bQfb+l2TOa3SPyFgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJBYs7SzZSWjcN86yuzyxuxx3nc3i8+cXUOa/cxZW35LW668t1gASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYDE8NLO7OLKFm9exbnPm+9m8e1bFlfc9xNb9ojOeYsFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABIfJ7nmT4GALiQt1gASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASvwH244lsXY/SfgAAAABJRU5ErkJggg==";
+const QR_899 = "data:image/png;base64,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3/M8+UG/PD981+6M91ue+8Qdnbtlz++uEicm9tK5W96Oc3byN03sOl+tAAAy0goAICOtAAAy0goAICOtAAAy0goAICOtAAAy0goAICOtAAAy0goAICOtAAAy0goAICOtAAAyf8/zbF/Dkd2Z5O+bx35+R+dnn1il3Xs/d8v+vOU6J7xvJ0/YfUa7PKMT7/tNnji7r1YAABlpBQCQkVYAABlpBQCQkVYAABlpBQCQkVYAABlpBQCQkVYAABlpBQCQkVYAABlpBQCQkVYAAJnfxEF3J06fH3Nigvct975rd5V259vf8ox27e6QcxN7afcX7Nzu2Se879fmlvfo3C135KsVAEBGWgEAZKQVAEBGWgEAZKQVAEBGWgEAZKQVAEBGWgEAZKQVAEBGWgEAZKQVAEBGWgEAZKQVAEDmt30Bb3PL/PBzX76jian1t0xu312lW3bdxHXu7pCJs+8e89zEdXqPWrfcka9WAAAZaQUAkJFWAAAZaQUAkJFWAAAZaQUAkJFWAAAZaQUAkJFWAAAZaQUAkJFWAAAZaQUAkJFWAACZ38RBd2d9T3jfdd4yP5wTE899Ys+/7z2acMu7ecvT3F3PL79HE782t7wdvloBAGSkFQBARloBAGSkFQBARloBAGSkFQBARloBAGSkFQBARloBAGSkFQBARloBAGSkFQBARloBAGT+nufJDzoxl3ti3vXudb5vevmE3Yno79shVulNbnk3z91yRxP785Z7n7D7uzRxdl+tAAAy0goAICOtAAAy0goAICOtAAAy0goAICOtAAAy0goAICOtAAAy0goAICOtAAAy0goAICOtAAAyf8/z5Af98kT0Cbv3vut9s+h334733fs5q9R632/yLTtkl5U/4asVAEBGWgEAZKQVAEBGWgEAZKQVAEBGWgEAZKQVAEBGWgEAZKQVAEBGWgEAZKQVAEBGWgEAZKQVAEDm73me/KATs6l3p21PuGWVzu1OL7/l3s/tzni/ZcL87l665d4n7N77ud3/Hbec/ZbfkFtKwFcrAICMtAIAyEgrAICMtAIAyEgrAICMtAIAyEgrAICMtAIAyEgrAICMtAIAyEgrAICMtAIAyEgrAIDMb/f0t0yYP7c7i37C7pT1Wya333Kd5255Ruduuc5b7L7v55y9PfvuL9juep7z1QoAICOtAAAy0goAICOtAAAy0goAICOt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";
 
 let currentPage = 1;
-let selectedPlan = { amount: 99, label: "Professional — 15 Statements", hours: 24 };
+let selectedPlan = { amount: 99, label: "Smart — 15 Statements", hours: 24 };
 let customerName = "";
 let customerNumber = "";
 let usingExistingBalance = false;
 
 const PLAN_LABELS = {
   "9": "Quick — 1 Statement",
-  "99": "Professional — 15 Statements",
+  "99": "Smart — 15 Statements",
   "899": "Yearly — Up to 150 Statements"
 };
-const PLAN_QR = { "9": QR_9, "99": QR_99, "899": QR_999 };
+const PLAN_QR = { "9": QR_9, "99": QR_99, "899": QR_899 };
 const PLAN_QUOTA = { "9": 1, "99": 15, "899": 150 };
 const REMINDER_THRESHOLD = 3;
 
@@ -987,6 +1105,13 @@ const RAZORPAY_KEY_ID = "rzp_live_TFCP56OgZYz9CZ"; // public Key Id — safe to 
 // automatically falls back to the manual UPI QR flow below.
 const RAZORPAY_BACKEND_URL = "https://script.google.com/macros/s/AKfycbziDTWYOLdqE_dfCB26makVboho8YaEaY2p2ZONYJpxGJDNeK6Yk6uMEK3ri9NPklnD/exec";
 let razorpayPaymentVerified = false;
+
+// ---- OWNER DASHBOARD CONFIG ----
+// PIN just gates casual visitors from opening this page — change it to anything you like.
+const ADMIN_PIN = "2580";
+// This key must match ADMIN_KEY in your Apps Script backend, so a random visitor
+// can't fetch your order list just by guessing the page exists.
+const ADMIN_KEY = "bt-owner-9f31";
 
 function getActivePlan(){
   try{ return localStorage.getItem('bt_active_plan'); }catch(e){ return null; }
@@ -1015,6 +1140,90 @@ function decrementRemaining(){
     setActivePlan(plan, remaining - 1);
   }
 }
+
+// ---- SESSION RECOVERY (resume an order if the customer leaves before sending their statement) ----
+function savePendingOrder(verified){
+  try{
+    localStorage.setItem('bt_pending_order', JSON.stringify({
+      amount: selectedPlan.amount,
+      label: selectedPlan.label,
+      hours: selectedPlan.hours,
+      name: customerName,
+      number: customerNumber,
+      verified: !!verified,
+      timestamp: Date.now()
+    }));
+  }catch(e){}
+  refreshResumeBanner();
+}
+
+function getPendingOrder(){
+  try{
+    const raw = localStorage.getItem('bt_pending_order');
+    if(!raw) return null;
+    const data = JSON.parse(raw);
+    // Ignore anything older than 7 days so this never resurfaces a stale order.
+    if(Date.now() - data.timestamp > 7 * 24 * 60 * 60 * 1000) return null;
+    return data;
+  }catch(e){ return null; }
+}
+
+function markPendingVerified(){
+  const data = getPendingOrder();
+  if(!data) return;
+  data.verified = true;
+  try{ localStorage.setItem('bt_pending_order', JSON.stringify(data)); }catch(e){}
+  refreshResumeBanner();
+}
+
+function clearPendingOrder(){
+  try{ localStorage.removeItem('bt_pending_order'); }catch(e){}
+  refreshResumeBanner();
+}
+
+function dismissPendingOrder(){
+  clearPendingOrder();
+}
+
+function refreshResumeBanner(){
+  const banner = document.getElementById('resume-banner');
+  if(!banner) return;
+  const data = getPendingOrder();
+  if(!data){
+    banner.classList.add('hidden');
+    return;
+  }
+  banner.classList.remove('hidden');
+  banner.classList.toggle('verified', data.verified);
+  document.getElementById('resume-title').textContent = data.verified
+    ? "Payment confirmed — statement not sent yet"
+    : "You have an order in progress";
+  document.getElementById('resume-sub').textContent = data.verified
+    ? `${data.label} (₹${data.amount}) — send your statement to avoid delay.`
+    : `${data.label} (₹${data.amount}) — continue where you left off.`;
+}
+
+function resumePendingOrder(){
+  const data = getPendingOrder();
+  if(!data) return;
+  selectedPlan = { amount: data.amount, label: data.label, hours: data.hours };
+  customerName = data.name;
+  customerNumber = data.number;
+  usingExistingBalance = false;
+  updateSummaries();
+  setupPage2ForPayment();
+  if(data.verified){
+    razorpayPaymentVerified = true;
+    document.getElementById('razorpay-pay-btn').innerHTML = '✓ Payment Verified';
+    document.getElementById('razorpay-pay-btn').disabled = true;
+    document.getElementById('checklist-title').textContent = "Your payment is confirmed. Please send us:";
+    document.getElementById('checklist-items').innerHTML =
+      '<li>Your bank statement (PDF, password removed if locked)</li>';
+    document.getElementById('wa-send-label').textContent = "Verified — Send My Statement Now";
+  }
+  goToPage(2);
+}
+
 function refreshBalanceDisplay(){
   const plan = getActivePlan();
   const remaining = getRemaining();
@@ -1063,6 +1272,11 @@ function updateSummaries(){
 }
 
 function goToPage(n){
+  if(currentPage === 6 && n !== 6){
+    document.getElementById('admin-gate').classList.remove('hidden');
+    document.getElementById('admin-content').classList.add('hidden');
+    document.getElementById('admin-pin').value = '';
+  }
   document.getElementById('page-' + currentPage).classList.remove('active');
   document.getElementById('page-' + n).classList.add('active');
   const prevDot = document.getElementById('navdot-' + currentPage);
@@ -1075,7 +1289,7 @@ function goToPage(n){
 }
 
 function goBack(){
-  if(currentPage === 3 || currentPage === 4){
+  if(currentPage === 3 || currentPage === 4 || currentPage === 5 || currentPage === 6){
     goToPage(1);
   } else if(currentPage > 1){
     goToPage(currentPage - 1);
@@ -1096,7 +1310,7 @@ const TRANSLATIONS = {
     payTitle: "Complete your payment",
     paySub: "Scan the QR code with any UPI app, then send us your statement.",
     qrNote: "Open Google Pay, PhonePe, Paytm, or any UPI app and scan this code — your payment option will open instantly.",
-    waBtn: "I've Paid — Send Statement on WhatsApp",
+    waBtn: "Payment Done — Send My Statement Now",
     privacy: "Your bank statement is used only to generate your Tally file. We do not store, share, or reuse your data beyond this purpose."
   },
   hi: {
@@ -1145,29 +1359,6 @@ function changeLanguage(lang){
   document.querySelector('.privacy-note span').textContent = t.privacy;
 }
 
-function getUsageCount(){
-  try{
-    const v = localStorage.getItem('bt_usage_count');
-    return v ? parseInt(v, 10) : 0;
-  }catch(e){ return 0; }
-}
-
-function setUsageCount(n){
-  try{ localStorage.setItem('bt_usage_count', String(n)); }catch(e){}
-}
-
-function refreshUsageDisplay(){
-  const el = document.getElementById('usage-number');
-  if(el) el.textContent = getUsageCount();
-}
-
-function incrementUsageForPlan(planAmount){
-  // Quick and Professional plans count as +1 order; Yearly plan is tracked separately by you, so we just log an order event.
-  const current = getUsageCount();
-  setUsageCount(current + 1);
-  refreshUsageDisplay();
-}
-
 function startOrder(){
   const activePlan = getActivePlan();
   const remaining = getRemaining();
@@ -1210,6 +1401,7 @@ function startOrder(){
   }catch(e){}
   usingExistingBalance = false;
   setupPage2ForPayment();
+  savePendingOrder(false);
 
   const msg = `Hi, I'd like to start my Bank To Tally order.\n\nName: ${name}\nWhatsApp Number: ${number}\nPlan Selected: ${selectedPlan.label} (₹${selectedPlan.amount})`;
   const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
@@ -1228,13 +1420,14 @@ function setupPage2ForPayment(){
   document.getElementById('razorpay-pay-wrap').style.display = RAZORPAY_BACKEND_URL ? '' : 'none';
   document.getElementById('qr-divider').style.display = RAZORPAY_BACKEND_URL ? '' : 'none';
   razorpayPaymentVerified = false;
+  document.getElementById('wa-send-btn').disabled = false;
   document.getElementById('razorpay-pay-btn').disabled = false;
   document.getElementById('razorpay-pay-btn').innerHTML =
     '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="13" rx="2" stroke="white" stroke-width="1.8"/><path d="M3 10h18" stroke="white" stroke-width="1.8"/></svg> Pay <span id="razorpay-pay-amount">₹' + selectedPlan.amount + '</span> Now';
   document.getElementById('checklist-title').textContent = "After payment, please send us:";
   document.getElementById('checklist-items').innerHTML =
     '<li>Your bank statement (PDF, password removed if locked)</li><li>A screenshot of your payment</li>';
-  document.getElementById('wa-send-label').textContent = "I've Paid — Send Details on WhatsApp";
+  document.getElementById('wa-send-label').textContent = "Payment Done — Send My Statement Now";
   updateSummaries();
 }
 
@@ -1249,7 +1442,8 @@ function setupPage2ForBalance(){
   document.getElementById('checklist-title').textContent = "Please send us:";
   document.getElementById('checklist-items').innerHTML =
     '<li>Your bank statement (PDF, password removed if locked)</li>';
-  document.getElementById('wa-send-label').textContent = "Send Statement on WhatsApp";
+  document.getElementById('wa-send-label').textContent = "Send My Statement on WhatsApp";
+  document.getElementById('wa-send-btn').disabled = false;
 }
 
 function toggleTheme(){
@@ -1339,12 +1533,13 @@ async function payWithRazorpay(){
         const verifyData = await verifyRes.json();
         if(verifyData && verifyData.verified){
           razorpayPaymentVerified = true;
+          markPendingVerified();
           payBtn.innerHTML = '✓ Payment Verified';
           payBtn.disabled = true;
           document.getElementById('checklist-title').textContent = "Your payment is confirmed. Please send us:";
           document.getElementById('checklist-items').innerHTML =
             '<li>Your bank statement (PDF, password removed if locked)</li>';
-          document.getElementById('wa-send-label').textContent = "Send Details on WhatsApp";
+          document.getElementById('wa-send-label').textContent = "Verified — Send My Statement Now";
         } else {
           alert("Payment received, but we couldn't verify it automatically. Please still message us on WhatsApp with your payment details — we'll confirm manually.");
           payBtn.disabled = false;
@@ -1368,6 +1563,10 @@ async function payWithRazorpay(){
 }
 
 function sendOnWhatsApp(){
+  const btn = document.getElementById('wa-send-btn');
+  if(btn.disabled) return; // guard against double-click / duplicate quota consumption
+  btn.disabled = true;
+
   const name = customerName;
   const company = document.getElementById('input-company').value.trim();
   const bankLedger = document.getElementById('input-bankledger').value.trim();
@@ -1417,8 +1616,8 @@ function sendOnWhatsApp(){
     decrementRemaining();
   }
 
-  incrementUsageForPlan(selectedPlan.amount);
   refreshBalanceDisplay();
+  clearPendingOrder();
   window.open(url, '_blank');
   showConfirmation();
 }
@@ -1437,6 +1636,36 @@ function closeConfirmation(){
   document.getElementById('confirmation-overlay').classList.add('hidden');
   goToPage(1);
   refreshBalanceDisplay();
+}
+
+function openFeedback(){
+  document.getElementById('feedback-overlay').classList.remove('hidden');
+}
+
+function closeFeedback(){
+  document.getElementById('feedback-overlay').classList.add('hidden');
+  document.getElementById('feedback-message').value = '';
+  document.getElementById('feedback-name').value = '';
+  document.getElementById('feedback-type').value = 'Bug';
+}
+
+function submitFeedback(){
+  const type = document.getElementById('feedback-type').value;
+  const message = document.getElementById('feedback-message').value.trim();
+  const name = document.getElementById('feedback-name').value.trim();
+
+  if(!message){
+    alert("Please add a few details before sending.");
+    return;
+  }
+
+  let msg = `Feedback from Bank To Tally website\n\nType: ${type}\n`;
+  if(name) msg += `Name: ${name}\n`;
+  msg += `\nMessage: ${message}`;
+
+  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
+  closeFeedback();
 }
 
 // ---- ORDER TRACKING ----
@@ -1495,6 +1724,57 @@ async function trackOrder(){
   }
 }
 
+// ---- OWNER DASHBOARD ----
+function unlockAdmin(){
+  const pin = document.getElementById('admin-pin').value.trim();
+  const errorBox = document.getElementById('admin-error');
+  if(pin !== ADMIN_PIN){
+    errorBox.textContent = "Incorrect PIN.";
+    return;
+  }
+  errorBox.textContent = "";
+  document.getElementById('admin-gate').classList.add('hidden');
+  document.getElementById('admin-content').classList.remove('hidden');
+  loadAdminOrders();
+}
+
+async function loadAdminOrders(){
+  const list = document.getElementById('admin-orders-list');
+  const updated = document.getElementById('admin-updated');
+  list.innerHTML = '<div class="admin-empty">Loading orders…</div>';
+
+  if(!ORDER_TRACKING_API_URL){
+    list.innerHTML = '<div class="admin-empty">Backend not connected yet.</div>';
+    return;
+  }
+
+  try{
+    const res = await fetch(ORDER_TRACKING_API_URL + '?admin=1&adminKey=' + encodeURIComponent(ADMIN_KEY));
+    const data = await res.json();
+    if(!data.orders || data.orders.length === 0){
+      list.innerHTML = '<div class="admin-empty">No orders found yet.</div>';
+      updated.textContent = 'Updated just now';
+      return;
+    }
+    list.innerHTML = data.orders.map(o => {
+      const status = (o.status || 'Pending').toLowerCase().replace(/\s+/g, '-');
+      return `
+        <div class="admin-order-card">
+          <div class="admin-order-top">
+            <span class="admin-order-id">${o.orderId || '-'}</span>
+            <span class="admin-order-status status-${status}">${o.status || 'Pending'}</span>
+          </div>
+          <div class="admin-order-line">${o.name || '-'} · ${o.number || '-'}</div>
+          <div class="admin-order-line">${o.plan || '-'} · ₹${o.amount || '-'}</div>
+          <div class="admin-order-line">${o.timestamp || ''}</div>
+        </div>`;
+    }).join('');
+    updated.textContent = 'Updated just now';
+  }catch(e){
+    list.innerHTML = '<div class="admin-empty">Couldn\'t load orders. Check your backend connection.</div>';
+  }
+}
+
 function toggleFaq(btn){
   const item = btn.closest('.faq-item');
   const wasOpen = item.classList.contains('open');
@@ -1506,8 +1786,8 @@ function toggleFaq(btn){
 // init
 document.getElementById('back-btn').style.display = 'none';
 updateSummaries();
-refreshUsageDisplay();
 refreshBalanceDisplay();
+refreshResumeBanner();
 addNarrationRow();
 </script>
 </body>
