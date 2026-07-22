@@ -44,7 +44,29 @@
     background-attachment:fixed;
     color:var(--ink); -webkit-font-smoothing:antialiased;
   }
-  .app{max-width:520px;margin:0 auto;min-height:100vh;background:linear-gradient(180deg, #ffffff 0%, #fbfdff 55%, #f7fdfa 100%);display:flex;flex-direction:column;box-shadow:0 0 40px rgba(26,86,219,0.1);}
+  .app{max-width:520px;margin:0 auto;min-height:100vh;background:linear-gradient(180deg, #ffffff 0%, #fbfdff 55%, #f7fdfa 100%);display:flex;flex-direction:column;box-shadow:0 0 40px rgba(26,86,219,0.1);position:relative;overflow:hidden;}
+
+  /* Floating background shapes — subtle brand-color motion so the page never feels static */
+  .floating-shapes{position:fixed; inset:0; max-width:520px; margin:0 auto; pointer-events:none; z-index:0; overflow:hidden;}
+  .shape{position:absolute; border-radius:50%; filter:blur(38px); opacity:0.16;}
+  .shape-1{width:220px; height:220px; background:var(--blue); top:-60px; left:-70px; animation:float1 16s ease-in-out infinite;}
+  .shape-2{width:260px; height:260px; background:var(--green-light); top:35%; right:-90px; animation:float2 20s ease-in-out infinite;}
+  .shape-3{width:180px; height:180px; background:var(--green); bottom:8%; left:-60px; animation:float3 18s ease-in-out infinite;}
+  .shape-4{width:150px; height:150px; background:var(--blue-dark); bottom:-50px; right:10%; animation:float1 22s ease-in-out infinite reverse;}
+  @keyframes float1{
+    0%,100%{ transform:translate(0,0) scale(1); }
+    50%{ transform:translate(30px,40px) scale(1.08); }
+  }
+  @keyframes float2{
+    0%,100%{ transform:translate(0,0) scale(1); }
+    50%{ transform:translate(-25px,-35px) scale(0.95); }
+  }
+  @keyframes float3{
+    0%,100%{ transform:translate(0,0) scale(1); }
+    50%{ transform:translate(20px,-30px) scale(1.05); }
+  }
+  body.dark .shape{opacity:0.14;}
+  main, header, footer{position:relative; z-index:1;}
 
   /* Header */
   header{
@@ -489,31 +511,6 @@
   }
   .resume-banner.hidden{display:none;}
 
-  .track-form{margin:20px 0 14px;}
-  .track-input{
-    width:100%; padding:13px 14px; border:1.5px solid var(--border); border-radius:10px;
-    font-size:14px; font-family:inherit; color:var(--ink); background:#fff;
-  }
-  .track-input:focus{outline:none; border-color:var(--blue);}
-  body.dark .track-input{background:#0f172a; border-color:#243149; color:#f1f5f9;}
-  .track-result{
-    background:#f9fafb; border:1px solid var(--border); border-radius:12px; padding:16px; margin-bottom:16px;
-  }
-  .track-result.hidden{display:none;}
-  .track-status-badge{
-    display:inline-block; padding:5px 12px; border-radius:20px; font-size:12px; font-weight:700;
-    background:var(--amber-light); color:var(--amber); margin-bottom:8px;
-  }
-  .track-status-badge.status-processing{background:#dbeafe; color:#1a56db;}
-  .track-status-badge.status-delivered{background:#d1fae5; color:#059669;}
-  .track-status-badge.status-notfound{background:#fee2e2; color:#dc2626;}
-  .track-result-text{font-size:13px; color:var(--gray); line-height:1.6; margin:0;}
-  .track-note{
-    display:flex; gap:8px; background:#f9fafb; border:1px solid var(--border); border-radius:10px;
-    padding:12px 14px; font-size:12px; color:var(--gray); line-height:1.6;
-  }
-  body.dark .track-result{background:#141f38; border-color:#243149;}
-  body.dark .track-note{background:#141f38; border-color:#243149; color:#94a3b8;}
   .legal-content h3{font-size:14px; font-weight:700; margin:18px 0 6px; color:var(--ink);}
   .legal-content h3:first-child{margin-top:0;}
   .legal-content p{font-size:13.5px; line-height:1.6; color:var(--gray); margin:0 0 4px;}
@@ -532,11 +529,118 @@
     font-size:11px; color:var(--gray-light); margin-top:14px; line-height:1.5;
   }
   body.dark .inline-login{background:#141f38; border-color:#243149;}
+
+  /* Firebase Auth — Google / Phone OTP login block */
+  .auth-tabs{display:flex; gap:8px; margin-bottom:14px;}
+  .auth-tab{
+    flex:1; text-align:center; padding:9px 8px; border-radius:9px; font-size:12.5px; font-weight:700;
+    border:1.5px solid var(--border); background:#fff; color:var(--gray); cursor:pointer; transition:all .15s;
+  }
+  .auth-tab.active{border-color:var(--blue); color:var(--blue); background:#eff4ff;}
+  body.dark .auth-tab{background:#0f172a; border-color:#243149; color:#94a3b8;}
+  body.dark .auth-tab.active{background:#141f38; color:#93b4f7; border-color:var(--blue);}
+
+  .btn-google{
+    width:100%; display:flex; align-items:center; justify-content:center; gap:10px;
+    background:#fff; border:1.5px solid var(--border); border-radius:10px;
+    padding:11px 14px; font-size:14px; font-weight:600; color:var(--ink); cursor:pointer;
+    font-family:inherit; transition:background .15s, box-shadow .15s;
+  }
+  .btn-google:hover{background:#f8fafc; box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+  .btn-google:disabled{opacity:.6; cursor:not-allowed;}
+  body.dark .btn-google{background:#141f38; border-color:#243149; color:#f1f5f9;}
+  body.dark .btn-google:hover{background:#182444;}
+
+  .auth-divider{display:flex; align-items:center; gap:10px; margin:14px 0; color:var(--gray-light); font-size:11.5px; font-weight:600;}
+  .auth-divider::before,.auth-divider::after{content:''; flex:1; height:1px; background:var(--border);}
+  body.dark .auth-divider::before,body.dark .auth-divider::after{background:#243149;}
+
+  .phone-input-row{display:flex; gap:8px;}
+  .phone-cc{
+    flex-shrink:0; width:58px; display:flex; align-items:center; justify-content:center;
+    border:1.5px solid var(--border); border-radius:10px; font-size:14px; font-weight:600; color:var(--ink); background:#fff;
+  }
+  body.dark .phone-cc{background:#141f38; border-color:#243149; color:#f1f5f9;}
+  .phone-input-row input{flex:1;}
+
+  .otp-input-row{display:flex; gap:7px; margin:4px 0 2px;}
+  .otp-box{
+    width:100%; text-align:center; font-size:19px; font-weight:700; letter-spacing:2px;
+    padding:10px 6px; border:1.5px solid var(--border); border-radius:10px; font-family:inherit;
+  }
+  .otp-box:focus{outline:none; border-color:var(--blue);}
+  body.dark .otp-box{background:#141f38; border-color:#243149; color:#f1f5f9;}
+
+  .auth-resend{font-size:12px; font-weight:600; color:var(--blue); cursor:pointer; text-align:center; margin-top:10px;}
+  .auth-resend.disabled{color:var(--gray-light); cursor:default; pointer-events:none;}
+
+  .auth-status{font-size:12.5px; font-weight:600; margin:8px 0 2px; min-height:16px; text-align:center;}
+  .auth-status.success{color:var(--green);}
+  .auth-status.error{color:#dc2626;}
+
+  .logged-in-card{
+    display:flex; align-items:center; gap:11px; background:#ecfdf5; border:1px solid #34d399;
+    border-radius:12px; padding:12px 14px; margin-bottom:14px;
+  }
+  body.dark .logged-in-card{background:#0d2a20; border-color:#0d9f6e;}
+  .logged-in-avatar{
+    width:38px; height:38px; border-radius:50%; flex-shrink:0; object-fit:cover;
+    background:var(--green); color:#fff; display:flex; align-items:center; justify-content:center;
+    font-weight:700; font-size:15px;
+  }
+  .logged-in-info{flex:1; min-width:0;}
+  .logged-in-name{font-size:13.5px; font-weight:700; color:#065f46; line-height:1.3;}
+  .logged-in-detail{font-size:11.5px; color:#059669; margin-top:1px;}
+  body.dark .logged-in-name{color:#a7f3d0;}
+  body.dark .logged-in-detail{color:#6ee7b7;}
+  .logged-in-out{
+    flex-shrink:0; background:none; border:none; color:#059669; font-size:11.5px; font-weight:700;
+    cursor:pointer; font-family:inherit; text-decoration:underline;
+  }
+  #recaptcha-container{margin:6px 0;}
+  .hidden{display:none !important;}
 </style>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getAuth, GoogleAuthProvider, signInWithPopup,
+    RecaptchaVerifier, signInWithPhoneNumber, signOut
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDxdEXmQyPfpMe3l8oPufPCaa7FzPEntYc",
+    authDomain: "banktotally.firebaseapp.com",
+    projectId: "banktotally",
+    storageBucket: "banktotally.firebasestorage.app",
+    messagingSenderId: "259937376839",
+    appId: "1:259937376839:web:a9aa44873b5eda429eef62",
+    measurementId: "G-G19GL480BV"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // Expose everything the plain-JS part of the page needs, on window,
+  // since this script runs as an ES module (its own scope).
+  window.fbAuth = auth;
+  window.fbGoogleProvider = new GoogleAuthProvider();
+  window.fbSignInWithPopup = signInWithPopup;
+  window.fbRecaptchaVerifier = RecaptchaVerifier;
+  window.fbSignInWithPhoneNumber = signInWithPhoneNumber;
+  window.fbSignOut = signOut;
+  window.dispatchEvent(new Event('firebase-ready'));
+</script>
 </head>
 <body>
 <div class="app">
+
+  <div class="floating-shapes" aria-hidden="true">
+    <span class="shape shape-1"></span>
+    <span class="shape shape-2"></span>
+    <span class="shape shape-3"></span>
+    <span class="shape shape-4"></span>
+  </div>
 
   <div class="confirmation-overlay hidden" id="confirmation-overlay">
     <div class="confirmation-card" id="confirmation-loading-card">
@@ -699,15 +803,59 @@
         <div class="active-plan-row"><span id="active-plan-label">—</span><span id="active-plan-remaining">0 bache</span></div>
       </div>
 
+      <!-- Logged-in state: shown once Google or Phone login succeeds -->
+      <div class="logged-in-card hidden" id="logged-in-card">
+        <div class="logged-in-avatar" id="logged-in-avatar">?</div>
+        <div class="logged-in-info">
+          <div class="logged-in-name" id="logged-in-name">—</div>
+          <div class="logged-in-detail" id="logged-in-detail">—</div>
+        </div>
+        <button type="button" class="logged-in-out" onclick="authSignOut()">Not you? Sign out</button>
+      </div>
+
+      <!-- Logged-out state: Google button + Phone OTP flow -->
       <div class="inline-login" id="inline-login">
-        <div class="field">
-          <label>Your Name</label>
-          <input type="text" id="login-name" placeholder="e.g. Rakesh Shah" autocomplete="off">
+        <div class="auth-tabs">
+          <div class="auth-tab active" id="auth-tab-google" onclick="switchAuthTab('google')">Google</div>
+          <div class="auth-tab" id="auth-tab-phone" onclick="switchAuthTab('phone')">Phone (OTP)</div>
         </div>
-        <div class="field">
-          <label>WhatsApp Number</label>
-          <input type="tel" id="login-number" placeholder="e.g. 98765 43210" maxlength="10" autocomplete="off">
+
+        <!-- Google sign-in -->
+        <div id="auth-panel-google">
+          <button type="button" class="btn-google" id="google-signin-btn" onclick="signInWithGoogle()">
+            <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.7-6.1 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l6-6C34.5 5.1 29.6 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21 21-9.4 21-21c0-1.4-.1-2.8-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.8 1.1 8 3l6-6C34.5 5.1 29.6 3 24 3c-7.7 0-14.4 4.3-17.7 10.7z"/><path fill="#4CAF50" d="M24 45c5.5 0 10.4-1.9 14.3-5.1l-6.6-5.6C29.7 36 27 37 24 37c-5.2 0-9.6-3.3-11.2-7.9l-6.5 5C9.5 40.6 16.2 45 24 45z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.2 4.3-4.1 5.7l6.6 5.6C40.9 36.5 44 30.9 44 24c0-1.4-.1-2.8-.4-3.5z"/></svg>
+            <span id="google-signin-label">Continue with Google</span>
+          </button>
         </div>
+
+        <div class="auth-divider">or</div>
+
+        <!-- Phone OTP sign-in -->
+        <div id="auth-panel-phone">
+          <div class="field" id="phone-step-number">
+            <label>WhatsApp / Mobile Number</label>
+            <div class="phone-input-row">
+              <div class="phone-cc">+91</div>
+              <input type="tel" id="login-phone" placeholder="e.g. 9876543210" maxlength="10" autocomplete="off">
+            </div>
+          </div>
+          <button type="button" class="btn btn-primary" id="send-otp-btn" onclick="sendOtp()" style="margin-top:4px;">
+            Send OTP
+          </button>
+
+          <div class="field hidden" id="phone-step-otp" style="margin-top:12px;">
+            <label>Enter 6-digit OTP sent to your phone</label>
+            <input type="tel" id="login-otp" placeholder="- - - - - -" maxlength="6" autocomplete="off" class="otp-box" inputmode="numeric">
+            <button type="button" class="btn btn-primary" id="verify-otp-btn" onclick="verifyOtp()" style="margin-top:10px;">
+              Verify &amp; Continue
+            </button>
+            <div class="auth-resend" id="resend-otp-link" onclick="sendOtp(true)">Resend OTP</div>
+          </div>
+
+          <div id="recaptcha-container"></div>
+        </div>
+
+        <div class="auth-status" id="auth-status"></div>
         <div class="login-error" id="login-error"></div>
       </div>
 
@@ -717,7 +865,7 @@
       </button>
 
       <div class="login-note" style="text-align:center; margin-top:10px;">
-        By continuing, you agree that our team may contact you on this number regarding your order.
+        By continuing, you agree that our team may contact you regarding your order.
       </div>
 
       <div class="contact-strip">
@@ -802,11 +950,9 @@
           <a href="#" onclick="event.preventDefault(); goToPage(3);">Privacy Policy</a>
           <span>•</span>
           <a href="#" onclick="event.preventDefault(); goToPage(4);">Terms &amp; Conditions</a>
-          <span>•</span>
-          <a href="#" onclick="event.preventDefault(); goToPage(5);">Track Order</a>
         </div>
         <div class="site-footer-copy">© 2026 Flash Consultancy. All rights reserved.</div>
-        <div class="site-footer-owner"><a href="#" onclick="event.preventDefault(); goToPage(6);">Owner Login</a></div>
+        <div class="site-footer-owner"><a href="#" onclick="event.preventDefault(); goToPage(5);">Owner Login</a></div>
       </div>
     </section>
 
@@ -1015,30 +1161,6 @@
     </section>
 
     <section class="page" id="page-5">
-      <h1>Track Your Order</h1>
-      <p class="sub">Enter your Order ID to check its current status.</p>
-
-      <div class="track-form">
-        <input type="text" id="track-order-id" class="track-input" placeholder="e.g. BT-2026-00123" autocomplete="off">
-        <button class="btn btn-primary" onclick="trackOrder()" style="margin-top:12px;">Check Status</button>
-      </div>
-
-      <div class="track-result hidden" id="track-result">
-        <div class="track-status-badge" id="track-status-badge">Pending</div>
-        <p class="track-result-text" id="track-result-text"></p>
-      </div>
-
-      <div class="track-note">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" style="flex-shrink:0; margin-top:2px"><circle cx="12" cy="12" r="9" stroke="#6b7280" stroke-width="1.6"/><path d="M12 8v.01M12 11v5" stroke="#6b7280" stroke-width="1.6" stroke-linecap="round"/></svg>
-        <span>You'll receive your Order ID on WhatsApp after placing an order. Live tracking will go active here once it's connected to our order sheet — for now, message us on WhatsApp for an instant status update.</span>
-      </div>
-
-      <button class="btn btn-primary" onclick="goToPage(1)" style="margin-top:20px; background:transparent; color:var(--blue); box-shadow:none;">
-        Back to Home
-      </button>
-    </section>
-
-    <section class="page" id="page-6">
       <h1>Owner Dashboard</h1>
       <p class="sub">Recent orders from your Google Sheet, at a glance.</p>
 
@@ -1088,6 +1210,201 @@ let selectedPlan = { amount: 99, label: "Smart — 15 Statements", hours: 24 };
 let customerName = "";
 let customerNumber = "";
 let usingExistingBalance = false;
+
+// ---- FIREBASE AUTH STATE ----
+let currentUser = null;        // { method: 'google'|'phone', name, email, phone, uid }
+let confirmationResult = null; // holds the pending phone OTP confirmation
+let recaptchaVerifier = null;
+let resendCooldownTimer = null;
+
+function switchAuthTab(which){
+  document.getElementById('auth-tab-google').classList.toggle('active', which === 'google');
+  document.getElementById('auth-tab-phone').classList.toggle('active', which === 'phone');
+  document.getElementById('auth-panel-google').classList.toggle('hidden', which !== 'google');
+  document.getElementById('auth-panel-phone').classList.toggle('hidden', which !== 'phone');
+  document.getElementById('auth-status').textContent = '';
+  document.getElementById('auth-status').className = 'auth-status';
+}
+
+function setAuthStatus(msg, type){
+  const box = document.getElementById('auth-status');
+  box.textContent = msg;
+  box.className = 'auth-status' + (type ? ' ' + type : '');
+}
+
+function showLoggedInUI(user){
+  document.getElementById('inline-login').classList.add('hidden');
+  const card = document.getElementById('logged-in-card');
+  card.classList.remove('hidden');
+
+  const avatar = document.getElementById('logged-in-avatar');
+  const nameEl = document.getElementById('logged-in-name');
+  const detailEl = document.getElementById('logged-in-detail');
+
+  const displayName = user.name || (user.method === 'phone' ? '+91 ' + user.phone : 'Signed in');
+  nameEl.textContent = displayName;
+  detailEl.textContent = user.method === 'google' ? (user.email || 'Signed in with Google') : ('+91 ' + user.phone + ' · Verified');
+  avatar.textContent = (displayName || '?').trim().charAt(0).toUpperCase();
+
+  // Feed the rest of the tool (WhatsApp message, Razorpay prefill, Sheet logging) with these details.
+  customerName = displayName;
+  customerNumber = user.phone || customerNumber;
+  try{
+    localStorage.setItem('bt_customer_name', customerName);
+    if(user.phone) localStorage.setItem('bt_customer_number', user.phone);
+    localStorage.setItem('bt_auth_method', user.method);
+    if(user.email) localStorage.setItem('bt_customer_email', user.email);
+  }catch(e){}
+}
+
+function showLoggedOutUI(){
+  document.getElementById('logged-in-card').classList.add('hidden');
+  document.getElementById('inline-login').classList.remove('hidden');
+}
+
+function restoreSavedLogin(){
+  try{
+    const method = localStorage.getItem('bt_auth_method');
+    const name = localStorage.getItem('bt_customer_name');
+    const phone = localStorage.getItem('bt_customer_number');
+    const email = localStorage.getItem('bt_customer_email');
+    if(method && (name || phone)){
+      currentUser = { method, name, phone, email };
+      showLoggedInUI(currentUser);
+    }
+  }catch(e){}
+}
+
+async function authSignOut(){
+  try{ if(window.fbSignOut && window.fbAuth) await window.fbSignOut(window.fbAuth); }catch(e){}
+  currentUser = null;
+  try{
+    localStorage.removeItem('bt_auth_method');
+    localStorage.removeItem('bt_customer_name');
+    localStorage.removeItem('bt_customer_number');
+    localStorage.removeItem('bt_customer_email');
+  }catch(e){}
+  customerName = "";
+  customerNumber = "";
+  showLoggedOutUI();
+  setAuthStatus('', '');
+}
+
+// ---- GOOGLE SIGN-IN ----
+async function signInWithGoogle(){
+  if(!window.fbAuth || !window.fbGoogleProvider){
+    setAuthStatus("Login is still loading, please try again in a second.", "error");
+    return;
+  }
+  const btn = document.getElementById('google-signin-btn');
+  btn.disabled = true;
+  setAuthStatus('Opening Google sign-in…', '');
+  try{
+    const result = await window.fbSignInWithPopup(window.fbAuth, window.fbGoogleProvider);
+    const u = result.user;
+    currentUser = { method: 'google', name: u.displayName || '', email: u.email || '', uid: u.uid };
+    showLoggedInUI(currentUser);
+    setAuthStatus('Signed in successfully.', 'success');
+  }catch(e){
+    console.error(e);
+    setAuthStatus("Couldn't sign in with Google. Please try again.", "error");
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+// ---- PHONE OTP SIGN-IN ----
+function ensureRecaptcha(){
+  if(recaptchaVerifier || !window.fbAuth || !window.fbRecaptchaVerifier) return;
+  recaptchaVerifier = new window.fbRecaptchaVerifier(window.fbAuth, 'recaptcha-container', {
+    size: 'invisible'
+  });
+}
+
+function startResendCooldown(){
+  const link = document.getElementById('resend-otp-link');
+  let seconds = 30;
+  link.classList.add('disabled');
+  link.textContent = `Resend OTP in ${seconds}s`;
+  clearInterval(resendCooldownTimer);
+  resendCooldownTimer = setInterval(() => {
+    seconds--;
+    if(seconds <= 0){
+      clearInterval(resendCooldownTimer);
+      link.classList.remove('disabled');
+      link.textContent = 'Resend OTP';
+    } else {
+      link.textContent = `Resend OTP in ${seconds}s`;
+    }
+  }, 1000);
+}
+
+async function sendOtp(isResend){
+  const numberInput = document.getElementById('login-phone');
+  const number = numberInput.value.trim();
+
+  if(!/^[6-9]\d{9}$/.test(number)){
+    setAuthStatus("Please enter a valid 10-digit mobile number.", "error");
+    return;
+  }
+  if(!window.fbAuth || !window.fbSignInWithPhoneNumber){
+    setAuthStatus("Login is still loading, please try again in a second.", "error");
+    return;
+  }
+
+  const sendBtn = document.getElementById('send-otp-btn');
+  sendBtn.disabled = true;
+  setAuthStatus(isResend ? 'Resending OTP…' : 'Sending OTP…', '');
+
+  try{
+    ensureRecaptcha();
+    const fullNumber = '+91' + number;
+    confirmationResult = await window.fbSignInWithPhoneNumber(window.fbAuth, fullNumber, recaptchaVerifier);
+    document.getElementById('phone-step-otp').classList.remove('hidden');
+    numberInput.disabled = true;
+    sendBtn.textContent = 'OTP Sent';
+    setAuthStatus('OTP sent to +91 ' + number + '.', 'success');
+    startResendCooldown();
+    document.getElementById('login-otp').focus();
+  }catch(e){
+    console.error(e);
+    setAuthStatus("Couldn't send OTP. Please check the number and try again.", "error");
+    sendBtn.disabled = false;
+    // Reset recaptcha so a retry doesn't reuse a spent challenge.
+    try{
+      if(recaptchaVerifier){ recaptchaVerifier.clear(); recaptchaVerifier = null; }
+    }catch(err){}
+  }
+}
+
+async function verifyOtp(){
+  const otp = document.getElementById('login-otp').value.trim();
+  if(!/^\d{6}$/.test(otp)){
+    setAuthStatus("Please enter the 6-digit OTP.", "error");
+    return;
+  }
+  if(!confirmationResult){
+    setAuthStatus("Please request an OTP first.", "error");
+    return;
+  }
+
+  const verifyBtn = document.getElementById('verify-otp-btn');
+  verifyBtn.disabled = true;
+  setAuthStatus('Verifying…', '');
+
+  try{
+    const result = await confirmationResult.confirm(otp);
+    const u = result.user;
+    const number = document.getElementById('login-phone').value.trim();
+    currentUser = { method: 'phone', phone: number, uid: u.uid };
+    showLoggedInUI(currentUser);
+    setAuthStatus('Phone verified successfully.', 'success');
+  }catch(e){
+    console.error(e);
+    setAuthStatus("Incorrect OTP. Please try again.", "error");
+    verifyBtn.disabled = false;
+  }
+}
 
 const PLAN_LABELS = {
   "9": "Quick — 1 Statement",
@@ -1272,7 +1589,7 @@ function updateSummaries(){
 }
 
 function goToPage(n){
-  if(currentPage === 6 && n !== 6){
+  if(currentPage === 5 && n !== 5){
     document.getElementById('admin-gate').classList.remove('hidden');
     document.getElementById('admin-content').classList.add('hidden');
     document.getElementById('admin-pin').value = '';
@@ -1289,7 +1606,7 @@ function goToPage(n){
 }
 
 function goBack(){
-  if(currentPage === 3 || currentPage === 4 || currentPage === 5 || currentPage === 6){
+  if(currentPage === 3 || currentPage === 4 || currentPage === 5){
     goToPage(1);
   } else if(currentPage > 1){
     goToPage(currentPage - 1);
@@ -1379,31 +1696,29 @@ function startOrder(){
     return;
   }
 
-  const name = document.getElementById('login-name').value.trim();
-  const number = document.getElementById('login-number').value.trim();
   const errorBox = document.getElementById('login-error');
 
-  if(!name){
-    errorBox.textContent = "Please enter your name.";
+  if(!currentUser){
+    errorBox.textContent = "Please sign in with Google or your phone number to continue.";
     return;
   }
-  if(!/^[6-9]\d{9}$/.test(number)){
-    errorBox.textContent = "Please enter a valid 10-digit mobile number.";
+  if(currentUser.method === 'phone' && !currentUser.phone){
+    errorBox.textContent = "Please verify your phone number to continue.";
     return;
   }
   errorBox.textContent = "";
 
-  customerName = name;
-  customerNumber = number;
-  try{
-    localStorage.setItem('bt_customer_name', name);
-    localStorage.setItem('bt_customer_number', number);
-  }catch(e){}
+  const name = customerName || currentUser.name || '';
+  const number = customerNumber || currentUser.phone || '';
+
   usingExistingBalance = false;
   setupPage2ForPayment();
   savePendingOrder(false);
 
-  const msg = `Hi, I'd like to start my Bank To Tally order.\n\nName: ${name}\nWhatsApp Number: ${number}\nPlan Selected: ${selectedPlan.label} (₹${selectedPlan.amount})`;
+  const loginLine = currentUser.method === 'google'
+    ? `Signed in via: Google (${currentUser.email || name})`
+    : `Signed in via: Phone OTP (+91 ${number})`;
+  const msg = `Hi, I'd like to start my Bank To Tally order.\n\nName: ${name}\nWhatsApp Number: ${number}\n${loginLine}\nPlan Selected: ${selectedPlan.label} (₹${selectedPlan.amount})`;
   const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
   window.open(url, '_blank');
 
@@ -1674,55 +1989,8 @@ function submitFeedback(){
 //   1. Keep a Google Sheet with columns: OrderID | Status (Pending/Processing/Delivered) | Notes
 //   2. In the Sheet, go to Extensions > Apps Script, and publish a doGet(e) function as a Web App
 //      that looks up e.parameter.orderId in the sheet and returns JSON like:
-//      { "found": true, "status": "Processing", "notes": "Being converted, ETA 4 hours" }
-//   3. Deploy it and paste the deployment URL below.
+// Used by the Owner Dashboard below to fetch recent orders.
 const ORDER_TRACKING_API_URL = "https://script.google.com/macros/s/AKfycbziDTWYOLdqE_dfCB26makVboho8YaEaY2p2ZONYJpxGJDNeK6Yk6uMEK3ri9NPklnD/exec";
-
-async function trackOrder(){
-  const orderId = document.getElementById('track-order-id').value.trim();
-  const resultBox = document.getElementById('track-result');
-  const badge = document.getElementById('track-status-badge');
-  const text = document.getElementById('track-result-text');
-
-  if(!orderId){
-    resultBox.classList.remove('hidden');
-    badge.className = 'track-status-badge status-notfound';
-    badge.textContent = 'Missing Order ID';
-    text.textContent = 'Please enter the Order ID you received on WhatsApp.';
-    return;
-  }
-
-  resultBox.classList.remove('hidden');
-  badge.className = 'track-status-badge';
-  badge.textContent = 'Checking…';
-  text.textContent = 'Looking up your order status.';
-
-  if(!ORDER_TRACKING_API_URL){
-    badge.className = 'track-status-badge status-notfound';
-    badge.textContent = 'Not Connected Yet';
-    text.textContent = 'Live order tracking isn\'t connected yet. Please message us on WhatsApp with your Order ID (' + orderId + ') for an instant status update.';
-    return;
-  }
-
-  try{
-    const res = await fetch(ORDER_TRACKING_API_URL + '?orderId=' + encodeURIComponent(orderId));
-    const data = await res.json();
-    if(!data.found){
-      badge.className = 'track-status-badge status-notfound';
-      badge.textContent = 'Not Found';
-      text.textContent = 'We couldn\'t find an order with that ID. Please check the ID or message us on WhatsApp.';
-      return;
-    }
-    const status = (data.status || 'Pending').toLowerCase();
-    badge.className = 'track-status-badge status-' + status;
-    badge.textContent = data.status;
-    text.textContent = data.notes || ('Your order is currently: ' + data.status);
-  }catch(e){
-    badge.className = 'track-status-badge status-notfound';
-    badge.textContent = 'Error';
-    text.textContent = 'Couldn\'t reach the tracking service right now. Please message us on WhatsApp with your Order ID.';
-  }
-}
 
 // ---- OWNER DASHBOARD ----
 function unlockAdmin(){
@@ -1789,6 +2057,7 @@ updateSummaries();
 refreshBalanceDisplay();
 refreshResumeBanner();
 addNarrationRow();
+restoreSavedLogin();
 </script>
 </body>
 </html>
