@@ -192,40 +192,6 @@
   }
   .flow-label{font-size:11px;color:var(--gray);font-weight:600;line-height:1.3;}
 
-  /* Compare plans table */
-  .compare-wrap{margin-bottom:22px;}
-  .compare-toggle{
-    display:flex; align-items:center; justify-content:center; gap:6px;
-    font-size:12.5px; font-weight:700; color:var(--blue); background:none; border:none;
-    cursor:pointer; width:100%; padding:6px 0 4px;
-  }
-  .compare-toggle svg{transition:transform .2s ease;}
-  .compare-toggle.open svg{transform:rotate(180deg);}
-  .compare-table-outer{
-    max-height:0; overflow:hidden; transition:max-height .25s ease;
-  }
-  .compare-table-outer.open{max-height:400px;}
-  .compare-table{
-    width:100%; border-collapse:collapse; margin-top:10px; font-size:12.5px;
-    border:1px solid var(--border); border-radius:12px; overflow:hidden;
-  }
-  .compare-table th, .compare-table td{
-    padding:9px 8px; text-align:center; border-bottom:1px solid var(--border);
-  }
-  .compare-table th:first-child, .compare-table td:first-child{
-    text-align:left; color:var(--gray); font-weight:600;
-  }
-  .compare-table thead th{
-    background:var(--bg); color:var(--ink); font-weight:800; font-size:12px;
-  }
-  .compare-table tbody tr:last-child td{border-bottom:none;}
-  .compare-table .cost-cell{font-weight:800;}
-  .compare-table .cost-best{color:var(--green);}
-  body.dark .compare-table{border-color:#243149;}
-  body.dark .compare-table th, body.dark .compare-table td{border-color:#243149;}
-  body.dark .compare-table thead th{background:#141f38; color:#f1f5f9;}
-  body.dark .compare-table th:first-child, body.dark .compare-table td:first-child{color:#94a3b8;}
-
   /* Pricing cards */
   .plans{display:flex;flex-direction:column;gap:12px;margin-bottom:22px;}
   .plan{
@@ -307,25 +273,6 @@
     margin:-22px -20px 0; padding:22px 20px 100px; border-radius:0 0 20px 20px;
   }
   body.dark #page-2{background:linear-gradient(180deg, #0f1f3d 0%, #0f172a 220px);}
-  .payment-trust-strip{display:flex; gap:8px; margin-bottom:16px;}
-  .payment-trust-item{
-    flex:1; display:flex; flex-direction:column; align-items:center; text-align:center; gap:7px;
-    padding:13px 6px 11px; background:#fff; border:1px solid var(--border); border-radius:14px;
-    box-shadow:0 2px 10px rgba(17,24,39,0.04);
-  }
-  .payment-trust-item .icon-circle{
-    width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center;
-  }
-  .payment-trust-item:nth-child(1) .icon-circle{background:#e8f0fe;}
-  .payment-trust-item:nth-child(2) .icon-circle{background:#e3f9ef;}
-  .payment-trust-item:nth-child(3) .icon-circle{background:var(--amber-light);}
-  .payment-trust-item span{font-size:10.8px; font-weight:700; color:var(--ink); line-height:1.3;}
-  body.dark .payment-trust-item{background:#141f38; border-color:#243149; box-shadow:none;}
-  body.dark .payment-trust-item span{color:#f1f5f9;}
-  body.dark .payment-trust-item:nth-child(1) .icon-circle{background:#1b2c4d;}
-  body.dark .payment-trust-item:nth-child(2) .icon-circle{background:#12302a;}
-  body.dark .payment-trust-item:nth-child(3) .icon-circle{background:#3a2c14;}
-
   .razorpay-pay-wrap{margin:18px 0 4px; text-align:center;}
   .razorpay-pay-note{font-size:11.5px; color:var(--gray); margin-top:8px;}
   .qr-divider{
@@ -345,18 +292,6 @@
     font-size:16px; font-weight:700; color:var(--blue); font-family:monospace;
     background:var(--bg); padding:7px 10px; border-radius:8px; display:inline-block; word-break:break-all;
   }
-  .upi-copy-row{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
-  .upi-copy-btn{
-    font-size:11.5px; font-weight:700; color:var(--blue); background:#eaf0fe;
-    border:1px solid rgba(26,86,219,0.25); border-radius:7px; padding:6px 10px;
-    cursor:pointer; display:inline-flex; align-items:center; gap:4px; white-space:nowrap;
-    transition:background .15s ease, transform .1s ease;
-  }
-  .upi-copy-btn:hover{background:#dbe6fd;}
-  .upi-copy-btn:active{transform:scale(0.96);}
-  .upi-copy-btn.copied{background:var(--green); color:#fff; border-color:var(--green);}
-  body.dark .upi-copy-btn{background:#132140; border-color:rgba(147,180,247,0.3);}
-  body.dark .upi-copy-btn:hover{background:#1a2c52;}
   .upi-payee{font-size:12px; color:var(--gray); margin-top:6px;}
   .qr-instruction{
     font-size:12.5px; color:var(--gray); line-height:1.5; margin-top:14px;
@@ -952,6 +887,10 @@
             <rect x="81" y="-160" width="20" height="160" rx="4" fill="url(#heroBars)"/>
             <rect x="108" y="-205" width="20" height="205" rx="4" fill="url(#heroBars)"/>
           </g>
+          <g transform="translate(48,58)" opacity="0.55">
+            <circle cx="0" cy="0" r="19" fill="#ffffff" stroke="#1a56db" stroke-width="2" opacity="0.6"/>
+            <text x="0" y="6" text-anchor="middle" font-family="Poppins, sans-serif" font-weight="800" font-size="17" fill="#1a56db">₹</text>
+          </g>
         </svg>
         <div class="hero-fade"></div>
         <div class="hero-content">
@@ -1014,51 +953,6 @@
             <div class="plan-price">₹899</div>
           </div>
           <div class="plan-desc">Up to 150 bank statements in 1 year — huge saving vs paying per statement</div>
-        </div>
-      </div>
-
-      <div class="compare-wrap reveal-up" style="transition-delay:.36s">
-        <button type="button" class="compare-toggle" id="compare-toggle" onclick="toggleCompareTable()">
-          Compare plans
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <div class="compare-table-outer" id="compare-table-outer">
-          <table class="compare-table">
-            <thead>
-              <tr>
-                <th>Plan</th>
-                <th>Quick</th>
-                <th>Smart</th>
-                <th>Premium</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Price</td>
-                <td>₹9</td>
-                <td>₹99</td>
-                <td>₹899</td>
-              </tr>
-              <tr>
-                <td>Statements</td>
-                <td>1</td>
-                <td>15</td>
-                <td>150 (1 year)</td>
-              </tr>
-              <tr>
-                <td>Per statement</td>
-                <td class="cost-cell">₹9.00</td>
-                <td class="cost-cell">₹6.60</td>
-                <td class="cost-cell cost-best">₹5.99 ✓</td>
-              </tr>
-              <tr>
-                <td>Delivery</td>
-                <td>3 hours</td>
-                <td>24 hours</td>
-                <td>24 hours</td>
-              </tr>
-            </tbody>
-          </table>
         </div>
       </div>
 
@@ -1212,21 +1106,6 @@
         <div class="value" id="summary-price-2">₹99</div>
       </div>
 
-      <div class="payment-trust-strip reveal-up" style="transition-delay:.2s">
-        <div class="payment-trust-item">
-          <div class="icon-circle"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="9" rx="2" stroke="#1341aa" stroke-width="2"/><path d="M8 11V7a4 4 0 018 0v4" stroke="#1341aa" stroke-width="2"/></svg></div>
-          <span>Secure<br>Payment</span>
-        </div>
-        <div class="payment-trust-item">
-          <div class="icon-circle"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 2l8 3.5v6c0 5-3.5 8.5-8 10.5-4.5-2-8-5.5-8-10.5v-6L12 2z" stroke="#0d9f6e" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="#0d9f6e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <span>Verified<br>Manually</span>
-        </div>
-        <div class="payment-trust-item">
-          <div class="icon-circle"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#d97706" stroke-width="1.8"/><path d="M12 7v5l3.5 2" stroke="#d97706" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <span>Fast<br>Turnaround</span>
-        </div>
-      </div>
-
       <div class="razorpay-pay-wrap reveal-up" id="razorpay-pay-wrap" style="transition-delay:.24s">
         <button class="btn btn-primary" id="razorpay-pay-btn" onclick="payWithRazorpay()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="13" rx="2" stroke="white" stroke-width="1.8"/><path d="M3 10h18" stroke="white" stroke-width="1.8"/></svg>
@@ -1242,10 +1121,7 @@
           <img id="qr-image" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnYAAAJ2CAIAAABdNliuAAAOZUlEQVR4nO3du5Hr1hZFUVHVEchTBso/mpfB85QClIF0DM7adx+MYXeBJD49C9b6PM/zGwDwbb9PfwEAuJPEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEg8VMc9I8//yoOe5m///+/6a/wZfdd9+IanZ+l2U8vzN7zb74/7/vtheL+9BYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQSJZ2zlmbmfr04swXux9b1mZmf1Fhy/cszvx99+e5Ldf93Oz59BYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQGF7aOffm9YktyzBbvuebV4a27KjM3kvFMWfvz8Kb/yef8xYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQWLO0w4nZVZwtmzzntuzn3Pfbt5x5+HfeYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABKWdq5SrI7M7qjMmj2fhdnrvmURaIstz9GbeYsFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABIrFnasSnxXcWOSmHL3suW83mu+J7FMbes92y57ufu+0UFb7EAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwCJ4aWdYiXjzazNfNd959Mxf32zz9GWs7SFt1gASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYBEsrSzZUeFE1v2c2YXQu7b5Jk1u8lzbsvOz5brfh9vsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAIlkaafYvpjdqSic/3YrGd81u+Jy39W87yne8j3P3feLtjxH3mIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASn+d5Bj9+yybPllWHLYrrPmt2yeS+rZtzW/4z3HfmC8XzPvvfxlssACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAYs3SzrnZbZb71jyKT5895rkt57Nw33M0a8s9f+6+/94Fb7EAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwCJZGlndnHl3Jbtiy3n89yW617YsiFz39Nx7r69l3Nb/jNs4S0WABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEg8VMcdMveS2F2deTc7I7KlnWU2au5ZXXkvuvOieK633eHeIsFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABIfJ7n+fpBZ9cStmzdzK4M+e2/vi1nafaJ23KWCm/+T7vl/7y3WABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgMRPcdBiq6FQbDXMbl+c2/I937yKs+W3z37PLU9H8elb/i+9+enwFgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJD4PM8z/R2+rNipmHXfSsa5N1+jwuwuTXHXbTnmuS3bQVuezVneYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABLJ0s6WlYzC7PfcsvdS2LL7cd/myZYtpjef+Tc/HeeKs+QtFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBIDG8tHNudpfmvk8v2Pk5MbtDtcWW/RxnfsqWlTZvsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAImf6S/wfbP7D/et92zZ0yjct+Ky5Xy+ecGmsOVe2vI9z3mLBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASHye5xn8+C27NOeKHZX7fvu5Lddoy6ef23KWzm154maXYQpv/u3eYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABLDSzvniq2G2WPOml202LLNssWWO3nLDtW5Ld9z1n335zlvsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAIlkaWfLKs597ltHmV0uum/3Y8v3LGx5Ogr3fc9zs+3wFgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJD4mf4C3ze7FHHuvgWbLbtJW7ZEtqzibLmaW878ll90bnaLafbTvcUCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkPs/zfP2gW5Y3CrOrDue2bIkUn36f2W2W2TP/5ntpy/+6N9+f3mIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASydLOuS1LEedmNyUK9+2oFO5bCCl4Or7rvgWb+66mt1gASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYDEmqWdLas4s59e7FTY0/iu2Wu0Zbno3JY9ojdf9y3/QyztAMAaEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBIJEs7cwu2JyzOjLlvt2PWVtWXN68DDNry//k+3iLBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASPwUB53d6CgUn15sicyeT+sofMuW/yFbPn32mOe2XPdz3mIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASn+d5vn7QYqthy05F4b71iVm2RL776W9233rPrPt+u7dYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAxM/sx29ZSzhX7KjM2rL3cv7pW+662XvpvvWe4nze9xTP2rJDdc5bLAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQGJ4aefcll2FYtFi9phv3g4qbNnPue/Tt1z3WbNbN1v+z5/zFgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJBYs7SzZVdhy6bE+afft31x3/e8b0Nmy3NU8Itu4i0WABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgsWZpZ8tWQ7F5suW3n9vyi7Z8z/uuOydm/9sUiidu9in2FgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJD4PM8z/R34D7PbF1tWXLaY3f0o7qUtd8iW375l38mdfMJbLAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQOKnOOjsMswW56sO5385e+a3bF8UCyFbjnluy/ecPfNbWO+Z4i0WABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgkSztnNuylnCu2Oi4b/ejYJfmpmNueY62PJtb/tNueY7OeYsFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABIDC/tnJtdtNiyU3HuvsWV2Y2O2WNucf7bZ8/S7PN+/ovuu0Nm15CK6+4tFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBILFmaQf+3ZaNjvuOWdiyIfPmnZ/Z+3MLb7EAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJSztXefP2xZZdmtmtmy3XfcsiUOHN9+d9vMUCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAk1iztbNl7KRS/fcv5nP3ts7s0WzZPLMOcKL7nfWfp3JbNKG+xAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsAic/zPF8/6Jathllb9l7OzX7PLZ9+bss6ijv51z/mufvO/CxvsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAIlkaQcA8BYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJA4h+OT7F8+B/B/QAAAABJRU5ErkJggg==" alt="UPI QR Code">
           <div class="upi-side">
             <div class="upi-label">UPI ID</div>
-            <div class="upi-copy-row">
-              <div class="upi-id-new" id="upi-id-text">hp181285@okaxis</div>
-              <button type="button" class="upi-copy-btn" id="upi-copy-btn" onclick="copyUpiId()">📋 Copy</button>
-            </div>
+            <div class="upi-id-new">hp181285@okaxis</div>
             <div class="upi-payee">BankToTally</div>
           </div>
         </div>
@@ -2358,57 +2234,15 @@ async function loadAdminOrders(){
 
 // ---- CUSTOMER REVIEWS ----
 // Uses the SAME Apps Script backend as orders (ORDER_TRACKING_API_URL).
-//
-// IMPORTANT: for a review to show up for EVERY visitor (not just the person
-// who wrote it), your Google Apps Script project MUST implement the
-// "submitReview" and "getReviews" actions below. If these actions aren't
-// handled in your Apps Script yet, submissions silently go nowhere — the
-// front-end still shows "review submitted" and displays it locally on the
-// submitter's own device (via localStorage, see savePendingReview()), but
-// nobody else will ever see it until the backend is wired up.
-//
 // Add these two things to your existing Apps Script project + Sheet:
-//   1. A new Sheet tab "Reviews" with columns: Name | Role | Rating | Message | Timestamp | Status
-//   2. In your Apps Script doPost(e), handle e.parameter/body action === "submitReview"
-//      -> append a row to "Reviews" with Status "Approved" (shows instantly, no manual
-//         moderation step), return {ok:true}.
+//   1. A new Sheet tab "Reviews" with columns: Name | Rating | Message | Timestamp | Status
+//      New submissions are written with Status = "Pending".
+//   2. In your Apps Script doPost(e), handle e.parameter.action === "submitReview"
+//      -> append a row to "Reviews" with Status "Pending", return {ok:true}.
 //      In doGet(e), handle e.parameter.action === "getReviews"
-//      -> return rows where Status === "Approved" as JSON: {reviews:[{name,role,rating,message,timestamp}]}.
-//   Ready-to-paste snippet for both handlers:
-//
-//   function doPost(e) {
-//     var body = JSON.parse(e.postData.contents);
-//     if (body.action === 'submitReview') {
-//       var ss = SpreadsheetApp.getActive();
-//       var sheet = ss.getSheetByName('Reviews') || ss.insertSheet('Reviews');
-//       if (sheet.getLastRow() === 0) {
-//         sheet.appendRow(['Name','Role','Rating','Message','Timestamp','Status']);
-//       }
-//       sheet.appendRow([body.name, body.role || '', body.rating, body.message, new Date(), 'Approved']);
-//       return ContentService.createTextOutput(JSON.stringify({ ok: true }))
-//         .setMimeType(ContentService.MimeType.JSON);
-//     }
-//     // ...keep your existing order-handling code here for other actions...
-//   }
-//
-//   function doGet(e) {
-//     if (e.parameter.action === 'getReviews') {
-//       var sheet = SpreadsheetApp.getActive().getSheetByName('Reviews');
-//       var reviews = [];
-//       if (sheet && sheet.getLastRow() > 1) {
-//         var rows = sheet.getDataRange().getValues().slice(1);
-//         reviews = rows
-//           .filter(function(r){ return r[5] === 'Approved'; })
-//           .map(function(r){ return { name: r[0], role: r[1], rating: r[2], message: r[3], timestamp: r[4] }; });
-//       }
-//       return ContentService.createTextOutput(JSON.stringify({ reviews: reviews }))
-//         .setMimeType(ContentService.MimeType.JSON);
-//     }
-//     // ...keep your existing admin/order-tracking code here for other actions...
-//   }
-//
-//   After pasting, redeploy the Apps Script as a web app (Deploy > Manage deployments >
-//   Edit > New version) so the change goes live at the same ORDER_TRACKING_API_URL.
+//      -> return only rows where Status === "Approved" as JSON: {reviews:[{name,rating,message,timestamp}]}.
+//      Approve reviews by changing Status to "Approved" in the Sheet directly, or add a button
+//      to the Owner Dashboard here later that flips it via another action (e.g. "approveReview").
 let reviewRating = 0;
 
 function openReviewForm(){
@@ -2445,70 +2279,18 @@ async function submitReview(){
     return;
   }
 
-  const newReview = { name, role, rating: reviewRating, message, timestamp: Date.now() };
-
   try{
     await fetch(ORDER_TRACKING_API_URL, {
       method: 'POST',
       headers: {'Content-Type': 'text/plain;charset=utf-8'},
       body: JSON.stringify({ action: 'submitReview', name, role, rating: reviewRating, message })
     });
-    // Show it immediately on THIS device (don't wait for/depend on the backend
-    // read-back — some Apps Script setups have a short propagation delay,
-    // and if the "Reviews" sheet/action isn't wired up yet this still lets
-    // the person see their own review instead of it silently vanishing).
-    savePendingReview(newReview);
     closeReviewForm();
-    renderReviews();
+    alert("Thanks! Your review is now live.");
+    loadReviews();
   }catch(e){
     errorBox.textContent = "Couldn't submit right now. Please try again.";
   }
-}
-
-function getPendingReviews(){
-  try{ return JSON.parse(localStorage.getItem('bt_pending_reviews') || '[]'); }catch(e){ return []; }
-}
-function savePendingReview(review){
-  try{
-    const pending = getPendingReviews();
-    pending.push(review);
-    localStorage.setItem('bt_pending_reviews', JSON.stringify(pending));
-  }catch(e){}
-}
-
-let serverReviews = [];
-
-function renderReviews(){
-  const list = document.getElementById('reviews-list');
-  const pending = getPendingReviews();
-
-  // Merge server reviews with this device's own pending ones, de-duping by
-  // name+message so a review doesn't show twice once the backend picks it up.
-  const merged = serverReviews.slice();
-  pending.forEach(p => {
-    const alreadyOnServer = merged.some(r => (r.name||'') === p.name && (r.message||'') === p.message);
-    if(!alreadyOnServer) merged.push(p);
-  });
-
-  if(merged.length === 0){
-    list.innerHTML = '<div class="reviews-empty">No reviews yet — be the first!</div>';
-    return;
-  }
-
-  list.innerHTML = merged.slice().reverse().map(r => `
-    <div class="review-card">
-      <div class="review-stars">${'★'.repeat(Number(r.rating)||0)}${'☆'.repeat(5-(Number(r.rating)||0))}</div>
-      <div class="review-text">"${escapeHtml(r.message || '')}"</div>
-      <div class="review-name">${escapeHtml(r.name || 'Customer')}</div>
-      <div class="review-role">${escapeHtml(r.role || '')}</div>
-    </div>
-  `).join('');
-}
-
-function escapeHtml(str){
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
 }
 
 async function loadReviews(){
@@ -2522,46 +2304,24 @@ async function loadReviews(){
   try{
     const res = await fetch(ORDER_TRACKING_API_URL + '?action=getReviews');
     const data = await res.json();
-    serverReviews = data.reviews || [];
-    renderReviews();
+    const reviews = data.reviews || [];
+
+    if(reviews.length === 0){
+      list.innerHTML = '<div class="reviews-empty">No reviews yet — be the first!</div>';
+      return;
+    }
+
+    list.innerHTML = reviews.slice().reverse().map(r => `
+      <div class="review-card">
+        <div class="review-stars">${'★'.repeat(Number(r.rating)||0)}${'☆'.repeat(5-(Number(r.rating)||0))}</div>
+        <div class="review-text">"${r.message || ''}"</div>
+        <div class="review-name">${r.name || 'Customer'}</div>
+        <div class="review-role">${r.role || ''}</div>
+      </div>
+    `).join('');
   }catch(e){
-    // Even if the server call fails, still show this device's own
-    // already-submitted reviews instead of an error.
-    serverReviews = [];
-    renderReviews();
+    list.innerHTML = '<div class="reviews-empty">Couldn\'t load reviews right now.</div>';
   }
-}
-
-function toggleCompareTable(){
-  document.getElementById('compare-toggle').classList.toggle('open');
-  document.getElementById('compare-table-outer').classList.toggle('open');
-}
-
-function copyUpiId(){
-  const text = document.getElementById('upi-id-text').textContent.trim();
-  const btn = document.getElementById('upi-copy-btn');
-  const showCopied = () => {
-    const original = '📋 Copy';
-    btn.textContent = '✅ Copied!';
-    btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = original; btn.classList.remove('copied'); }, 1800);
-  };
-  if(navigator.clipboard && window.isSecureContext){
-    navigator.clipboard.writeText(text).then(showCopied).catch(() => fallbackCopy(text, showCopied));
-  } else {
-    fallbackCopy(text, showCopied);
-  }
-}
-function fallbackCopy(text, cb){
-  const ta = document.createElement('textarea');
-  ta.value = text;
-  ta.style.position = 'fixed';
-  ta.style.opacity = '0';
-  document.body.appendChild(ta);
-  ta.focus();
-  ta.select();
-  try{ document.execCommand('copy'); cb(); }catch(e){}
-  document.body.removeChild(ta);
 }
 
 function toggleFaq(btn){
