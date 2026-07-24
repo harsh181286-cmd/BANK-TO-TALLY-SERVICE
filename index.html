@@ -887,10 +887,6 @@
             <rect x="81" y="-160" width="20" height="160" rx="4" fill="url(#heroBars)"/>
             <rect x="108" y="-205" width="20" height="205" rx="4" fill="url(#heroBars)"/>
           </g>
-          <g transform="translate(48,58)" opacity="0.55">
-            <circle cx="0" cy="0" r="19" fill="#ffffff" stroke="#1a56db" stroke-width="2" opacity="0.6"/>
-            <text x="0" y="6" text-anchor="middle" font-family="Poppins, sans-serif" font-weight="800" font-size="17" fill="#1a56db">₹</text>
-          </g>
         </svg>
         <div class="hero-fade"></div>
         <div class="hero-content">
@@ -1095,8 +1091,52 @@
     </section>
 
     <section class="page" id="page-2">
-      <h1 id="page2-title" class="reveal-up" style="transition-delay:.03s">Complete your payment</h1>
-      <p class="sub reveal-up" id="page2-sub" style="transition-delay:.1s">Scan the QR code with any UPI app, then send us your statement.</p>
+      <div class="hero-band hero-band-alt reveal-up" style="transition-delay:.03s">
+        <svg class="hero-bg-svg" viewBox="0 0 480 220" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="heroCard" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#0d9f6e" stop-opacity="0.20"/>
+              <stop offset="1" stop-color="#1a56db" stop-opacity="0.14"/>
+            </linearGradient>
+          </defs>
+          <circle cx="440" cy="180" r="70" fill="#1a56db" opacity="0.10"/>
+          <circle cx="40" cy="20" r="55" fill="#34d399" opacity="0.13"/>
+          <!-- payment card silhouette -->
+          <g transform="translate(250,30)">
+            <rect x="0" y="0" width="160" height="102" rx="14" fill="url(#heroCard)"/>
+            <rect x="18" y="24" width="46" height="16" rx="4" fill="#1a56db" opacity="0.20"/>
+            <rect x="18" y="70" width="70" height="7" rx="3.5" fill="#1a56db" opacity="0.18"/>
+            <rect x="18" y="83" width="46" height="6" rx="3" fill="#1a56db" opacity="0.14"/>
+          </g>
+          <!-- QR-style grid motif -->
+          <g transform="translate(300,120)" opacity="0.6">
+            <rect x="0" y="0" width="12" height="12" rx="2" fill="#0d9f6e" opacity=".5"/>
+            <rect x="18" y="0" width="12" height="12" rx="2" fill="#1a56db" opacity=".35"/>
+            <rect x="36" y="0" width="12" height="12" rx="2" fill="#0d9f6e" opacity=".5"/>
+            <rect x="0" y="18" width="12" height="12" rx="2" fill="#1a56db" opacity=".35"/>
+            <rect x="18" y="18" width="12" height="12" rx="2" fill="#0d9f6e" opacity=".5"/>
+            <rect x="36" y="18" width="12" height="12" rx="2" fill="#1a56db" opacity=".35"/>
+            <rect x="0" y="36" width="12" height="12" rx="2" fill="#0d9f6e" opacity=".5"/>
+            <rect x="18" y="36" width="12" height="12" rx="2" fill="#1a56db" opacity=".35"/>
+            <rect x="36" y="36" width="12" height="12" rx="2" fill="#0d9f6e" opacity=".5"/>
+          </g>
+          <!-- confirmed checkmark badge -->
+          <g transform="translate(60,150)" opacity="0.5">
+            <circle cx="0" cy="0" r="24" fill="#ffffff" stroke="#0d9f6e" stroke-width="2" opacity="0.55"/>
+            <path d="M-9 0l6 6 12-13" stroke="#0d9f6e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          </g>
+        </svg>
+        <div class="hero-fade"></div>
+        <div class="hero-content">
+          <div class="hero-eyebrow">Almost there</div>
+          <h1 id="page2-title" style="opacity:1;transform:none;">Complete your payment</h1>
+          <p class="sub" id="page2-sub" style="opacity:1;transform:none;">Scan the QR code with any UPI app, then send us your statement.</p>
+          <div class="trust-row">
+            <div class="trust-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="9" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 11V7a4 4 0 018 0v4" stroke="currentColor" stroke-width="2"/></svg>Secure checkout</div>
+            <div class="trust-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>UPI · Cards · Netbanking</div>
+          </div>
+        </div>
+      </div>
 
       <div class="summary-box reveal-up" id="summary-box-2" style="transition-delay:.17s">
         <div>
