@@ -125,6 +125,15 @@
   .nav-step.active{background:#fff;}
 
   main{flex:1;padding:22px 20px 100px;}
+
+  /* Desktop: main/hero/page-2 backgrounds stay full-bleed edge-to-edge (like the header),
+     but the actual content inside each page is capped to a readable width and centered.
+     On mobile this is a no-op since the viewport is already narrower than these caps. */
+  main > .page > *{width:100%; max-width:520px; margin-left:auto; margin-right:auto;}
+  main > .page > .hero-band{max-width:none; margin-left:0; margin-right:0;}
+  .hero-band > .hero-content{width:100%; max-width:520px; margin:0 auto;}
+  main > .page > .reviews-section{max-width:820px;}
+
   .page{display:none;animation:fadeIn .3s ease;}
   .page.active{display:block;}
   @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
