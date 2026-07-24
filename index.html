@@ -19,9 +19,14 @@
 <meta name="twitter:title" content="Bank To Tally — Statement Conversion Service">
 <meta name="twitter:description" content="Send your bank statement, get back a ready-to-import Tally XML file. No software. No installation.">
 <meta name="theme-color" content="#1a56db">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Bank To Tally">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231a56db'/%3E%3Cpath d='M16 5L27 11.5H5L16 5Z' fill='white'/%3E%3Crect x='7' y='13' width='2.4' height='9' fill='white'/%3E%3Crect x='12.3' y='13' width='2.4' height='9' fill='white'/%3E%3Crect x='17.6' y='13' width='2.4' height='9' fill='white'/%3E%3Crect x='22.9' y='13' width='2.4' height='9' fill='white'/%3E%3Crect x='5' y='23' width='22' height='2.4' rx='1' fill='white'/%3E%3Ccircle cx='25' cy='8' r='4.2' fill='%2334d399' stroke='white' stroke-width='1.3'/%3E%3Cpath d='M22.8 8h3.6M24.6 6.1l1.9 1.9-1.9 1.9' stroke='white' stroke-width='1.1' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&family=Caveat:wght@600;700&display=swap');
   :root{
     --blue:#1a56db;
     --blue-dark:#1341aa;
@@ -44,10 +49,10 @@
     background-attachment:fixed;
     color:var(--ink); -webkit-font-smoothing:antialiased;
   }
-  .app{max-width:520px;margin:0 auto;min-height:100vh;background:linear-gradient(180deg, #ffffff 0%, #fbfdff 55%, #f7fdfa 100%);display:flex;flex-direction:column;box-shadow:0 0 40px rgba(26,86,219,0.1);position:relative;overflow:hidden;}
+  .app{max-width:100%;margin:0 auto;min-height:100vh;background:linear-gradient(180deg, #ffffff 0%, #fbfdff 55%, #f7fdfa 100%);display:flex;flex-direction:column;box-shadow:0 0 40px rgba(26,86,219,0.1);position:relative;overflow:hidden;}
 
   /* Floating background shapes — subtle brand-color motion so the page never feels static */
-  .floating-shapes{position:fixed; inset:0; max-width:520px; margin:0 auto; pointer-events:none; z-index:0; overflow:hidden;}
+  .floating-shapes{position:fixed; inset:0; max-width:100%; margin:0 auto; pointer-events:none; z-index:0; overflow:hidden;}
   .shape{position:absolute; border-radius:50%; filter:blur(38px); opacity:0.16;}
   .shape-1{width:220px; height:220px; background:var(--blue); top:-60px; left:-70px; animation:float1 16s ease-in-out infinite;}
   .shape-2{width:260px; height:260px; background:var(--green-light); top:35%; right:-90px; animation:float2 20s ease-in-out infinite;}
@@ -72,7 +77,9 @@
   header{
     background:linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
     color:#fff; padding:20px 20px 24px; position:relative;
+    display:flex; flex-direction:column; align-items:center;
   }
+  header > *{width:100%; max-width:520px;}
   .brand{display:flex;align-items:center;gap:10px;}
   .brand svg{flex-shrink:0;}
   .brand-name{font-size:19px;font-weight:700;letter-spacing:-0.2px;}
@@ -123,6 +130,15 @@
   .nav-step.active{background:#fff;}
 
   main{flex:1;padding:22px 20px 100px;}
+
+  /* Desktop: main/hero/page-2 backgrounds stay full-bleed edge-to-edge (like the header),
+     but the actual content inside each page is capped to a readable width and centered.
+     On mobile this is a no-op since the viewport is already narrower than these caps. */
+  main > .page > *{width:100%; max-width:520px; margin-left:auto; margin-right:auto;}
+  main > .page > .hero-band{max-width:none; margin-left:0; margin-right:0;}
+  .hero-band > .hero-content{width:100%; max-width:520px; margin:0 auto;}
+  main > .page > .reviews-section{max-width:820px;}
+
   .page{display:none;animation:fadeIn .3s ease;}
   .page.active{display:block;}
   @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
@@ -134,6 +150,36 @@
   }
   .reveal-up.in-view{opacity:1; transform:translateY(0);}
 
+  /* ---- Hero band: full-bleed soft-wash background with layered illustration ---- */
+  .hero-band{
+    position:relative; overflow:hidden;
+    margin:-22px -20px 26px; padding:30px 20px 26px;
+    background:linear-gradient(175deg, #dcf3ea 0%, #dbe9f8 55%, #f7fbff 100%);
+    border-radius:0 0 30px 30px;
+  }
+  body.dark .hero-band{background:linear-gradient(175deg, #0f2e28 0%, #142338 55%, #0f1b2e 100%);}
+  .hero-bg-svg{position:absolute; inset:0; width:100%; height:100%; z-index:0; opacity:.9;}
+  .hero-fade{
+    position:absolute; left:0; right:0; bottom:0; height:70px; z-index:1;
+    background:linear-gradient(180deg, rgba(247,251,255,0) 0%, #f7fbff 100%);
+    pointer-events:none;
+  }
+  body.dark .hero-fade{background:linear-gradient(180deg, rgba(15,27,46,0) 0%, #0f1b2e 100%);}
+  .hero-content{position:relative; z-index:2;}
+  .hero-eyebrow{
+    font-family:'Caveat',cursive; font-size:26px; font-weight:700; line-height:1;
+    color:var(--blue-dark); margin:0 0 6px; letter-spacing:.01em;
+  }
+  body.dark .hero-eyebrow{color:#93c5fd;}
+  .trust-row{
+    display:flex; flex-wrap:wrap; gap:6px 14px; margin-top:14px;
+  }
+  .trust-item{
+    display:flex; align-items:center; gap:5px; font-size:11px; font-weight:600; color:var(--blue-dark);
+  }
+  body.dark .trust-item{color:#bfdbfe;}
+  .trust-item svg{flex-shrink:0;}
+
   h1{
     font-family:'Poppins',sans-serif; font-size:21px;font-weight:800;margin:0 0 6px;line-height:1.3; letter-spacing:-.01em;
     background:repeating-linear-gradient(90deg, var(--blue) 0%, var(--green-light) 50%, var(--blue) 100%);
@@ -141,6 +187,7 @@
     -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:var(--blue);
   }
   .sub{color:var(--gray);font-size:14px;line-height:1.5;margin:0 0 20px;}
+  .hero-band .sub{margin-bottom:0;}
 
   /* Value strip */
   .promise{
@@ -242,6 +289,25 @@
     margin:-22px -20px 0; padding:22px 20px 100px; border-radius:0 0 20px 20px;
   }
   body.dark #page-2{background:linear-gradient(180deg, #0f1f3d 0%, #0f172a 220px);}
+  .payment-trust-strip{display:flex; gap:8px; margin-bottom:16px;}
+  .payment-trust-item{
+    flex:1; display:flex; flex-direction:column; align-items:center; text-align:center; gap:7px;
+    padding:13px 6px 11px; background:#fff; border:1px solid var(--border); border-radius:14px;
+    box-shadow:0 2px 10px rgba(17,24,39,0.04);
+  }
+  .payment-trust-item .icon-circle{
+    width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  }
+  .payment-trust-item:nth-child(1) .icon-circle{background:#e8f0fe;}
+  .payment-trust-item:nth-child(2) .icon-circle{background:#e3f9ef;}
+  .payment-trust-item:nth-child(3) .icon-circle{background:var(--amber-light);}
+  .payment-trust-item span{font-size:10.8px; font-weight:700; color:var(--ink); line-height:1.3;}
+  body.dark .payment-trust-item{background:#141f38; border-color:#243149; box-shadow:none;}
+  body.dark .payment-trust-item span{color:#f1f5f9;}
+  body.dark .payment-trust-item:nth-child(1) .icon-circle{background:#1b2c4d;}
+  body.dark .payment-trust-item:nth-child(2) .icon-circle{background:#12302a;}
+  body.dark .payment-trust-item:nth-child(3) .icon-circle{background:#3a2c14;}
+
   .razorpay-pay-wrap{margin:18px 0 4px; text-align:center;}
   .razorpay-pay-note{font-size:11.5px; color:var(--gray); margin-top:8px;}
   .qr-divider{
@@ -261,6 +327,18 @@
     font-size:16px; font-weight:700; color:var(--blue); font-family:monospace;
     background:var(--bg); padding:7px 10px; border-radius:8px; display:inline-block; word-break:break-all;
   }
+  .upi-id-row{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+  .upi-copy-btn{
+    font-family:inherit; font-size:12px; font-weight:700; color:var(--blue);
+    background:#fff; border:1.5px solid var(--blue); border-radius:8px;
+    padding:6px 10px; cursor:pointer; white-space:nowrap; transition:background .15s, color .15s, transform .1s;
+  }
+  .upi-copy-btn:hover{background:var(--blue); color:#fff;}
+  .upi-copy-btn:active{transform:scale(0.96);}
+  .upi-copy-btn.copied{background:var(--green); border-color:var(--green); color:#fff;}
+  body.dark .upi-copy-btn{background:#141f38; color:#93b4f7; border-color:#93b4f7;}
+  body.dark .upi-copy-btn:hover{background:#93b4f7; color:#0f172a;}
+  body.dark .upi-copy-btn.copied{background:var(--green); border-color:var(--green); color:#fff;}
   .upi-payee{font-size:12px; color:var(--gray); margin-top:6px;}
   .qr-instruction{
     font-size:12.5px; color:var(--gray); line-height:1.5; margin-top:14px;
@@ -826,8 +904,49 @@
         <button class="resume-btn" onclick="resumePendingOrder()">Resume</button>
       </div>
 
-      <h1 class="reveal-up" style="transition-delay:.03s">Send us your statement.<br>We send back your Tally file.</h1>
-      <p class="sub reveal-up" style="transition-delay:.11s">No software. No installation. Just your bank statement in, a ready-to-import Tally XML file out.</p>
+      <div class="hero-band reveal-up" style="transition-delay:.03s">
+        <svg class="hero-bg-svg" viewBox="0 0 480 260" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="heroDoc" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#1a56db" stop-opacity="0.20"/>
+              <stop offset="1" stop-color="#0d9f6e" stop-opacity="0.14"/>
+            </linearGradient>
+            <linearGradient id="heroBars" x1="0" y1="1" x2="0" y2="0">
+              <stop offset="0" stop-color="#0d9f6e" stop-opacity="0.38"/>
+              <stop offset="1" stop-color="#1a56db" stop-opacity="0.30"/>
+            </linearGradient>
+          </defs>
+          <circle cx="55" cy="235" r="60" fill="#34d399" opacity="0.13"/>
+          <circle cx="440" cy="40" r="90" fill="#1a56db" opacity="0.10"/>
+          <!-- statement / passbook silhouette -->
+          <g transform="translate(238,14)">
+            <rect x="0" y="0" width="140" height="188" rx="14" fill="url(#heroDoc)"/>
+            <rect x="17" y="28" width="84" height="8" rx="4" fill="#1a56db" opacity="0.24"/>
+            <rect x="17" y="50" width="104" height="6" rx="3" fill="#1a56db" opacity="0.17"/>
+            <rect x="17" y="65" width="104" height="6" rx="3" fill="#1a56db" opacity="0.17"/>
+            <rect x="17" y="80" width="66" height="6" rx="3" fill="#1a56db" opacity="0.17"/>
+          </g>
+          <!-- rising bars: statement turning into tally -->
+          <g transform="translate(318,260)">
+            <rect x="0" y="-52" width="20" height="52" rx="4" fill="url(#heroBars)"/>
+            <rect x="27" y="-84" width="20" height="84" rx="4" fill="url(#heroBars)"/>
+            <rect x="54" y="-124" width="20" height="124" rx="4" fill="url(#heroBars)"/>
+            <rect x="81" y="-160" width="20" height="160" rx="4" fill="url(#heroBars)"/>
+            <rect x="108" y="-205" width="20" height="205" rx="4" fill="url(#heroBars)"/>
+          </g>
+        </svg>
+        <div class="hero-fade"></div>
+        <div class="hero-content">
+          <div class="hero-eyebrow">Welcome to Bank To Tally</div>
+          <h1 style="opacity:1;transform:none;">Send us your statement.<br>We send back your Tally file.</h1>
+          <p class="sub" style="opacity:1;transform:none;">No software. No installation. Just your bank statement in, a ready-to-import Tally XML file out.</p>
+          <div class="trust-row">
+            <div class="trust-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="9" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 11V7a4 4 0 018 0v4" stroke="currentColor" stroke-width="2"/></svg>Confidential</div>
+            <div class="trust-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>24-hr turnaround</div>
+            <div class="trust-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>No file storage</div>
+          </div>
+        </div>
+      </div>
 
       <div class="promise reveal-up" style="transition-delay:.19s">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#d97706" stroke-width="1.8"/><path d="M12 7v5l3.5 2" stroke="#d97706" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -836,7 +955,6 @@
           <div class="promise-sub">Every file, every time — guaranteed turnaround</div>
         </div>
       </div>
-
       <div class="flow reveal-up" style="transition-delay:.27s">
         <div class="flow-step">
           <div class="flow-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="#1a56db" stroke-width="1.7" stroke-linejoin="round"/><path d="M14 2v6h6" stroke="#1a56db" stroke-width="1.7" stroke-linejoin="round"/></svg></div>
@@ -1031,6 +1149,21 @@
         <div class="value" id="summary-price-2">₹99</div>
       </div>
 
+      <div class="payment-trust-strip reveal-up" style="transition-delay:.2s">
+        <div class="payment-trust-item">
+          <div class="icon-circle"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="9" rx="2" stroke="#1341aa" stroke-width="2"/><path d="M8 11V7a4 4 0 018 0v4" stroke="#1341aa" stroke-width="2"/></svg></div>
+          <span>Secure<br>Payment</span>
+        </div>
+        <div class="payment-trust-item">
+          <div class="icon-circle"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 2l8 3.5v6c0 5-3.5 8.5-8 10.5-4.5-2-8-5.5-8-10.5v-6L12 2z" stroke="#0d9f6e" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="#0d9f6e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <span>Verified<br>Manually</span>
+        </div>
+        <div class="payment-trust-item">
+          <div class="icon-circle"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#d97706" stroke-width="1.8"/><path d="M12 7v5l3.5 2" stroke="#d97706" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <span>Fast<br>Turnaround</span>
+        </div>
+      </div>
+
       <div class="razorpay-pay-wrap reveal-up" id="razorpay-pay-wrap" style="transition-delay:.24s">
         <button class="btn btn-primary" id="razorpay-pay-btn" onclick="payWithRazorpay()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="13" rx="2" stroke="white" stroke-width="1.8"/><path d="M3 10h18" stroke="white" stroke-width="1.8"/></svg>
@@ -1046,7 +1179,10 @@
           <img id="qr-image" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnYAAAJ2CAIAAABdNliuAAAOZUlEQVR4nO3du5Hr1hZFUVHVEchTBso/mpfB85QClIF0DM7adx+MYXeBJD49C9b6PM/zGwDwbb9PfwEAuJPEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEg8VMc9I8//yoOe5m///+/6a/wZfdd9+IanZ+l2U8vzN7zb74/7/vtheL+9BYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQSJZ2zlmbmfr04swXux9b1mZmf1Fhy/cszvx99+e5Ldf93Oz59BYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQGF7aOffm9YktyzBbvuebV4a27KjM3kvFMWfvz8Kb/yef8xYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQWLO0w4nZVZwtmzzntuzn3Pfbt5x5+HfeYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABKWdq5SrI7M7qjMmj2fhdnrvmURaIstz9GbeYsFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABIrFnasSnxXcWOSmHL3suW83mu+J7FMbes92y57ufu+0UFb7EAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwCJ4aWdYiXjzazNfNd959Mxf32zz9GWs7SFt1gASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYBEsrSzZUeFE1v2c2YXQu7b5Jk1u8lzbsvOz5brfh9vsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAIlkaafYvpjdqSic/3YrGd81u+Jy39W87yne8j3P3feLtjxH3mIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASn+d5Bj9+yybPllWHLYrrPmt2yeS+rZtzW/4z3HfmC8XzPvvfxlssACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAYs3SzrnZbZb71jyKT5895rkt57Nw33M0a8s9f+6+/94Fb7EAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwCJZGlndnHl3Jbtiy3n89yW617YsiFz39Nx7r69l3Nb/jNs4S0WABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEg8VMcdMveS2F2deTc7I7KlnWU2au5ZXXkvuvOieK633eHeIsFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABIfJ7n+fpBZ9cStmzdzK4M+e2/vi1nafaJ23KWCm/+T7vl/7y3WABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgMRPcdBiq6FQbDXMbl+c2/I937yKs+W3z37PLU9H8elb/i+9+enwFgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJD4PM8z/R2+rNipmHXfSsa5N1+jwuwuTXHXbTnmuS3bQVuezVneYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABLJ0s6WlYzC7PfcsvdS2LL7cd/myZYtpjef+Tc/HeeKs+QtFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBIDG8tHNudpfmvk8v2Pk5MbtDtcWW/RxnfsqWlTZvsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAImf6S/wfbP7D/et92zZ0yjct+Ky5Xy+ecGmsOVe2vI9z3mLBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASHye5xn8+C27NOeKHZX7fvu5Lddoy6ef23KWzm154maXYQpv/u3eYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABLDSzvniq2G2WPOml202LLNssWWO3nLDtW5Ld9z1n335zlvsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAIlkaWfLKs597ltHmV0uum/3Y8v3LGx5Ogr3fc9zs+3wFgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJD4mf4C3ze7FHHuvgWbLbtJW7ZEtqzibLmaW878ll90bnaLafbTvcUCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkPs/zfP2gW5Y3CrOrDue2bIkUn36f2W2W2TP/5ntpy/+6N9+f3mIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASydLOuS1LEedmNyUK9+2oFO5bCCl4Or7rvgWb+66mt1gASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYDEmqWdLas4s59e7FTY0/iu2Wu0Zbno3JY9ojdf9y3/QyztAMAaEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBIJEs7cwu2JyzOjLlvt2PWVtWXN68DDNry//k+3iLBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASPwUB53d6CgUn15sicyeT+sofMuW/yFbPn32mOe2XPdz3mIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASn+d5vn7QYqthy05F4b71iVm2RL776W9233rPrPt+u7dYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAxM/sx29ZSzhX7KjM2rL3cv7pW+662XvpvvWe4nze9xTP2rJDdc5bLAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQGJ4aefcll2FYtFi9phv3g4qbNnPue/Tt1z3WbNbN1v+z5/zFgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJBYs7SzZVdhy6bE+afft31x3/e8b0Nmy3NU8Itu4i0WABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgsWZpZ8tWQ7F5suW3n9vyi7Z8z/uuOydm/9sUiidu9in2FgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJD4PM8z/R34D7PbF1tWXLaY3f0o7qUtd8iW375l38mdfMJbLAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQOKnOOjsMswW56sO5385e+a3bF8UCyFbjnluy/ecPfNbWO+Z4i0WABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgkSztnNuylnCu2Oi4b/ejYJfmpmNueY62PJtb/tNueY7OeYsFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABIDC/tnJtdtNiyU3HuvsWV2Y2O2WNucf7bZ8/S7PN+/ovuu0Nm15CK6+4tFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBILFmaQf+3ZaNjvuOWdiyIfPmnZ/Z+3MLb7EAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJSztXefP2xZZdmtmtmy3XfcsiUOHN9+d9vMUCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAk1iztbNl7KRS/fcv5nP3ts7s0WzZPLMOcKL7nfWfp3JbNKG+xAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsAic/zPF8/6Jathllb9l7OzX7PLZ9+bss6ijv51z/mufvO/CxvsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAIlkaQcA8BYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJA4h+OT7F8+B/B/QAAAABJRU5ErkJggg==" alt="UPI QR Code">
           <div class="upi-side">
             <div class="upi-label">UPI ID</div>
-            <div class="upi-id-new">hp181285@okaxis</div>
+            <div class="upi-id-row">
+              <div class="upi-id-new">hp181285@okaxis</div>
+              <button type="button" class="upi-copy-btn" id="upi-copy-btn" onclick="copyUpiId(this)">📋 Copy</button>
+            </div>
             <div class="upi-payee">BankToTally</div>
           </div>
         </div>
@@ -2249,6 +2385,35 @@ async function loadReviews(){
   }
 }
 
+function copyUpiId(btn){
+  const upiId = 'hp181285@okaxis';
+  const originalText = btn.textContent;
+  function showCopied(){
+    btn.textContent = '✅ Copied';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = originalText;
+      btn.classList.remove('copied');
+    }, 1800);
+  }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(upiId).then(showCopied).catch(() => fallbackCopy(upiId, showCopied));
+  } else {
+    fallbackCopy(upiId, showCopied);
+  }
+}
+function fallbackCopy(text, cb){
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try{ document.execCommand('copy'); cb(); }catch(e){ alert('Copy failed — please select and copy manually: ' + text); }
+  document.body.removeChild(ta);
+}
+
 function toggleFaq(btn){
   const item = btn.closest('.faq-item');
   const wasOpen = item.classList.contains('open');
@@ -2286,6 +2451,15 @@ if(currentUser && currentUser.email){
 }
 loadReviews();
 initScrollReveal();
+
+// PWA: register service worker (enables "Add to Home Screen" install prompt)
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {
+      // silent fail — site still works fully without SW, just no offline/installable support
+    });
+  });
+}
 </script>
 </body>
 </html>
