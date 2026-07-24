@@ -127,6 +127,13 @@
   .page.active{display:block;}
   @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
 
+  /* Motion: reveal on load / scroll */
+  .reveal-up{
+    opacity:0; transform:translateY(24px);
+    transition:opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1);
+  }
+  .reveal-up.in-view{opacity:1; transform:translateY(0);}
+
   h1{
     font-family:'Poppins',sans-serif; font-size:21px;font-weight:800;margin:0 0 6px;line-height:1.3; letter-spacing:-.01em;
     background:repeating-linear-gradient(90deg, var(--blue) 0%, var(--green-light) 50%, var(--blue) 100%);
@@ -158,8 +165,10 @@
   .plans{display:flex;flex-direction:column;gap:12px;margin-bottom:22px;}
   .plan{
     border:1.5px solid var(--border); border-radius:14px; padding:16px 16px 14px;
-    position:relative; cursor:pointer; transition:border-color .15s, box-shadow .15s;
+    position:relative; cursor:pointer;
+    transition:border-color .2s, box-shadow .35s cubic-bezier(.22,1,.36,1), transform .35s cubic-bezier(.22,1,.36,1);
   }
+  .plan:hover{transform:translateY(-3px); box-shadow:0 10px 22px rgba(26,86,219,.10);}
   .plan:active{transform:scale(0.99);}
   .plan.selected{border-color:var(--blue); box-shadow:0 0 0 3px rgba(26,86,219,0.12);}
   .plan-badge{
@@ -180,14 +189,17 @@
   /* Buttons */
   .btn{
     width:100%; padding:14px; border:none; border-radius:12px; font-size:15px;
-    font-weight:700; cursor:pointer; text-align:center; transition:transform .1s, opacity .15s;
+    font-weight:700; cursor:pointer; text-align:center;
+    transition:transform .3s cubic-bezier(.22,1,.36,1), opacity .15s, box-shadow .3s cubic-bezier(.22,1,.36,1);
     display:flex; align-items:center; justify-content:center; gap:8px;
   }
   .btn:active{transform:scale(0.98);}
   .btn-primary{background:linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%); color:#fff; box-shadow:0 4px 14px rgba(26,86,219,0.25);}
-  .btn-primary:hover{background:var(--blue-dark);}
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 10px 24px rgba(26,86,219,0.32);}
   .btn-wa{background:linear-gradient(135deg, var(--wa) 0%, #128c4a 100%); color:#fff; box-shadow:0 4px 14px rgba(37,211,102,0.28);}
-  .btn-ghost{background:transparent; color:var(--blue); border:1.5px solid var(--border); margin-top:10px;}
+  .btn-wa:hover{transform:translateY(-2px); box-shadow:0 10px 24px rgba(37,211,102,0.36);}
+  .btn-ghost{background:transparent; color:var(--blue); border:1.5px solid var(--border); margin-top:10px; transition:transform .3s cubic-bezier(.22,1,.36,1), border-color .2s;}
+  .btn-ghost:hover{transform:translateY(-2px); border-color:var(--blue);}
 
   /* Steps list (page 2) */
   .steps{list-style:none; padding:0; margin:0 0 24px;}
@@ -275,6 +287,55 @@
   .trust-label{font-size:11px; color:var(--gray); font-weight:600; margin-top:2px;}
   body.dark .trust-stats{border-color:#243149;}
 
+  /* Reviews */
+  .reviews-section{margin-top:24px; padding-top:20px; border-top:1px solid var(--border);}
+  .reviews-heading{text-align:center; font-size:15px; font-weight:800; color:var(--ink); margin-bottom:16px;}
+  .reviews-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px;}
+  @media (max-width:720px){ .reviews-grid{grid-template-columns:1fr;} }
+  .review-card{
+    border:1px solid var(--border); border-radius:14px; padding:16px; background:#fff;
+    box-shadow:0 1px 3px rgba(0,0,0,.04);
+    position:relative; overflow:hidden; isolation:isolate;
+    transition:transform .45s cubic-bezier(.22,1,.36,1), box-shadow .45s cubic-bezier(.22,1,.36,1);
+  }
+  .review-card::before{
+    content:""; position:absolute; inset:0; z-index:1; pointer-events:none;
+    background:linear-gradient(115deg, transparent 20%, rgba(255,255,255,.75) 45%, rgba(255,255,255,.15) 55%, transparent 80%);
+    transform:translateX(-140%); opacity:0;
+    transition:transform .9s cubic-bezier(.22,1,.36,1), opacity .3s ease;
+  }
+  .review-card:hover{
+    transform:translateY(-6px) scale(1.015);
+    box-shadow:0 16px 32px rgba(37,99,235,.14), 0 4px 10px rgba(0,0,0,.06);
+  }
+  .review-card:hover::before{
+    transform:translateX(140%); opacity:1;
+  }
+  .review-card > *{ position:relative; z-index:2; }
+  body.dark .review-card::before{
+    background:linear-gradient(115deg, transparent 20%, rgba(255,255,255,.10) 45%, rgba(255,255,255,.03) 55%, transparent 80%);
+  }
+  .review-stars{color:var(--amber); font-size:14px; letter-spacing:2px; margin-bottom:8px;}
+  .review-text{font-size:13px; color:var(--blue); line-height:1.6; font-style:italic; margin-bottom:12px;}
+  .review-name{font-size:13px; font-weight:800; color:var(--ink);}
+  .review-role{font-size:11.5px; color:var(--gray); margin-top:2px;}
+  .reviews-empty{font-size:12.5px; color:var(--gray); text-align:center; padding:16px 0; grid-column:1/-1;}
+  .reviews-footer{display:flex; justify-content:center; margin-top:18px;}
+  .btn-write-review{
+    background:var(--blue); color:#fff; border:none; border-radius:999px; padding:11px 24px;
+    font-size:13.5px; font-weight:700; cursor:pointer; font-family:inherit;
+    display:flex; align-items:center; gap:6px;
+    transition:transform .3s cubic-bezier(.22,1,.36,1), box-shadow .3s cubic-bezier(.22,1,.36,1);
+    box-shadow:0 4px 12px rgba(26,86,219,.22);
+  }
+  .btn-write-review:hover{transform:translateY(-2px); box-shadow:0 10px 22px rgba(26,86,219,.32);}
+  body.dark .review-card{background:#111a2b; border-color:#243149;}
+  body.dark .review-name{color:#f1f5f9;}
+  .star-picker{display:flex; gap:6px; margin:4px 0 14px;}
+  .star-picker span{font-size:26px; color:var(--border); cursor:pointer; transition:color .15s;}
+  .star-picker span.filled{color:var(--amber);}
+  body.dark .star-picker span{color:#243149;}
+
   /* FAQ */
   .faq-section{margin-top:24px;}
   .faq-item{border-bottom:1px solid var(--border);}
@@ -360,8 +421,9 @@
     display:flex; align-items:center; gap:6px; background:#eff4ff; color:var(--blue);
     border:1.5px dashed var(--blue); border-radius:10px; padding:10px 14px;
     font-size:12.5px; font-weight:700; cursor:pointer; width:100%; justify-content:center;
-    font-family:inherit;
+    font-family:inherit; transition:transform .25s cubic-bezier(.22,1,.36,1), background .2s;
   }
+  .btn-add-narration:hover{transform:translateY(-2px); background:#e3ecff;}
   body.dark .details-form{background:#141f38; border-color:#243149;}
   body.dark .details-title{color:#f1f5f9;}
   body.dark .details-sub{color:#94a3b8;}
@@ -408,7 +470,9 @@
     display:inline-flex; align-items:center; gap:7px; background:#fff; color:var(--blue);
     border:1.5px solid var(--blue); border-radius:10px; padding:9px 16px; font-size:12.5px;
     font-weight:700; cursor:pointer; font-family:inherit; position:relative;
+    transition:transform .25s cubic-bezier(.22,1,.36,1), box-shadow .25s cubic-bezier(.22,1,.36,1);
   }
+  .btn-feedback:hover{transform:translateY(-2px); box-shadow:0 6px 16px rgba(26,86,219,.16);}
   body.dark .feedback-box{background:linear-gradient(135deg, #141f38 0%, #0d2a20 100%); border-color:#1e3a6f;}
   body.dark .feedback-title{color:#f1f5f9;}
   body.dark .feedback-sub{color:#94a3b8;}
@@ -504,7 +568,9 @@
   .resume-btn{
     flex-shrink:0; background:#fff; color:var(--blue); border:none; border-radius:8px;
     padding:7px 13px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit;
+    transition:transform .25s cubic-bezier(.22,1,.36,1);
   }
+  .resume-btn:hover{transform:translateY(-2px);}
   .resume-dismiss{
     position:absolute; top:6px; right:8px; background:none; border:none; color:rgba(255,255,255,0.7);
     font-size:16px; cursor:pointer; padding:2px 6px; line-height:1; font-family:inherit;
@@ -530,16 +596,7 @@
   }
   body.dark .inline-login{background:#141f38; border-color:#243149;}
 
-  /* Firebase Auth — Google / Phone OTP login block */
-  .auth-tabs{display:flex; gap:8px; margin-bottom:14px;}
-  .auth-tab{
-    flex:1; text-align:center; padding:9px 8px; border-radius:9px; font-size:12.5px; font-weight:700;
-    border:1.5px solid var(--border); background:#fff; color:var(--gray); cursor:pointer; transition:all .15s;
-  }
-  .auth-tab.active{border-color:var(--blue); color:var(--blue); background:#eff4ff;}
-  body.dark .auth-tab{background:#0f172a; border-color:#243149; color:#94a3b8;}
-  body.dark .auth-tab.active{background:#141f38; color:#93b4f7; border-color:var(--blue);}
-
+  /* Firebase Auth — Google login block */
   .btn-google{
     width:100%; display:flex; align-items:center; justify-content:center; gap:10px;
     background:#fff; border:1.5px solid var(--border); border-radius:10px;
@@ -550,29 +607,6 @@
   .btn-google:disabled{opacity:.6; cursor:not-allowed;}
   body.dark .btn-google{background:#141f38; border-color:#243149; color:#f1f5f9;}
   body.dark .btn-google:hover{background:#182444;}
-
-  .auth-divider{display:flex; align-items:center; gap:10px; margin:14px 0; color:var(--gray-light); font-size:11.5px; font-weight:600;}
-  .auth-divider::before,.auth-divider::after{content:''; flex:1; height:1px; background:var(--border);}
-  body.dark .auth-divider::before,body.dark .auth-divider::after{background:#243149;}
-
-  .phone-input-row{display:flex; gap:8px;}
-  .phone-cc{
-    flex-shrink:0; width:58px; display:flex; align-items:center; justify-content:center;
-    border:1.5px solid var(--border); border-radius:10px; font-size:14px; font-weight:600; color:var(--ink); background:#fff;
-  }
-  body.dark .phone-cc{background:#141f38; border-color:#243149; color:#f1f5f9;}
-  .phone-input-row input{flex:1;}
-
-  .otp-input-row{display:flex; gap:7px; margin:4px 0 2px;}
-  .otp-box{
-    width:100%; text-align:center; font-size:19px; font-weight:700; letter-spacing:2px;
-    padding:10px 6px; border:1.5px solid var(--border); border-radius:10px; font-family:inherit;
-  }
-  .otp-box:focus{outline:none; border-color:var(--blue);}
-  body.dark .otp-box{background:#141f38; border-color:#243149; color:#f1f5f9;}
-
-  .auth-resend{font-size:12px; font-weight:600; color:var(--blue); cursor:pointer; text-align:center; margin-top:10px;}
-  .auth-resend.disabled{color:var(--gray-light); cursor:default; pointer-events:none;}
 
   .auth-status{font-size:12.5px; font-weight:600; margin:8px 0 2px; min-height:16px; text-align:center;}
   .auth-status.success{color:var(--green);}
@@ -597,15 +631,37 @@
     flex-shrink:0; background:none; border:none; color:#059669; font-size:11.5px; font-weight:700;
     cursor:pointer; font-family:inherit; text-decoration:underline;
   }
-  #recaptcha-container{margin:6px 0;}
   .hidden{display:none !important;}
+
+  /* Bank statement attach (native share to WhatsApp) */
+  .statement-attach-box{
+    margin-top:16px; padding-top:16px; border-top:1px solid var(--border);
+  }
+  .statement-attach-label{
+    display:block; font-size:12.5px; font-weight:700; color:var(--ink); margin-bottom:8px;
+  }
+  body.dark .statement-attach-label{color:#e5e7eb;}
+  .statement-file-row{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .btn-attach{
+    flex-shrink:0; display:flex; align-items:center; gap:7px; background:#eff4ff; color:var(--blue);
+    border:1px solid #c7d9fb; border-radius:9px; padding:8px 13px; font-size:12.5px; font-weight:700;
+    cursor:pointer; font-family:inherit; transition:background .15s;
+  }
+  .btn-attach:hover{background:#dce8fd;}
+  body.dark .btn-attach{background:#141f38; border-color:#243149; color:#93b4f7;}
+  body.dark .btn-attach:hover{background:#182444;}
+  .statement-file-name{font-size:12px; color:var(--gray-light); flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .statement-file-name.chosen{color:var(--green); font-weight:600;}
+  .statement-file-remove{
+    flex-shrink:0; background:none; border:none; color:#dc2626; font-size:18px; font-weight:700;
+    cursor:pointer; line-height:1; padding:0 4px;
+  }
 </style>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import {
-    getAuth, GoogleAuthProvider, signInWithPopup,
-    RecaptchaVerifier, signInWithPhoneNumber, signOut
+    getAuth, GoogleAuthProvider, signInWithPopup, signOut
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
   const firebaseConfig = {
@@ -626,8 +682,6 @@
   window.fbAuth = auth;
   window.fbGoogleProvider = new GoogleAuthProvider();
   window.fbSignInWithPopup = signInWithPopup;
-  window.fbRecaptchaVerifier = RecaptchaVerifier;
-  window.fbSignInWithPhoneNumber = signInWithPhoneNumber;
   window.fbSignOut = signOut;
   window.dispatchEvent(new Event('firebase-ready'));
 </script>
@@ -686,6 +740,40 @@
     </div>
   </div>
 
+  <div class="confirmation-overlay hidden" id="review-overlay">
+    <div class="confirmation-card">
+      <div class="feedback-modal-title">Write a Review</div>
+      <p class="feedback-modal-sub">Your review is checked before it goes live — thanks for taking the time.</p>
+
+      <div class="field" style="text-align:left;">
+        <label>Your Rating</label>
+        <div class="star-picker" id="review-star-picker">
+          <span data-val="1" onclick="setReviewRating(1)">★</span>
+          <span data-val="2" onclick="setReviewRating(2)">★</span>
+          <span data-val="3" onclick="setReviewRating(3)">★</span>
+          <span data-val="4" onclick="setReviewRating(4)">★</span>
+          <span data-val="5" onclick="setReviewRating(5)">★</span>
+        </div>
+      </div>
+      <div class="field" style="text-align:left;">
+        <label>Your Review</label>
+        <textarea id="review-message" class="feedback-textarea" placeholder="Kaisa raha aapka experience?"></textarea>
+      </div>
+      <div class="field" style="text-align:left;">
+        <label>Your Name</label>
+        <input type="text" id="review-name" placeholder="e.g. Rakesh Shah" autocomplete="off">
+      </div>
+      <div class="field" style="text-align:left;">
+        <label>Your Role / City</label>
+        <input type="text" id="review-role" placeholder="e.g. Tax Consultant, Ahmedabad" autocomplete="off">
+      </div>
+
+      <div class="login-error" id="review-error"></div>
+      <button class="btn btn-primary" onclick="submitReview()">Submit Review</button>
+      <button class="btn-ghost-cancel" onclick="closeReviewForm()">Cancel</button>
+    </div>
+  </div>
+
   <div class="app-body" id="app-body">
   <header>
     <div class="header-top">
@@ -738,10 +826,10 @@
         <button class="resume-btn" onclick="resumePendingOrder()">Resume</button>
       </div>
 
-      <h1>Send us your statement.<br>We send back your Tally file.</h1>
-      <p class="sub">No software. No installation. Just your bank statement in, a ready-to-import Tally XML file out.</p>
+      <h1 class="reveal-up" style="transition-delay:.03s">Send us your statement.<br>We send back your Tally file.</h1>
+      <p class="sub reveal-up" style="transition-delay:.11s">No software. No installation. Just your bank statement in, a ready-to-import Tally XML file out.</p>
 
-      <div class="promise">
+      <div class="promise reveal-up" style="transition-delay:.19s">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#d97706" stroke-width="1.8"/><path d="M12 7v5l3.5 2" stroke="#d97706" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <div>
           <div class="promise-text" id="promise-text">Delivered within 24 hours</div>
@@ -749,7 +837,7 @@
         </div>
       </div>
 
-      <div class="flow">
+      <div class="flow reveal-up" style="transition-delay:.27s">
         <div class="flow-step">
           <div class="flow-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="#1a56db" stroke-width="1.7" stroke-linejoin="round"/><path d="M14 2v6h6" stroke="#1a56db" stroke-width="1.7" stroke-linejoin="round"/></svg></div>
           <div class="flow-label">Send<br>Statement</div>
@@ -764,7 +852,7 @@
         </div>
       </div>
 
-      <div class="plans">
+      <div class="plans reveal-up" style="transition-delay:.33s">
         <div class="plan" data-plan="9" data-label="1 Statement — Quick" data-hours="3" onclick="selectPlan(this)">
           <div class="plan-badge" style="background:var(--amber);">3-HR QUICK</div>
           <div class="plan-top">
@@ -803,7 +891,7 @@
         <div class="active-plan-row"><span id="active-plan-label">—</span><span id="active-plan-remaining">0 bache</span></div>
       </div>
 
-      <!-- Logged-in state: shown once Google or Phone login succeeds -->
+      <!-- Logged-in state: shown once Google login succeeds -->
       <div class="logged-in-card hidden" id="logged-in-card">
         <div class="logged-in-avatar" id="logged-in-avatar">?</div>
         <div class="logged-in-info">
@@ -813,53 +901,18 @@
         <button type="button" class="logged-in-out" onclick="authSignOut()">Not you? Sign out</button>
       </div>
 
-      <!-- Logged-out state: Google button + Phone OTP flow -->
-      <div class="inline-login" id="inline-login">
-        <div class="auth-tabs">
-          <div class="auth-tab active" id="auth-tab-google" onclick="switchAuthTab('google')">Google</div>
-          <div class="auth-tab" id="auth-tab-phone" onclick="switchAuthTab('phone')">Phone (OTP)</div>
-        </div>
-
-        <!-- Google sign-in -->
-        <div id="auth-panel-google">
-          <button type="button" class="btn-google" id="google-signin-btn" onclick="signInWithGoogle()">
-            <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.7-6.1 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l6-6C34.5 5.1 29.6 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21 21-9.4 21-21c0-1.4-.1-2.8-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.8 1.1 8 3l6-6C34.5 5.1 29.6 3 24 3c-7.7 0-14.4 4.3-17.7 10.7z"/><path fill="#4CAF50" d="M24 45c5.5 0 10.4-1.9 14.3-5.1l-6.6-5.6C29.7 36 27 37 24 37c-5.2 0-9.6-3.3-11.2-7.9l-6.5 5C9.5 40.6 16.2 45 24 45z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.2 4.3-4.1 5.7l6.6 5.6C40.9 36.5 44 30.9 44 24c0-1.4-.1-2.8-.4-3.5z"/></svg>
-            <span id="google-signin-label">Continue with Google</span>
-          </button>
-        </div>
-
-        <div class="auth-divider">or</div>
-
-        <!-- Phone OTP sign-in -->
-        <div id="auth-panel-phone">
-          <div class="field" id="phone-step-number">
-            <label>WhatsApp / Mobile Number</label>
-            <div class="phone-input-row">
-              <div class="phone-cc">+91</div>
-              <input type="tel" id="login-phone" placeholder="e.g. 9876543210" maxlength="10" autocomplete="off">
-            </div>
-          </div>
-          <button type="button" class="btn btn-primary" id="send-otp-btn" onclick="sendOtp()" style="margin-top:4px;">
-            Send OTP
-          </button>
-
-          <div class="field hidden" id="phone-step-otp" style="margin-top:12px;">
-            <label>Enter 6-digit OTP sent to your phone</label>
-            <input type="tel" id="login-otp" placeholder="- - - - - -" maxlength="6" autocomplete="off" class="otp-box" inputmode="numeric">
-            <button type="button" class="btn btn-primary" id="verify-otp-btn" onclick="verifyOtp()" style="margin-top:10px;">
-              Verify &amp; Continue
-            </button>
-            <div class="auth-resend" id="resend-otp-link" onclick="sendOtp(true)">Resend OTP</div>
-          </div>
-
-          <div id="recaptcha-container"></div>
-        </div>
+      <!-- Logged-out state: Google Sign-In only -->
+      <div id="inline-login">
+        <button type="button" class="btn-google" id="google-signin-btn" onclick="signInWithGoogle()">
+          <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.7-6.1 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l6-6C34.5 5.1 29.6 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21 21-9.4 21-21c0-1.4-.1-2.8-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.8 1.1 8 3l6-6C34.5 5.1 29.6 3 24 3c-7.7 0-14.4 4.3-17.7 10.7z"/><path fill="#4CAF50" d="M24 45c5.5 0 10.4-1.9 14.3-5.1l-6.6-5.6C29.7 36 27 37 24 37c-5.2 0-9.6-3.3-11.2-7.9l-6.5 5C9.5 40.6 16.2 45 24 45z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.2 4.3-4.1 5.7l6.6 5.6C40.9 36.5 44 30.9 44 24c0-1.4-.1-2.8-.4-3.5z"/></svg>
+          <span id="google-signin-label">Continue with Google</span>
+        </button>
 
         <div class="auth-status" id="auth-status"></div>
         <div class="login-error" id="login-error"></div>
       </div>
 
-      <button class="btn btn-primary" onclick="startOrder()">
+      <button class="btn btn-primary" onclick="startOrder()" style="margin-top:10px;">
         <span id="get-started-label">Get Started</span>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
@@ -873,7 +926,7 @@
         Questions? Call/WhatsApp: +91 63558 13151
       </div>
 
-      <div class="trust-stats">
+      <div class="trust-stats reveal-up">
         <div class="trust-stat">
           <div class="trust-num">3-24 hrs</div>
           <div class="trust-label">Turnaround Time</div>
@@ -888,7 +941,17 @@
         </div>
       </div>
 
-      <div class="faq-section">
+      <div class="reviews-section reveal-up" id="reviews-section">
+        <div class="reviews-heading">What Accountants Are Saying</div>
+        <div class="reviews-grid" id="reviews-list">
+          <div class="reviews-empty">Loading reviews…</div>
+        </div>
+        <div class="reviews-footer">
+          <button type="button" class="btn-write-review" onclick="openReviewForm()">+ Add Review</button>
+        </div>
+      </div>
+
+      <div class="faq-section reveal-up">
         <div class="details-title" style="margin-bottom:12px;">Frequently Asked Questions</div>
 
         <div class="faq-item">
@@ -957,10 +1020,10 @@
     </section>
 
     <section class="page" id="page-2">
-      <h1 id="page2-title">Complete your payment</h1>
-      <p class="sub" id="page2-sub">Scan the QR code with any UPI app, then send us your statement.</p>
+      <h1 id="page2-title" class="reveal-up" style="transition-delay:.03s">Complete your payment</h1>
+      <p class="sub reveal-up" id="page2-sub" style="transition-delay:.1s">Scan the QR code with any UPI app, then send us your statement.</p>
 
-      <div class="summary-box" id="summary-box-2">
+      <div class="summary-box reveal-up" id="summary-box-2" style="transition-delay:.17s">
         <div>
           <div class="label">Plan</div>
           <div class="value" id="summary-label-2">Smart — 15 Statements</div>
@@ -968,7 +1031,7 @@
         <div class="value" id="summary-price-2">₹99</div>
       </div>
 
-      <div class="razorpay-pay-wrap" id="razorpay-pay-wrap">
+      <div class="razorpay-pay-wrap reveal-up" id="razorpay-pay-wrap" style="transition-delay:.24s">
         <button class="btn btn-primary" id="razorpay-pay-btn" onclick="payWithRazorpay()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="13" rx="2" stroke="white" stroke-width="1.8"/><path d="M3 10h18" stroke="white" stroke-width="1.8"/></svg>
           Pay <span id="razorpay-pay-amount">₹99</span> Now
@@ -978,7 +1041,7 @@
 
       <div class="qr-divider" id="qr-divider"><span>or pay via UPI QR</span></div>
 
-      <div class="qr-wrap" id="qr-wrap">
+      <div class="qr-wrap reveal-up" id="qr-wrap" style="transition-delay:.3s">
         <div class="qr-row">
           <img id="qr-image" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnYAAAJ2CAIAAABdNliuAAAOZUlEQVR4nO3du5Hr1hZFUVHVEchTBso/mpfB85QClIF0DM7adx+MYXeBJD49C9b6PM/zGwDwbb9PfwEAuJPEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEg8VMc9I8//yoOe5m///+/6a/wZfdd9+IanZ+l2U8vzN7zb74/7/vtheL+9BYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQSJZ2zlmbmfr04swXux9b1mZmf1Fhy/cszvx99+e5Ldf93Oz59BYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQGF7aOffm9YktyzBbvuebV4a27KjM3kvFMWfvz8Kb/yef8xYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQWLO0w4nZVZwtmzzntuzn3Pfbt5x5+HfeYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABKWdq5SrI7M7qjMmj2fhdnrvmURaIstz9GbeYsFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABIrFnasSnxXcWOSmHL3suW83mu+J7FMbes92y57ufu+0UFb7EAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwCJ4aWdYiXjzazNfNd959Mxf32zz9GWs7SFt1gASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYBEsrSzZUeFE1v2c2YXQu7b5Jk1u8lzbsvOz5brfh9vsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAIlkaafYvpjdqSic/3YrGd81u+Jy39W87yne8j3P3feLtjxH3mIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASn+d5Bj9+yybPllWHLYrrPmt2yeS+rZtzW/4z3HfmC8XzPvvfxlssACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAYs3SzrnZbZb71jyKT5895rkt57Nw33M0a8s9f+6+/94Fb7EAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwCJZGlndnHl3Jbtiy3n89yW617YsiFz39Nx7r69l3Nb/jNs4S0WABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEg8VMcdMveS2F2deTc7I7KlnWU2au5ZXXkvuvOieK633eHeIsFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABIfJ7n+fpBZ9cStmzdzK4M+e2/vi1nafaJ23KWCm/+T7vl/7y3WABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgMRPcdBiq6FQbDXMbl+c2/I937yKs+W3z37PLU9H8elb/i+9+enwFgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJD4PM8z/R2+rNipmHXfSsa5N1+jwuwuTXHXbTnmuS3bQVuezVneYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABLJ0s6WlYzC7PfcsvdS2LL7cd/myZYtpjef+Tc/HeeKs+QtFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBIDG8tHNudpfmvk8v2Pk5MbtDtcWW/RxnfsqWlTZvsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAImf6S/wfbP7D/et92zZ0yjct+Ky5Xy+ecGmsOVe2vI9z3mLBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASHye5xn8+C27NOeKHZX7fvu5Lddoy6ef23KWzm154maXYQpv/u3eYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABLDSzvniq2G2WPOml202LLNssWWO3nLDtW5Ld9z1n335zlvsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAIlkaWfLKs597ltHmV0uum/3Y8v3LGx5Ogr3fc9zs+3wFgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJD4mf4C3ze7FHHuvgWbLbtJW7ZEtqzibLmaW878ll90bnaLafbTvcUCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkPs/zfP2gW5Y3CrOrDue2bIkUn36f2W2W2TP/5ntpy/+6N9+f3mIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASydLOuS1LEedmNyUK9+2oFO5bCCl4Or7rvgWb+66mt1gASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYDEmqWdLas4s59e7FTY0/iu2Wu0Zbno3JY9ojdf9y3/QyztAMAaEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBIJEs7cwu2JyzOjLlvt2PWVtWXN68DDNry//k+3iLBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASPwUB53d6CgUn15sicyeT+sofMuW/yFbPn32mOe2XPdz3mIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASn+d5vn7QYqthy05F4b71iVm2RL776W9233rPrPt+u7dYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAxM/sx29ZSzhX7KjM2rL3cv7pW+662XvpvvWe4nze9xTP2rJDdc5bLAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQGJ4aefcll2FYtFi9phv3g4qbNnPue/Tt1z3WbNbN1v+z5/zFgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJBYs7SzZVdhy6bE+afft31x3/e8b0Nmy3NU8Itu4i0WABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgsWZpZ8tWQ7F5suW3n9vyi7Z8z/uuOydm/9sUiidu9in2FgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJD4PM8z/R34D7PbF1tWXLaY3f0o7qUtd8iW375l38mdfMJbLAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQOKnOOjsMswW56sO5385e+a3bF8UCyFbjnluy/ecPfNbWO+Z4i0WABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgkSztnNuylnCu2Oi4b/ejYJfmpmNueY62PJtb/tNueY7OeYsFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABIDC/tnJtdtNiyU3HuvsWV2Y2O2WNucf7bZ8/S7PN+/ovuu0Nm15CK6+4tFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBILFmaQf+3ZaNjvuOWdiyIfPmnZ/Z+3MLb7EAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJSztXefP2xZZdmtmtmy3XfcsiUOHN9+d9vMUCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAk1iztbNl7KRS/fcv5nP3ts7s0WzZPLMOcKL7nfWfp3JbNKG+xAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsAic/zPF8/6Jathllb9l7OzX7PLZ9+bss6ijv51z/mufvO/CxvsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAIlkaQcA8BYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJA4h+OT7F8+B/B/QAAAABJRU5ErkJggg==" alt="UPI QR Code">
           <div class="upi-side">
@@ -990,7 +1053,7 @@
         <div class="qr-instruction">Open Google Pay, PhonePe, Paytm, or any UPI app and scan this code — your payment option will open instantly.</div>
       </div>
 
-      <div class="details-form">
+      <div class="details-form reveal-up" style="transition-delay:.36s">
         <div class="details-title">Enter Your Tally Details</div>
         <div class="details-sub">We'll use this exactly as it appears in your Tally</div>
 
@@ -1019,9 +1082,22 @@
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#1a56db" stroke-width="2" stroke-linecap="round"/></svg>
           Add Narration
         </button>
+
+        <div class="statement-attach-box" id="statement-attach-box">
+          <label class="statement-attach-label">Attach Your Bank Statement <span class="optional-tag">Optional — attach here or send separately</span></label>
+          <input type="file" id="statement-file-input" accept=".pdf,.jpg,.jpeg,.png" onchange="onStatementFileChosen(this)" style="display:none;">
+          <div class="statement-file-row">
+            <button type="button" class="btn-attach" onclick="document.getElementById('statement-file-input').click()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M21.44 11.05l-9.19 9.19a5.5 5.5 0 01-7.78-7.78l9.19-9.19a3.5 3.5 0 014.95 4.95l-9.19 9.19a1.5 1.5 0 01-2.12-2.12l8.49-8.49" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span id="statement-attach-btn-label">Choose File</span>
+            </button>
+            <span class="statement-file-name" id="statement-file-name">No file selected</span>
+            <button type="button" class="statement-file-remove hidden" id="statement-file-remove" onclick="removeStatementFile()">&times;</button>
+          </div>
+        </div>
       </div>
 
-      <div class="checklist-box" id="checklist-box">
+      <div class="checklist-box reveal-up" id="checklist-box" style="transition-delay:.42s">
         <div class="checklist-title" id="checklist-title">After payment, please send us:</div>
         <ul class="checklist" id="checklist-items">
           <li>Your bank statement (PDF, password removed if locked)</li>
@@ -1029,22 +1105,23 @@
         </ul>
       </div>
 
-      <div class="license-badge">
+
+      <div class="license-badge reveal-up">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="flex-shrink:0"><rect x="4" y="10" width="16" height="10" rx="2" stroke="#1341aa" stroke-width="1.7"/><path d="M8 10V7a4 4 0 018 0v3" stroke="#1341aa" stroke-width="1.7" stroke-linecap="round"/><circle cx="12" cy="15" r="1.4" fill="#1341aa"/></svg>
         <span>Secured order — every request is verified and processed manually by our team before your file is prepared.</span>
       </div>
 
-      <button class="btn btn-wa" id="wa-send-btn" onclick="sendOnWhatsApp()">
+      <button class="btn btn-wa reveal-up" id="wa-send-btn" onclick="sendOnWhatsApp()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.29-1.39a9.9 9.9 0 004.75 1.21h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2z"/></svg>
         <span id="wa-send-label">Payment Done — Send My Statement Now</span>
       </button>
 
-      <div class="privacy-note">
+      <div class="privacy-note reveal-up">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" style="margin-top:2px"><path d="M12 2l8 3.5v6c0 5-3.5 8.5-8 10.5-4.5-2-8-5.5-8-10.5v-6L12 2z" stroke="#6b7280" stroke-width="1.5" stroke-linejoin="round"/></svg>
         <span>Your bank statement is used only to generate your Tally file. We do not store, share, or reuse your data beyond this purpose.</span>
       </div>
 
-      <div class="feedback-box">
+      <div class="feedback-box reveal-up">
         <div class="feedback-title">Have a bug, idea, or something to remove?</div>
         <p class="feedback-sub">Tell us what's not working, what feature you'd like, or what should go — directly to our team.</p>
         <button class="btn btn-feedback" onclick="openFeedback()">
@@ -1053,12 +1130,12 @@
         </button>
       </div>
 
-      <div class="contact-strip">
+      <div class="contact-strip reveal-up">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--wa)"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.29-1.39a9.9 9.9 0 004.75 1.21h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2z"/></svg>
         Questions? Call/WhatsApp: +91 63558 13151
       </div>
 
-      <div class="how-it-works-section">
+      <div class="how-it-works-section reveal-up">
         <div class="details-title">How It Works</div>
         <ul class="steps">
           <li>
@@ -1076,7 +1153,7 @@
         </ul>
       </div>
 
-      <div class="terms-box">
+      <div class="terms-box reveal-up">
         <div class="terms-title">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4M12 3l8 3.5v6c0 5-3.5 8.5-8 10.5-4.5-2-8-5.5-8-10.5v-6L12 3z" stroke="#111827" stroke-width="1.6" stroke-linejoin="round"/></svg>
           Terms &amp; Conditions
@@ -1094,10 +1171,10 @@
     </section>
 
     <section class="page" id="page-3">
-      <h1>Privacy Policy</h1>
-      <p class="sub">Last updated: July 2026</p>
+      <h1 class="reveal-up" style="transition-delay:.03s">Privacy Policy</h1>
+      <p class="sub reveal-up" style="transition-delay:.1s">Last updated: July 2026</p>
 
-      <div class="legal-content">
+      <div class="legal-content reveal-up" style="transition-delay:.17s">
         <h3>What we collect</h3>
         <p>We collect your name, WhatsApp number, the bank statement PDF you send us, and the Tally ledger details you provide (company name, bank ledger, debit/credit ledgers, narration mappings).</p>
 
@@ -1126,10 +1203,10 @@
     </section>
 
     <section class="page" id="page-4">
-      <h1>Terms &amp; Conditions</h1>
-      <p class="sub">Last updated: July 2026</p>
+      <h1 class="reveal-up" style="transition-delay:.03s">Terms &amp; Conditions</h1>
+      <p class="sub reveal-up" style="transition-delay:.1s">Last updated: July 2026</p>
 
-      <div class="legal-content">
+      <div class="legal-content reveal-up" style="transition-delay:.17s">
         <h3>Service</h3>
         <p>Bank To Tally converts bank statement PDFs into a Tally-compatible XML file based on the ledger details you provide.</p>
 
@@ -1161,10 +1238,10 @@
     </section>
 
     <section class="page" id="page-5">
-      <h1>Owner Dashboard</h1>
-      <p class="sub">Recent orders from your Google Sheet, at a glance.</p>
+      <h1 class="reveal-up" style="transition-delay:.03s">Owner Dashboard</h1>
+      <p class="sub reveal-up" style="transition-delay:.1s">Recent orders from your Google Sheet, at a glance.</p>
 
-      <div class="admin-gate" id="admin-gate">
+      <div class="admin-gate reveal-up" id="admin-gate" style="transition-delay:.17s">
         <div class="field" style="text-align:left;">
           <label>Enter PIN</label>
           <input type="password" id="admin-pin" placeholder="••••" maxlength="8" autocomplete="off" inputmode="numeric">
@@ -1210,21 +1287,10 @@ let selectedPlan = { amount: 99, label: "Smart — 15 Statements", hours: 24 };
 let customerName = "";
 let customerNumber = "";
 let usingExistingBalance = false;
+let selectedStatementFile = null;
 
 // ---- FIREBASE AUTH STATE ----
-let currentUser = null;        // { method: 'google'|'phone', name, email, phone, uid }
-let confirmationResult = null; // holds the pending phone OTP confirmation
-let recaptchaVerifier = null;
-let resendCooldownTimer = null;
-
-function switchAuthTab(which){
-  document.getElementById('auth-tab-google').classList.toggle('active', which === 'google');
-  document.getElementById('auth-tab-phone').classList.toggle('active', which === 'phone');
-  document.getElementById('auth-panel-google').classList.toggle('hidden', which !== 'google');
-  document.getElementById('auth-panel-phone').classList.toggle('hidden', which !== 'phone');
-  document.getElementById('auth-status').textContent = '';
-  document.getElementById('auth-status').className = 'auth-status';
-}
+let currentUser = null; // { method: 'google', name, email, uid }
 
 function setAuthStatus(msg, type){
   const box = document.getElementById('auth-status');
@@ -1241,17 +1307,15 @@ function showLoggedInUI(user){
   const nameEl = document.getElementById('logged-in-name');
   const detailEl = document.getElementById('logged-in-detail');
 
-  const displayName = user.name || (user.method === 'phone' ? '+91 ' + user.phone : 'Signed in');
+  const displayName = user.name || 'Signed in';
   nameEl.textContent = displayName;
-  detailEl.textContent = user.method === 'google' ? (user.email || 'Signed in with Google') : ('+91 ' + user.phone + ' · Verified');
+  detailEl.textContent = user.email || 'Signed in with Google';
   avatar.textContent = (displayName || '?').trim().charAt(0).toUpperCase();
 
   // Feed the rest of the tool (WhatsApp message, Razorpay prefill, Sheet logging) with these details.
   customerName = displayName;
-  customerNumber = user.phone || customerNumber;
   try{
     localStorage.setItem('bt_customer_name', customerName);
-    if(user.phone) localStorage.setItem('bt_customer_number', user.phone);
     localStorage.setItem('bt_auth_method', user.method);
     if(user.email) localStorage.setItem('bt_customer_email', user.email);
   }catch(e){}
@@ -1266,10 +1330,9 @@ function restoreSavedLogin(){
   try{
     const method = localStorage.getItem('bt_auth_method');
     const name = localStorage.getItem('bt_customer_name');
-    const phone = localStorage.getItem('bt_customer_number');
     const email = localStorage.getItem('bt_customer_email');
-    if(method && (name || phone)){
-      currentUser = { method, name, phone, email };
+    if(method === 'google' && name){
+      currentUser = { method, name, email };
       showLoggedInUI(currentUser);
     }
   }catch(e){}
@@ -1305,104 +1368,15 @@ async function signInWithGoogle(){
     currentUser = { method: 'google', name: u.displayName || '', email: u.email || '', uid: u.uid };
     showLoggedInUI(currentUser);
     setAuthStatus('Signed in successfully.', 'success');
+    // Pull this customer's real remaining-statement count from the Sheet — this is what
+    // closes the "different device / cleared browser" gap, since it's keyed by email, not device.
+    await syncBalanceFromServer();
+    refreshBalanceDisplay();
   }catch(e){
     console.error(e);
     setAuthStatus("Couldn't sign in with Google. Please try again.", "error");
   }finally{
     btn.disabled = false;
-  }
-}
-
-// ---- PHONE OTP SIGN-IN ----
-function ensureRecaptcha(){
-  if(recaptchaVerifier || !window.fbAuth || !window.fbRecaptchaVerifier) return;
-  recaptchaVerifier = new window.fbRecaptchaVerifier(window.fbAuth, 'recaptcha-container', {
-    size: 'invisible'
-  });
-}
-
-function startResendCooldown(){
-  const link = document.getElementById('resend-otp-link');
-  let seconds = 30;
-  link.classList.add('disabled');
-  link.textContent = `Resend OTP in ${seconds}s`;
-  clearInterval(resendCooldownTimer);
-  resendCooldownTimer = setInterval(() => {
-    seconds--;
-    if(seconds <= 0){
-      clearInterval(resendCooldownTimer);
-      link.classList.remove('disabled');
-      link.textContent = 'Resend OTP';
-    } else {
-      link.textContent = `Resend OTP in ${seconds}s`;
-    }
-  }, 1000);
-}
-
-async function sendOtp(isResend){
-  const numberInput = document.getElementById('login-phone');
-  const number = numberInput.value.trim();
-
-  if(!/^[6-9]\d{9}$/.test(number)){
-    setAuthStatus("Please enter a valid 10-digit mobile number.", "error");
-    return;
-  }
-  if(!window.fbAuth || !window.fbSignInWithPhoneNumber){
-    setAuthStatus("Login is still loading, please try again in a second.", "error");
-    return;
-  }
-
-  const sendBtn = document.getElementById('send-otp-btn');
-  sendBtn.disabled = true;
-  setAuthStatus(isResend ? 'Resending OTP…' : 'Sending OTP…', '');
-
-  try{
-    ensureRecaptcha();
-    const fullNumber = '+91' + number;
-    confirmationResult = await window.fbSignInWithPhoneNumber(window.fbAuth, fullNumber, recaptchaVerifier);
-    document.getElementById('phone-step-otp').classList.remove('hidden');
-    numberInput.disabled = true;
-    sendBtn.textContent = 'OTP Sent';
-    setAuthStatus('OTP sent to +91 ' + number + '.', 'success');
-    startResendCooldown();
-    document.getElementById('login-otp').focus();
-  }catch(e){
-    console.error(e);
-    setAuthStatus("Couldn't send OTP. Please check the number and try again.", "error");
-    sendBtn.disabled = false;
-    // Reset recaptcha so a retry doesn't reuse a spent challenge.
-    try{
-      if(recaptchaVerifier){ recaptchaVerifier.clear(); recaptchaVerifier = null; }
-    }catch(err){}
-  }
-}
-
-async function verifyOtp(){
-  const otp = document.getElementById('login-otp').value.trim();
-  if(!/^\d{6}$/.test(otp)){
-    setAuthStatus("Please enter the 6-digit OTP.", "error");
-    return;
-  }
-  if(!confirmationResult){
-    setAuthStatus("Please request an OTP first.", "error");
-    return;
-  }
-
-  const verifyBtn = document.getElementById('verify-otp-btn');
-  verifyBtn.disabled = true;
-  setAuthStatus('Verifying…', '');
-
-  try{
-    const result = await confirmationResult.confirm(otp);
-    const u = result.user;
-    const number = document.getElementById('login-phone').value.trim();
-    currentUser = { method: 'phone', phone: number, uid: u.uid };
-    showLoggedInUI(currentUser);
-    setAuthStatus('Phone verified successfully.', 'success');
-  }catch(e){
-    console.error(e);
-    setAuthStatus("Incorrect OTP. Please try again.", "error");
-    verifyBtn.disabled = false;
   }
 }
 
@@ -1430,6 +1404,12 @@ const ADMIN_PIN = "2580";
 // can't fetch your order list just by guessing the page exists.
 const ADMIN_KEY = "bt-owner-9f31";
 
+// ---- BALANCE (server-synced via Apps Script + Google Sheet, keyed by Google email) ----
+// Falls back to localStorage only if the customer isn't logged in yet (rare — the
+// site requires Google sign-in before payment) or if the backend is unreachable.
+function getCustomerEmail_(){
+  try{ return (currentUser && currentUser.email) || localStorage.getItem('bt_customer_email') || null; }catch(e){ return null; }
+}
 function getActivePlan(){
   try{ return localStorage.getItem('bt_active_plan'); }catch(e){ return null; }
 }
@@ -1450,11 +1430,76 @@ function setActivePlan(plan, remaining){
     }
   }catch(e){}
 }
-function decrementRemaining(){
-  const plan = getActivePlan();
-  const remaining = getRemaining();
-  if(plan && remaining > 0){
-    setActivePlan(plan, remaining - 1);
+// Fetches the authoritative balance from the Sheet for the logged-in email and
+// mirrors it into localStorage (so getActivePlan()/getRemaining() stay correct
+// even in code paths that haven't been switched to the async version yet).
+async function syncBalanceFromServer(){
+  const email = getCustomerEmail_();
+  if(!email || !RAZORPAY_BACKEND_URL) return { plan: getActivePlan(), remaining: getRemaining() };
+  try{
+    const res = await fetch(RAZORPAY_BACKEND_URL + '?action=getBalance&email=' + encodeURIComponent(email));
+    const data = await res.json();
+    if(data && data.remaining > 0){
+      setActivePlan(String(data.plan), data.remaining);
+    } else {
+      setActivePlan(null, 0);
+    }
+    return data;
+  }catch(e){
+    // Backend unreachable — fall back to whatever's cached locally.
+    return { plan: getActivePlan(), remaining: getRemaining() };
+  }
+}
+// Called right after a fresh payment is verified — adds this plan's quota on
+// the server (on top of any leftover balance) and updates local cache.
+async function activatePlanOnServer(plan, quota){
+  const email = getCustomerEmail_();
+  if(!email || !RAZORPAY_BACKEND_URL){
+    setActivePlan(plan, quota); // fallback: local-only
+    return;
+  }
+  try{
+    const res = await fetch(RAZORPAY_BACKEND_URL, {
+      method: 'POST',
+      headers: {'Content-Type': 'text/plain;charset=utf-8'},
+      body: JSON.stringify({ action: 'activatePlan', email, plan: String(plan), quota })
+    });
+    const data = await res.json();
+    if(data && data.remaining > 0){
+      setActivePlan(String(data.plan), data.remaining);
+    }
+  }catch(e){
+    setActivePlan(plan, quota); // fallback: local-only, will resync next getBalance
+  }
+}
+// Called each time a statement is actually sent — decrements on the server and
+// returns the fresh, authoritative remaining count.
+async function decrementRemaining(){
+  const email = getCustomerEmail_();
+  if(!email || !RAZORPAY_BACKEND_URL){
+    // fallback: local-only decrement
+    const plan = getActivePlan();
+    const remaining = getRemaining();
+    if(plan && remaining > 0) setActivePlan(plan, remaining - 1);
+    return;
+  }
+  try{
+    const res = await fetch(RAZORPAY_BACKEND_URL, {
+      method: 'POST',
+      headers: {'Content-Type': 'text/plain;charset=utf-8'},
+      body: JSON.stringify({ action: 'consumeStatement', email })
+    });
+    const data = await res.json();
+    if(data && data.remaining > 0){
+      setActivePlan(String(data.plan), data.remaining);
+    } else {
+      setActivePlan(null, 0);
+    }
+  }catch(e){
+    // Backend unreachable — decrement locally so the UI isn't stuck, will resync next load.
+    const plan = getActivePlan();
+    const remaining = getRemaining();
+    if(plan && remaining > 0) setActivePlan(plan, remaining - 1);
   }
 }
 
@@ -1676,7 +1721,17 @@ function changeLanguage(lang){
   document.querySelector('.privacy-note span').textContent = t.privacy;
 }
 
-function startOrder(){
+async function startOrder(){
+  const getStartedLabel = document.getElementById('get-started-label');
+  const originalLabel = getStartedLabel ? getStartedLabel.textContent : null;
+  if(getStartedLabel) getStartedLabel.textContent = 'Checking your account…';
+
+  // Re-check the server before deciding whether this is a "fresh payment" or
+  // "existing balance" flow — this is what stops a stale/cleared local cache
+  // from either wrongly asking for payment again, or wrongly skipping it.
+  await syncBalanceFromServer();
+  if(getStartedLabel && originalLabel) getStartedLabel.textContent = originalLabel;
+
   const activePlan = getActivePlan();
   const remaining = getRemaining();
 
@@ -1699,29 +1754,14 @@ function startOrder(){
   const errorBox = document.getElementById('login-error');
 
   if(!currentUser){
-    errorBox.textContent = "Please sign in with Google or your phone number to continue.";
-    return;
-  }
-  if(currentUser.method === 'phone' && !currentUser.phone){
-    errorBox.textContent = "Please verify your phone number to continue.";
+    errorBox.textContent = "Please sign in with Google to continue.";
     return;
   }
   errorBox.textContent = "";
 
-  const name = customerName || currentUser.name || '';
-  const number = customerNumber || currentUser.phone || '';
-
   usingExistingBalance = false;
   setupPage2ForPayment();
   savePendingOrder(false);
-
-  const loginLine = currentUser.method === 'google'
-    ? `Signed in via: Google (${currentUser.email || name})`
-    : `Signed in via: Phone OTP (+91 ${number})`;
-  const msg = `Hi, I'd like to start my Bank To Tally order.\n\nName: ${name}\nWhatsApp Number: ${number}\n${loginLine}\nPlan Selected: ${selectedPlan.label} (₹${selectedPlan.amount})`;
-  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
-  window.open(url, '_blank');
-
   goToPage(2);
 }
 
@@ -1743,6 +1783,7 @@ function setupPage2ForPayment(){
   document.getElementById('checklist-items').innerHTML =
     '<li>Your bank statement (PDF, password removed if locked)</li><li>A screenshot of your payment</li>';
   document.getElementById('wa-send-label').textContent = "Payment Done — Send My Statement Now";
+  removeStatementFile();
   updateSummaries();
 }
 
@@ -1759,6 +1800,7 @@ function setupPage2ForBalance(){
     '<li>Your bank statement (PDF, password removed if locked)</li>';
   document.getElementById('wa-send-label').textContent = "Send My Statement on WhatsApp";
   document.getElementById('wa-send-btn').disabled = false;
+  removeStatementFile();
 }
 
 function toggleTheme(){
@@ -1791,6 +1833,34 @@ function addNarrationRow(){
 function removeNarrationRow(id){
   const row = document.getElementById('narration-row-' + id);
   if(row) row.remove();
+}
+
+// ---- BANK STATEMENT ATTACH (native share to WhatsApp) ----
+function onStatementFileChosen(input){
+  const file = input.files && input.files[0];
+  if(!file) return;
+
+  const maxBytes = 20 * 1024 * 1024; // 20 MB guard, well above a typical statement
+  if(file.size > maxBytes){
+    alert("This file is quite large. Please choose a file under 20 MB.");
+    input.value = '';
+    return;
+  }
+
+  selectedStatementFile = file;
+  document.getElementById('statement-file-name').textContent = file.name;
+  document.getElementById('statement-file-name').classList.add('chosen');
+  document.getElementById('statement-file-remove').classList.remove('hidden');
+  document.getElementById('statement-attach-btn-label').textContent = 'Change File';
+}
+
+function removeStatementFile(){
+  selectedStatementFile = null;
+  document.getElementById('statement-file-input').value = '';
+  document.getElementById('statement-file-name').textContent = 'No file selected';
+  document.getElementById('statement-file-name').classList.remove('chosen');
+  document.getElementById('statement-file-remove').classList.add('hidden');
+  document.getElementById('statement-attach-btn-label').textContent = 'Choose File';
 }
 
 // ---- RAZORPAY PAYMENT ----
@@ -1877,7 +1947,7 @@ async function payWithRazorpay(){
   rzp.open();
 }
 
-function sendOnWhatsApp(){
+async function sendOnWhatsApp(){
   const btn = document.getElementById('wa-send-btn');
   if(btn.disabled) return; // guard against double-click / duplicate quota consumption
   btn.disabled = true;
@@ -1890,11 +1960,20 @@ function sendOnWhatsApp(){
 
   let msg;
   if(usingExistingBalance){
-    msg = `Hi, main apna Bank To Tally plan (${selectedPlan.label}) use kar raha hoon.\n\n`;
+    // Remaining count BEFORE this send, so "statement number" = quota - remaining + 1
+    const quotaTotal = PLAN_QUOTA[selectedPlan.amount] || getRemaining();
+    const beforeRemaining = getRemaining();
+    const statementNumber = Math.max(1, quotaTotal - beforeRemaining + 1);
+    msg = `Hi, main apna Bank To Tally plan (${selectedPlan.label}) use kar raha hoon.\n`;
+    msg += `[Statement ${statementNumber} of ${quotaTotal} — is bheje ke baad ${Math.max(0, beforeRemaining - 1)} baaki rahenge]\n\n`;
   } else if(razorpayPaymentVerified){
-    msg = `Hi, maine Bank To Tally ka ₹${selectedPlan.amount} payment Razorpay se kiya hai aur verify ho chuka hai (${selectedPlan.label}).\n\n`;
+    const quotaTotal = PLAN_QUOTA[selectedPlan.amount] || 1;
+    msg = `Hi, maine Bank To Tally ka ₹${selectedPlan.amount} payment Razorpay se kiya hai aur verify ho chuka hai (${selectedPlan.label}).\n`;
+    msg += `[Statement 1 of ${quotaTotal} — is bheje ke baad ${Math.max(0, quotaTotal - 1)} baaki rahenge]\n\n`;
   } else {
-    msg = `Hi, maine Bank To Tally ka ₹${selectedPlan.amount} payment kiya hai (${selectedPlan.label}).\n\n`;
+    const quotaTotal = PLAN_QUOTA[selectedPlan.amount] || 1;
+    msg = `Hi, maine Bank To Tally ka ₹${selectedPlan.amount} payment kiya hai (${selectedPlan.label}).\n`;
+    msg += `[Statement 1 of ${quotaTotal} — is bheje ke baad ${Math.max(0, quotaTotal - 1)} baaki rahenge]\n\n`;
   }
   if(name) msg += `Name: ${name}\n`;
   if(customerNumber) msg += `WhatsApp Number: ${customerNumber}\n`;
@@ -1920,21 +1999,56 @@ function sendOnWhatsApp(){
 
   msg += `\nMain apna bank statement bhej raha hoon, please Tally XML file ${selectedPlan.hours} ghante mein bhej dein.`;
 
-  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
-
-  if(usingExistingBalance){
-    decrementRemaining();
-  } else {
-    // Fresh payment: activate plan quota, then immediately consume 1 for this statement
-    const quota = PLAN_QUOTA[selectedPlan.amount] || 1;
-    setActivePlan(selectedPlan.amount, quota);
-    decrementRemaining();
+  async function markSentAndFinish(){
+    if(usingExistingBalance){
+      await decrementRemaining();
+    } else {
+      // Fresh payment: activate plan quota on the server, then immediately consume 1 for this statement
+      const quota = PLAN_QUOTA[selectedPlan.amount] || 1;
+      await activatePlanOnServer(selectedPlan.amount, quota);
+      await decrementRemaining();
+    }
+    refreshBalanceDisplay();
+    clearPendingOrder();
+    removeStatementFile();
+    showConfirmation();
   }
 
-  refreshBalanceDisplay();
-  clearPendingOrder();
+  // If a statement file is attached and this device/browser supports sharing files
+  // (Web Share API Level 2 — most Android/iOS mobile browsers), share the file +
+  // message together straight into WhatsApp via the native share sheet.
+  const canShareFile = selectedStatementFile
+    && navigator.canShare
+    && navigator.canShare({ files: [selectedStatementFile] });
+
+  if(canShareFile){
+    try{
+      await navigator.share({
+        files: [selectedStatementFile],
+        title: 'Bank To Tally',
+        text: msg
+      });
+      await markSentAndFinish();
+    }catch(e){
+      // AbortError = user closed the share sheet without picking anything — let them try again.
+      if(e && e.name !== 'AbortError'){
+        console.error(e);
+        alert("Couldn't open the share sheet. Please try again, or use the text-only WhatsApp option below.");
+      }
+      btn.disabled = false;
+    }
+    return;
+  }
+
+  // Fallback: no file attached, or this browser/device doesn't support sharing files
+  // (typically desktop). Opens WhatsApp with the text pre-filled; the statement, if any,
+  // needs to be attached manually inside WhatsApp.
+  if(selectedStatementFile){
+    alert("Your browser can't attach the file automatically here — WhatsApp will open with your details, please attach the statement manually.");
+  }
+  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
   window.open(url, '_blank');
-  showConfirmation();
+  await markSentAndFinish();
 }
 
 function showConfirmation(){
@@ -2043,6 +2157,98 @@ async function loadAdminOrders(){
   }
 }
 
+// ---- CUSTOMER REVIEWS ----
+// Uses the SAME Apps Script backend as orders (ORDER_TRACKING_API_URL).
+// Add these two things to your existing Apps Script project + Sheet:
+//   1. A new Sheet tab "Reviews" with columns: Name | Rating | Message | Timestamp | Status
+//      New submissions are written with Status = "Pending".
+//   2. In your Apps Script doPost(e), handle e.parameter.action === "submitReview"
+//      -> append a row to "Reviews" with Status "Pending", return {ok:true}.
+//      In doGet(e), handle e.parameter.action === "getReviews"
+//      -> return only rows where Status === "Approved" as JSON: {reviews:[{name,rating,message,timestamp}]}.
+//      Approve reviews by changing Status to "Approved" in the Sheet directly, or add a button
+//      to the Owner Dashboard here later that flips it via another action (e.g. "approveReview").
+let reviewRating = 0;
+
+function openReviewForm(){
+  document.getElementById('review-overlay').classList.remove('hidden');
+}
+function closeReviewForm(){
+  document.getElementById('review-overlay').classList.add('hidden');
+  document.getElementById('review-message').value = '';
+  document.getElementById('review-name').value = '';
+  document.getElementById('review-error').textContent = '';
+  setReviewRating(0);
+}
+function setReviewRating(val){
+  reviewRating = val;
+  document.querySelectorAll('#review-star-picker span').forEach(s => {
+    s.classList.toggle('filled', parseInt(s.dataset.val) <= val);
+  });
+}
+
+async function submitReview(){
+  const name = document.getElementById('review-name').value.trim();
+  const role = document.getElementById('review-role').value.trim();
+  const message = document.getElementById('review-message').value.trim();
+  const errorBox = document.getElementById('review-error');
+
+  if(!name || !message || reviewRating === 0){
+    errorBox.textContent = "Please add your name, a rating, and a short review.";
+    return;
+  }
+  errorBox.textContent = "";
+
+  if(!ORDER_TRACKING_API_URL){
+    errorBox.textContent = "Backend not connected yet.";
+    return;
+  }
+
+  try{
+    await fetch(ORDER_TRACKING_API_URL, {
+      method: 'POST',
+      headers: {'Content-Type': 'text/plain;charset=utf-8'},
+      body: JSON.stringify({ action: 'submitReview', name, role, rating: reviewRating, message })
+    });
+    closeReviewForm();
+    alert("Thanks! Your review is now live.");
+    loadReviews();
+  }catch(e){
+    errorBox.textContent = "Couldn't submit right now. Please try again.";
+  }
+}
+
+async function loadReviews(){
+  const list = document.getElementById('reviews-list');
+
+  if(!ORDER_TRACKING_API_URL){
+    list.innerHTML = '<div class="reviews-empty">Reviews coming soon.</div>';
+    return;
+  }
+
+  try{
+    const res = await fetch(ORDER_TRACKING_API_URL + '?action=getReviews');
+    const data = await res.json();
+    const reviews = data.reviews || [];
+
+    if(reviews.length === 0){
+      list.innerHTML = '<div class="reviews-empty">No reviews yet — be the first!</div>';
+      return;
+    }
+
+    list.innerHTML = reviews.slice().reverse().map(r => `
+      <div class="review-card">
+        <div class="review-stars">${'★'.repeat(Number(r.rating)||0)}${'☆'.repeat(5-(Number(r.rating)||0))}</div>
+        <div class="review-text">"${r.message || ''}"</div>
+        <div class="review-name">${r.name || 'Customer'}</div>
+        <div class="review-role">${r.role || ''}</div>
+      </div>
+    `).join('');
+  }catch(e){
+    list.innerHTML = '<div class="reviews-empty">Couldn\'t load reviews right now.</div>';
+  }
+}
+
 function toggleFaq(btn){
   const item = btn.closest('.faq-item');
   const wasOpen = item.classList.contains('open');
@@ -2056,8 +2262,30 @@ document.getElementById('back-btn').style.display = 'none';
 updateSummaries();
 refreshBalanceDisplay();
 refreshResumeBanner();
+function initScrollReveal(){
+  const els = document.querySelectorAll('.reveal-up');
+  if(!('IntersectionObserver' in window)){
+    els.forEach(el => el.classList.add('in-view'));
+    return;
+  }
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('in-view');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' });
+  els.forEach(el => io.observe(el));
+}
+
 addNarrationRow();
 restoreSavedLogin();
+if(currentUser && currentUser.email){
+  syncBalanceFromServer().then(refreshBalanceDisplay);
+}
+loadReviews();
+initScrollReveal();
 </script>
 </body>
 </html>
