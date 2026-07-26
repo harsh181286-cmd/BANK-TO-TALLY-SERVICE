@@ -232,6 +232,69 @@
   .btn-ghost{background:transparent; color:var(--blue); border:1.5px solid var(--border); margin-top:10px; transition:transform .3s cubic-bezier(.22,1,.36,1), border-color .2s;}
   .btn-ghost:hover{transform:translateY(-2px); border-color:var(--blue);}
 
+  .wa-float-btn{
+    position:fixed; bottom:90px;
+    right:max(16px, calc((100vw - 520px) / 2 + 16px));
+    width:52px; height:52px; border-radius:50%;
+    background:linear-gradient(135deg, var(--wa) 0%, #128c4a 100%);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 6px 18px rgba(37,211,102,.4);
+    cursor:pointer; z-index:40; border:none;
+    transition:transform .3s cubic-bezier(.22,1,.36,1), box-shadow .3s ease;
+  }
+  .wa-float-btn:hover{ transform:translateY(-3px) scale(1.05); box-shadow:0 10px 24px rgba(37,211,102,.5); }
+  .wa-float-btn:active{ transform:translateY(0) scale(.95); }
+  .wa-float-btn::after{
+    content:""; position:absolute; inset:0; border-radius:50%;
+    box-shadow:0 0 0 0 rgba(37,211,102,.55);
+    animation:waPulse 2.4s ease-out infinite;
+    pointer-events:none;
+  }
+  @keyframes waPulse{
+    0%{ box-shadow:0 0 0 0 rgba(37,211,102,.45); }
+    70%{ box-shadow:0 0 0 14px rgba(37,211,102,0); }
+    100%{ box-shadow:0 0 0 0 rgba(37,211,102,0); }
+  }
+  @media (max-width:380px){ .wa-float-btn{ width:46px; height:46px; bottom:82px; right:14px; } }
+
+  .btn-howto-import{
+    width:100%; display:flex; align-items:center; justify-content:center; gap:8px;
+    background:var(--bg); color:var(--blue); border:1.5px dashed var(--blue);
+    border-radius:12px; padding:12px; font-size:13.5px; font-weight:700; font-family:inherit;
+    cursor:pointer; margin:14px 0 4px;
+    transition:transform .3s cubic-bezier(.22,1,.36,1), background .3s ease, box-shadow .3s ease;
+  }
+  .btn-howto-import:hover{
+    transform:translateY(-2px); background:#e3ecff;
+    box-shadow:0 8px 20px rgba(26,86,219,.16);
+  }
+  body.dark .btn-howto-import{background:#141f38; border-color:var(--blue);}
+  body.dark .btn-howto-import:hover{background:#182444;}
+
+  .confirmation-overlay.howto-overlay{align-items:flex-start; padding:20px 16px; overflow-y:auto;}
+  .confirmation-card.howto-card{
+    max-width:400px; text-align:left; margin:10px auto; max-height:none;
+  }
+  .howto-card .feedback-modal-title{text-align:center;}
+  .howto-step-title{font-size:13.5px; font-weight:800; color:var(--blue); margin:16px 0 6px;}
+  .howto-step-title:first-of-type{margin-top:4px;}
+  .howto-list{margin:0 0 4px; padding-left:18px;}
+  .howto-list li{font-size:13px; color:var(--ink); line-height:1.6; margin-bottom:4px;}
+  .howto-note{
+    background:#fffbeb; border:1px solid #f59e0b; border-radius:10px; padding:10px 12px;
+    font-size:12.5px; color:#92400e; line-height:1.5; margin:10px 0;
+  }
+  .howto-summary-box{
+    background:var(--bg); border:1px solid var(--border); border-radius:12px;
+    padding:14px 14px 14px 30px; margin-top:14px;
+  }
+  .howto-summary-title{font-size:13.5px; font-weight:800; color:var(--ink); margin-bottom:8px; margin-left:-16px;}
+  .howto-summary-list li{font-size:12.5px; color:var(--ink); line-height:1.7;}
+  body.dark .howto-step-title{color:#93b4f7;}
+  body.dark .howto-list li,body.dark .howto-summary-title,body.dark .howto-summary-list li{color:#f1f5f9;}
+  body.dark .howto-summary-box{background:#141f38; border-color:#243149;}
+  body.dark .howto-note{background:#3f2d0d; border-color:#92400e; color:#fcd34d;}
+
   /* Steps list (page 2) */
   .steps{list-style:none; padding:0; margin:0 0 24px;}
   .how-it-works-section{
@@ -254,6 +317,12 @@
   .summary-box{
     background:var(--bg); border:1px solid var(--border); border-radius:12px;
     padding:14px 16px; margin-bottom:18px; display:flex; justify-content:space-between; align-items:center;
+    transition:transform .4s cubic-bezier(.22,1,.36,1), box-shadow .4s cubic-bezier(.22,1,.36,1), border-color .4s ease;
+  }
+  .summary-box:hover{
+    transform:translateY(-3px);
+    box-shadow:0 12px 26px rgba(26,86,219,.12);
+    border-color:var(--blue);
   }
   .summary-box .label{font-size:12.5px;color:var(--gray);}
   .summary-box .value{font-size:16px;font-weight:800;color:var(--ink);}
@@ -283,15 +352,49 @@
   .qr-wrap{
     background:#fff; border:1.5px solid var(--border); border-radius:16px;
     padding:20px; margin-bottom:18px; box-shadow:0 4px 18px rgba(26,86,219,0.08);
+    position:relative; overflow:hidden; isolation:isolate;
+    transition:transform .45s cubic-bezier(.22,1,.36,1), box-shadow .45s cubic-bezier(.22,1,.36,1), border-color .45s ease;
+  }
+  .qr-wrap::before{
+    content:""; position:absolute; inset:0; z-index:1; pointer-events:none;
+    background:linear-gradient(115deg, transparent 20%, rgba(255,255,255,.7) 45%, rgba(255,255,255,.12) 55%, transparent 80%);
+    transform:translateX(-140%); opacity:0;
+    transition:transform .9s cubic-bezier(.22,1,.36,1), opacity .3s ease;
+  }
+  .qr-wrap:hover{
+    transform:translateY(-4px);
+    box-shadow:0 16px 34px rgba(26,86,219,.16);
+    border-color:var(--blue);
+  }
+  .qr-wrap:hover::before{ transform:translateX(140%); opacity:1; }
+  .qr-wrap > *{ position:relative; z-index:2; }
+  body.dark .qr-wrap::before{
+    background:linear-gradient(115deg, transparent 20%, rgba(255,255,255,.10) 45%, rgba(255,255,255,.03) 55%, transparent 80%);
   }
   .qr-row{display:flex; align-items:center; gap:18px;}
-  .qr-wrap img{width:132px; height:132px; flex-shrink:0; border-radius:8px; border:1px solid var(--border);}
+  .qr-wrap img{
+    width:132px; height:132px; flex-shrink:0; border-radius:8px; border:1px solid var(--border);
+    transition:transform .4s cubic-bezier(.22,1,.36,1);
+  }
+  .qr-wrap:hover img{ transform:scale(1.04); }
   .upi-side{flex:1; text-align:left;}
   .upi-label{font-size:11px; font-weight:700; color:var(--gray); text-transform:uppercase; letter-spacing:0.4px; margin-bottom:4px;}
+  .upi-id-row{display:flex; align-items:center; gap:8px;}
   .upi-id-new{
     font-size:16px; font-weight:700; color:var(--blue); font-family:monospace;
     background:var(--bg); padding:7px 10px; border-radius:8px; display:inline-block; word-break:break-all;
   }
+  .upi-copy-btn{
+    display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;
+    width:32px; height:32px; border-radius:8px; border:1.5px solid var(--border);
+    background:var(--bg); color:var(--blue); cursor:pointer;
+    transition:transform .25s cubic-bezier(.22,1,.36,1), background .25s ease, border-color .25s ease;
+  }
+  .upi-copy-btn:hover{ transform:translateY(-2px) scale(1.05); background:#e3ecff; border-color:var(--blue); }
+  .upi-copy-btn:active{ transform:translateY(0) scale(.96); }
+  .upi-copy-btn.copied{ background:var(--green,#0d9f6e); border-color:var(--green,#0d9f6e); color:#fff; }
+  body.dark .upi-copy-btn{background:#0f172a; border-color:#243149;}
+  body.dark .upi-copy-btn:hover{background:#182444;}
   .upi-payee{font-size:12px; color:var(--gray); margin-top:6px;}
   .qr-instruction{
     font-size:12.5px; color:var(--gray); line-height:1.5; margin-top:14px;
@@ -321,13 +424,19 @@
   /* Reviews */
   .reviews-section{margin-top:24px; padding-top:20px; border-top:1px solid var(--border);}
   .reviews-heading{text-align:center; font-size:15px; font-weight:800; color:var(--ink); margin-bottom:16px;}
-  .reviews-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px;}
-  @media (max-width:720px){ .reviews-grid{grid-template-columns:1fr;} }
+  .reviews-grid{
+    display:flex; gap:14px; overflow-x:auto; overflow-y:hidden; padding:4px 2px 14px;
+    scroll-snap-type:x proximity; -webkit-overflow-scrolling:touch; scrollbar-width:thin;
+  }
+  .reviews-grid::-webkit-scrollbar{height:6px;}
+  .reviews-grid::-webkit-scrollbar-thumb{background:var(--border); border-radius:99px;}
+  .reviews-grid::-webkit-scrollbar-track{background:transparent;}
   .review-card{
     border:1px solid var(--border); border-radius:14px; padding:16px; background:#fff;
     box-shadow:0 1px 3px rgba(0,0,0,.04);
     position:relative; overflow:hidden; isolation:isolate;
     transition:transform .45s cubic-bezier(.22,1,.36,1), box-shadow .45s cubic-bezier(.22,1,.36,1);
+    flex:0 0 auto; width:220px; scroll-snap-align:start;
   }
   .review-card::before{
     content:""; position:absolute; inset:0; z-index:1; pointer-events:none;
@@ -350,7 +459,7 @@
   .review-text{font-size:13px; color:var(--blue); line-height:1.6; font-style:italic; margin-bottom:12px;}
   .review-name{font-size:13px; font-weight:800; color:var(--ink);}
   .review-role{font-size:11.5px; color:var(--gray); margin-top:2px;}
-  .reviews-empty{font-size:12.5px; color:var(--gray); text-align:center; padding:16px 0; grid-column:1/-1;}
+  .reviews-empty{font-size:12.5px; color:var(--gray); text-align:center; padding:16px 0; width:100%;}
   .reviews-footer{display:flex; justify-content:center; margin-top:18px;}
   .btn-write-review{
     background:var(--blue); color:#fff; border:none; border-radius:999px; padding:11px 24px;
@@ -805,6 +914,133 @@
     </div>
   </div>
 
+  <div class="confirmation-overlay howto-overlay hidden" id="howto-overlay">
+    <div class="confirmation-card howto-card">
+      <div class="feedback-modal-title">📥 How to Import XML File into Tally Prime</div>
+
+      <div class="howto-step-title">Step 1: Open Tally Prime</div>
+      <ul class="howto-list">
+        <li>Launch Tally Prime on your computer.</li>
+        <li>Open the company in which you want to import the bank entries.</li>
+      </ul>
+
+      <div class="howto-step-title">Step 2: Open the Import Menu</div>
+      <ul class="howto-list">
+        <li>Press Alt + O on your keyboard.</li>
+        <li>Select Import.</li>
+        <li>Then choose Transactions.</li>
+      </ul>
+
+      <div class="howto-step-title">Step 3: Select File Format</div>
+      <ul class="howto-list">
+        <li>In the File Format option, select XML.</li>
+      </ul>
+
+      <div class="howto-step-title">Step 4: Select the XML File</div>
+      <ul class="howto-list">
+        <li>Locate the XML file generated by Bank to Tally.</li>
+        <li>Copy the complete file path of the XML file.</li>
+        <li>Paste the path into the File to Import field in Tally.</li>
+        <li>Alternatively, click the Browse button (if available) and select the XML file.</li>
+      </ul>
+
+      <div class="howto-step-title">Step 5: Backup Option</div>
+      <ul class="howto-list">
+        <li>When prompted with "Backup Company Data Before Import?", select No (or Yes if you wish to create a backup before importing).</li>
+      </ul>
+      <div class="howto-note">Recommended: It is always a good practice to take a backup of your company data before importing any XML file.</div>
+
+      <div class="howto-step-title">Step 6: Start the Import</div>
+      <ul class="howto-list">
+        <li>Press Enter to begin the import process.</li>
+        <li>Tally will import all the transactions from the XML file.</li>
+      </ul>
+
+      <div class="howto-step-title">Step 7: Import Completed</div>
+      <ul class="howto-list">
+        <li>Once the import is successful, Tally will display a confirmation message.</li>
+        <li>Your bank entries have now been successfully imported into Tally.</li>
+      </ul>
+
+      <div class="howto-summary-box">
+        <div class="howto-summary-title">✅ Quick Summary</div>
+        <ol class="howto-summary-list">
+          <li>Open Tally Prime.</li>
+          <li>Press Alt + O → Import → Transactions.</li>
+          <li>Select File Format: XML.</li>
+          <li>Copy and paste the XML file path into File to Import (or browse and select the file).</li>
+          <li>Choose No (or Yes, if you want to take a backup) for Backup Company Data Before Import.</li>
+          <li>Press Enter to start the import.</li>
+          <li>Wait for the success message.</li>
+          <li>Your XML file has been imported successfully, and all entries are available in Tally.</li>
+        </ol>
+      </div>
+
+      <button class="btn btn-primary" style="margin-top:16px;" onclick="closeHowToImport()">Got it</button>
+    </div>
+  </div>
+
+  <div class="confirmation-overlay howto-overlay hidden" id="ledgerinfo-overlay">
+    <div class="confirmation-card howto-card">
+      <div class="feedback-modal-title">📋 Information Required Before Generating Your Tally XML File</div>
+      <p class="feedback-modal-sub">To ensure a smooth and error-free XML generation, please provide the following details exactly as they appear in your Tally.</p>
+
+      <div class="howto-step-title">1. Company Name (Mandatory)</div>
+      <p style="font-size:13px; color:var(--ink); margin:0 0 6px;">Please provide the exact Company Name from your Tally.</p>
+      <div style="font-size:12.5px; font-weight:700; color:var(--gray); margin-bottom:4px;">How to Find It:</div>
+      <ol class="howto-list">
+        <li>Open Tally Prime.</li>
+        <li>Press Alt + K.</li>
+        <li>Select Alter.</li>
+        <li>The Company Name will be displayed.</li>
+        <li>Copy the exact Company Name and paste it into the form.</li>
+      </ol>
+      <div class="howto-note">Important: The Company Name must match exactly with your Tally company.</div>
+
+      <div class="howto-step-title">2. Bank Ledger Name (Mandatory)</div>
+      <p style="font-size:13px; color:var(--ink); margin:0 0 6px;">Please provide the exact Bank Ledger Name for the bank statement you are uploading.</p>
+      <div style="font-size:12.5px; font-weight:700; color:var(--gray); margin-bottom:4px;">How to Find It:</div>
+      <ol class="howto-list">
+        <li>Open Tally Prime.</li>
+        <li>Press D → A → C (Display → Account Books → Cash/Bank Books).</li>
+        <li>Select the bank account for which you are uploading the statement.</li>
+        <li>Press Ctrl + Enter to open the ledger.</li>
+        <li>Copy the exact Bank Ledger Name and paste it into the form.</li>
+      </ol>
+      <p style="font-size:12px; color:var(--gray); margin:0 0 4px;">Example: ICICI Bank, HDFC Bank, SBI Current Account, etc.</p>
+
+      <div class="howto-step-title">3. Suspense Ledger Name (For Payment &amp; Receipt Entries)</div>
+      <p style="font-size:13px; color:var(--ink); margin:0 0 6px;">If you want all unidentified Payment and Receipt transactions to be posted to a Suspense Ledger, please provide the exact Suspense Ledger Name from Tally.</p>
+      <div style="font-size:12.5px; font-weight:700; color:var(--gray); margin-bottom:4px;">How to Find It:</div>
+      <ol class="howto-list">
+        <li>Open Tally Prime.</li>
+        <li>Open the required Suspense Ledger.</li>
+        <li>Copy the ledger name exactly as it appears in Tally.</li>
+        <li>Paste it into the form.</li>
+      </ol>
+
+      <div class="howto-step-title">4. Specific Narration-wise Ledger Mapping (Optional)</div>
+      <p style="font-size:13px; color:var(--ink); margin:0 0 6px;">If certain narrations should always be posted to a specific ledger (for example, Salary, Rent, GST, Fuel, Interest, etc.), please provide the exact Ledger Name from Tally.</p>
+      <div style="font-size:12.5px; font-weight:700; color:var(--gray); margin-bottom:4px;">How to Find It:</div>
+      <ol class="howto-list">
+        <li>Open the required ledger in Tally Prime.</li>
+        <li>Copy the exact Ledger Name.</li>
+        <li>Paste it into the form.</li>
+      </ol>
+
+      <div class="howto-note">
+        ⚠️ Important Note<br>
+        • All Company Names and Ledger Names must be copied directly from Tally.<br>
+        • Do not type the names manually.<br>
+        • Even a small spelling difference, extra space, or incorrect capitalization may cause Tally to create a new ledger during import instead of using the existing one.<br>
+        • Providing the exact names ensures that your XML file imports correctly without creating duplicate or unwanted ledgers.
+      </div>
+      <p style="font-size:12.5px; color:var(--ink); font-weight:600; margin:4px 0 0;">✅ For the best results, always copy and paste the names directly from Tally Prime.</p>
+
+      <button class="btn btn-primary" style="margin-top:16px;" onclick="closeLedgerInfo()">Got it</button>
+    </div>
+  </div>
+
   <div class="app-body" id="app-body">
   <header>
     <div class="header-top">
@@ -887,10 +1123,6 @@
             <rect x="81" y="-160" width="20" height="160" rx="4" fill="url(#heroBars)"/>
             <rect x="108" y="-205" width="20" height="205" rx="4" fill="url(#heroBars)"/>
           </g>
-          <g transform="translate(48,58)" opacity="0.55">
-            <circle cx="0" cy="0" r="19" fill="#ffffff" stroke="#1a56db" stroke-width="2" opacity="0.6"/>
-            <text x="0" y="6" text-anchor="middle" font-family="Poppins, sans-serif" font-weight="800" font-size="17" fill="#1a56db">₹</text>
-          </g>
         </svg>
         <div class="hero-fade"></div>
         <div class="hero-content">
@@ -926,6 +1158,11 @@
           <div class="flow-label">Get<br>Tally XML</div>
         </div>
       </div>
+
+      <button type="button" class="btn-howto-import reveal-up" style="transition-delay:.3s" onclick="openHowToImport()">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0l-4-4m4 4l4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        How to Import XML File
+      </button>
 
       <div class="plans reveal-up" style="transition-delay:.33s">
         <div class="plan" data-plan="9" data-label="1 Statement — Quick" data-hours="3" onclick="selectPlan(this)">
@@ -1121,7 +1358,12 @@
           <img id="qr-image" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnYAAAJ2CAIAAABdNliuAAAOZUlEQVR4nO3du5Hr1hZFUVHVEchTBso/mpfB85QClIF0DM7adx+MYXeBJD49C9b6PM/zGwDwbb9PfwEAuJPEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEg8VMc9I8//yoOe5m///+/6a/wZfdd9+IanZ+l2U8vzN7zb74/7/vtheL+9BYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQSJZ2zlmbmfr04swXux9b1mZmf1Fhy/cszvx99+e5Ldf93Oz59BYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQGF7aOffm9YktyzBbvuebV4a27KjM3kvFMWfvz8Kb/yef8xYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQWLO0w4nZVZwtmzzntuzn3Pfbt5x5+HfeYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABKWdq5SrI7M7qjMmj2fhdnrvmURaIstz9GbeYsFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABIrFnasSnxXcWOSmHL3suW83mu+J7FMbes92y57ufu+0UFb7EAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwCJ4aWdYiXjzazNfNd959Mxf32zz9GWs7SFt1gASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYBEsrSzZUeFE1v2c2YXQu7b5Jk1u8lzbsvOz5brfh9vsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAIlkaafYvpjdqSic/3YrGd81u+Jy39W87yne8j3P3feLtjxH3mIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASn+d5Bj9+yybPllWHLYrrPmt2yeS+rZtzW/4z3HfmC8XzPvvfxlssACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAYs3SzrnZbZb71jyKT5895rkt57Nw33M0a8s9f+6+/94Fb7EAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwCJZGlndnHl3Jbtiy3n89yW617YsiFz39Nx7r69l3Nb/jNs4S0WABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEg8VMcdMveS2F2deTc7I7KlnWU2au5ZXXkvuvOieK633eHeIsFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABIfJ7n+fpBZ9cStmzdzK4M+e2/vi1nafaJ23KWCm/+T7vl/7y3WABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgMRPcdBiq6FQbDXMbl+c2/I937yKs+W3z37PLU9H8elb/i+9+enwFgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJD4PM8z/R2+rNipmHXfSsa5N1+jwuwuTXHXbTnmuS3bQVuezVneYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABLJ0s6WlYzC7PfcsvdS2LL7cd/myZYtpjef+Tc/HeeKs+QtFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBIDG8tHNudpfmvk8v2Pk5MbtDtcWW/RxnfsqWlTZvsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAImf6S/wfbP7D/et92zZ0yjct+Ky5Xy+ecGmsOVe2vI9z3mLBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASHye5xn8+C27NOeKHZX7fvu5Lddoy6ef23KWzm154maXYQpv/u3eYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABLDSzvniq2G2WPOml202LLNssWWO3nLDtW5Ld9z1n335zlvsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAIlkaWfLKs597ltHmV0uum/3Y8v3LGx5Ogr3fc9zs+3wFgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJD4mf4C3ze7FHHuvgWbLbtJW7ZEtqzibLmaW878ll90bnaLafbTvcUCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkPs/zfP2gW5Y3CrOrDue2bIkUn36f2W2W2TP/5ntpy/+6N9+f3mIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASydLOuS1LEedmNyUK9+2oFO5bCCl4Or7rvgWb+66mt1gASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYDEmqWdLas4s59e7FTY0/iu2Wu0Zbno3JY9ojdf9y3/QyztAMAaEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBIJEs7cwu2JyzOjLlvt2PWVtWXN68DDNry//k+3iLBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASPwUB53d6CgUn15sicyeT+sofMuW/yFbPn32mOe2XPdz3mIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASn+d5vn7QYqthy05F4b71iVm2RL776W9233rPrPt+u7dYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAxM/sx29ZSzhX7KjM2rL3cv7pW+662XvpvvWe4nze9xTP2rJDdc5bLAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQGJ4aefcll2FYtFi9phv3g4qbNnPue/Tt1z3WbNbN1v+z5/zFgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJBYs7SzZVdhy6bE+afft31x3/e8b0Nmy3NU8Itu4i0WABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgsWZpZ8tWQ7F5suW3n9vyi7Z8z/uuOydm/9sUiidu9in2FgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJD4PM8z/R34D7PbF1tWXLaY3f0o7qUtd8iW375l38mdfMJbLAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQOKnOOjsMswW56sO5385e+a3bF8UCyFbjnluy/ecPfNbWO+Z4i0WABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgkSztnNuylnCu2Oi4b/ejYJfmpmNueY62PJtb/tNueY7OeYsFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABIDC/tnJtdtNiyU3HuvsWV2Y2O2WNucf7bZ8/S7PN+/ovuu0Nm15CK6+4tFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBILFmaQf+3ZaNjvuOWdiyIfPmnZ/Z+3MLb7EAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJSztXefP2xZZdmtmtmy3XfcsiUOHN9+d9vMUCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAk1iztbNl7KRS/fcv5nP3ts7s0WzZPLMOcKL7nfWfp3JbNKG+xAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsAic/zPF8/6Jathllb9l7OzX7PLZ9+bss6ijv51z/mufvO/CxvsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAIlkaQcA8BYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJA4h+OT7F8+B/B/QAAAABJRU5ErkJggg==" alt="UPI QR Code">
           <div class="upi-side">
             <div class="upi-label">UPI ID</div>
-            <div class="upi-id-new">hp181285@okaxis</div>
+            <div class="upi-id-row">
+              <div class="upi-id-new" id="upi-id-text">hp181285@okaxis</div>
+              <button class="upi-copy-btn" id="upi-copy-btn" onclick="copyUpiId()" aria-label="Copy UPI ID" title="Copy UPI ID">
+                <svg id="upi-copy-icon" width="15" height="15" viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="12" height="12" rx="2" stroke="currentColor" stroke-width="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke="currentColor" stroke-width="2"/></svg>
+              </button>
+            </div>
             <div class="upi-payee">BankToTally</div>
           </div>
         </div>
@@ -1131,6 +1373,11 @@
       <div class="details-form reveal-up" style="transition-delay:.36s">
         <div class="details-title">Enter Your Tally Details</div>
         <div class="details-sub">We'll use this exactly as it appears in your Tally</div>
+
+        <button type="button" class="btn-howto-import" style="margin:10px 0 14px;" onclick="openLedgerInfo()">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 8h.01M11 12h1v4h1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Where to Find These Names?
+        </button>
 
         <div class="field">
           <label>Company Name (in Tally)</label>
@@ -1319,7 +1566,7 @@
       <div class="admin-gate reveal-up" id="admin-gate" style="transition-delay:.17s">
         <div class="field" style="text-align:left;">
           <label>Enter PIN</label>
-          <input type="password" id="admin-pin" placeholder="••••" maxlength="8" autocomplete="off" inputmode="numeric">
+          <input type="password" id="admin-pin" placeholder="••••" maxlength="8" autocomplete="off" inputmode="numeric" onkeydown="if(event.key==='Enter'){unlockAdmin();}">
         </div>
         <div class="login-error" id="admin-error"></div>
         <button class="btn btn-primary" onclick="unlockAdmin()">Unlock</button>
@@ -1329,6 +1576,7 @@
         <div class="admin-toolbar">
           <button class="btn-ghost-small" onclick="loadAdminOrders()">↻ Refresh</button>
           <span class="admin-updated" id="admin-updated"></span>
+          <button class="btn-ghost-small" onclick="logoutAdmin()">Logout</button>
         </div>
         <div id="admin-orders-list"></div>
       </div>
@@ -1351,8 +1599,16 @@
 
 </div>
 
+<button type="button" class="wa-float-btn" id="wa-float-btn" onclick="openWhatsAppFloat()" aria-label="Chat on WhatsApp" title="Chat with us on WhatsApp">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.29-1.39a9.9 9.9 0 004.75 1.21h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2zm5.79 14.06c-.24.68-1.19 1.25-1.95 1.41-.52.11-1.2.2-3.48-.75-2.92-1.21-4.8-4.17-4.94-4.36-.14-.19-1.18-1.57-1.18-3 0-1.43.75-2.13 1.02-2.42.27-.29.58-.36.78-.36.19 0 .39 0 .56.01.18.01.42-.07.66.5.24.58.82 2.01.89 2.16.07.15.12.32.02.51-.1.19-.15.31-.3.48-.15.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.29.75 1.24 1.61 2 1.11.99 2.04 1.3 2.34 1.45.3.15.47.12.65-.07.18-.19.76-.88.96-1.19.2-.31.41-.25.68-.15.28.1 1.75.83 2.05.98.3.15.5.22.57.35.07.13.07.72-.17 1.4z"/></svg>
+</button>
+
 <script>
 const WHATSAPP_NUMBER = "916355813151";
+function openWhatsAppFloat(){
+  const msg = "Hi, mujhe Bank To Tally service ke baare mein kuch puchna hai.";
+  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+}
 const QR_9 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnYAAAJ2CAIAAABdNliuAAAObUlEQVR4nO3du40rVxRFQVGYCJ6nDJR/NMpA3kuhFYKuwYWDc7vKHnDYPy60tT/P8/wBAHzbn9NfAADuJLEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEj8FB/666+/i4+9zO9//zn8y/Pzef6ZhdnrPnvs54qrueWJ23JEns13Kq6Rt1gASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYBEsrRzbss6yrli0WLLWdqyT7Jl6+a+tZnClu+55Zdhy6/Nudnr7i0WABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgMby0c27LmscWs+fz3Ow+yZZ1lHOO6LufuWXnp+A3+YS3WABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgMSapZ03e/OixeyOyrniLG1ZGSqOfcuCzZZ7iSneYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABKWdl5qy5LJlgWbwpsXV1wj7uAtFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBILFmaceixYliP2fLJs+s4thnr+aWjaM33/Ozv4p+k094iwWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEgML+28eZvlzWbXUc5tWXF582duseXY7zvzs7zFAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJD7P80x/B/7H7NrMuWKjY8s+SWHLsd93120xe+Y54S0WABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgkSzt3LcMc9/myew1mt3kOffmO+TN7rs/t9jyFJ/zFgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJD4mf33W5YitmwHFbYce/E971suum/n574jmjV7z2/5tTnnLRYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASCRLO0UuwqztixFbPnvhfuOqPjvW57N2WOfdd9TfN9+zjlvsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAIlkaWfW7FaD/36iWN7YsuaxZV3qXHE+ZxeBZnd+Zu/5N28xFbzFAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJIaXdopVh9nFlTfvvRRrHoXZjY4tSyaz12iWX4YTW+6Q2e/pLRYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASDxeZ7n6x86u+JSLEXMfuZ9LJmc2HKW3vx0zF6jgmv0Xd5iASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEj/TX+CUHZUpW7ZZZv/7rGLzZMuOyrktV3PLL9isLc+7t1gASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYDE53mer3/o7LJBsRSxZaPjnD2N737mm215OrZczfvO5+zv/Oz59BYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQSJZ2zt231TC75nHfWXrzmT+3ZXXkzd68ALbleS/Op7dYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAxM/0F/i++5ZhtuxpnNuynzNryz7Jufu+5+xnnttyL933vHuLBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASHye5/n6h85uyNy31XDfek9xjbYckXv+JrNXc8u99OZNM2+xAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsAiWRp59yWxZXZ/YdzW469+O/n7tvk2XJ/nrvv2LfcdYUtx25pBwDWkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAImf6S+ww+zux7niv9+3zbLF7L3kun/3v7/5LM3eybO8xQJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACTWLO3M7tKcu28p4tzsNZq9mlsWlgrFWZo9osKWX4Ytz9EW3mIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASa5Z2tuw/zC6uzCqOfct6z31Xs7BlZWh2YWn2rpu9RlvukHPeYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABLJ0s7s+sS5LRsds7Zczdmtmy1X89yWZZhzW57N+7ZuCluOyFssACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAIlnaOTe7lrBlvWdWcea3rHmce/OKy5ZlmDcva933xJ2brYy3WABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgMTneZ6vf+iWtZliJWPL7se5+/ZJZq974b4n7tyWa7TFlnupYGkHANaQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsAiZ/Zf//mZZjZtZnZfZIt1+jclr2XLStDs3svW1awzt13ROdm7yVvsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAIlkaefNWyJv3uQ5t2WjgynFPX/fnbzliLbsUBW8xQJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACSSpZ3CllWcc1s2eWaXN84V171w3+rI7BFtuT9nf8HebPYseYsFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABIJEs7xU5FYcvmyewi0LnZ/ZxZW7ZZttzz56xgffczC2++P73FAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJJKlnWID4XyBYXbzpLBlU+Kc1ZETs/f8rC37OVu8eetm9oi8xQJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACSSpZ3C7HrPudkdlfv+e2HL6siW71n89y17RFvWZmbdt95zzlssACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAIlnamd1ROXffLs19Z/4+W1ZHttxLWxTnc/YabbmTZ3mLBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASCRLO/ftKmw5omK951zxmcWZn11Dmr1Gs4qz9OZrdN8W033rPd5iASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEsnSzn0LIYXZDZlzWxYtClt2P7Zco/t2k7bYciffx1ssACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAIlnaOXffqsOWrZvz73nf6kixuLJlyeS++/O+35DClrvuvjUkb7EAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwCJ4aWdc7O7Clt2Kmbdd5ZmN3m2mD2iLb8Mxffcci8VvwxbNnm8xQJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACTWLO28WbFTcb4+4b9/9y/PbdkOKmy57luu0exnFrZ8T2+xAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACUs7V5ldR7lv92PLmseW77nlGr35fBZmt61mr6a3WABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgMSapZ0tmxJMKVaGtuyozC4sbdnP2eK+q1mYPUvnvMUCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkhpd2tqwlzHrz6si5Ypdmdr2nuO73PXFvfjrefN3PzV53b7EAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwCJz/M8098BAC7kLRYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYDEfyRXg/dvEHZNAAAAAElFTkSuQmCC";
 const QR_99 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnYAAAJ2CAIAAABdNliuAAAOZUlEQVR4nO3du5Hr1hZFUVHVEchTBso/mpfB85QClIF0DM7adx+MYXeBJD49C9b6PM/zGwDwbb9PfwEAuJPEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEg8VMc9I8//yoOe5m///+/6a/wZfdd9+IanZ+l2U8vzN7zb74/7/vtheL+9BYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQSJZ2zlmbmfr04swXux9b1mZmf1Fhy/cszvx99+e5Ldf93Oz59BYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQGF7aOffm9YktyzBbvuebV4a27KjM3kvFMWfvz8Kb/yef8xYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQWLO0w4nZVZwtmzzntuzn3Pfbt5x5+HfeYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABKWdq5SrI7M7qjMmj2fhdnrvmURaIstz9GbeYsFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABIrFnasSnxXcWOSmHL3suW83mu+J7FMbes92y57ufu+0UFb7EAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwCJ4aWdYiXjzazNfNd959Mxf32zz9GWs7SFt1gASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYBEsrSzZUeFE1v2c2YXQu7b5Jk1u8lzbsvOz5brfh9vsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAIlkaafYvpjdqSic/3YrGd81u+Jy39W87yne8j3P3feLtjxH3mIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASn+d5Bj9+yybPllWHLYrrPmt2yeS+rZtzW/4z3HfmC8XzPvvfxlssACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAYs3SzrnZbZb71jyKT5895rkt57Nw33M0a8s9f+6+/94Fb7EAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwCJZGlndnHl3Jbtiy3n89yW617YsiFz39Nx7r69l3Nb/jNs4S0WABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEg8VMcdMveS2F2deTc7I7KlnWU2au5ZXXkvuvOieK633eHeIsFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABIfJ7n+fpBZ9cStmzdzK4M+e2/vi1nafaJ23KWCm/+T7vl/7y3WABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgMRPcdBiq6FQbDXMbl+c2/I937yKs+W3z37PLU9H8elb/i+9+enwFgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJD4PM8z/R2+rNipmHXfSsa5N1+jwuwuTXHXbTnmuS3bQVuezVneYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABLJ0s6WlYzC7PfcsvdS2LL7cd/myZYtpjef+Tc/HeeKs+QtFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBIDG8tHNudpfmvk8v2Pk5MbtDtcWW/RxnfsqWlTZvsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAImf6S/wfbP7D/et92zZ0yjct+Ky5Xy+ecGmsOVe2vI9z3mLBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASHye5xn8+C27NOeKHZX7fvu5Lddoy6ef23KWzm154maXYQpv/u3eYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABLDSzvniq2G2WPOml202LLNssWWO3nLDtW5Ld9z1n335zlvsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAIlkaWfLKs597ltHmV0uum/3Y8v3LGx5Ogr3fc9zs+3wFgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJD4mf4C3ze7FHHuvgWbLbtJW7ZEtqzibLmaW878ll90bnaLafbTvcUCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkPs/zfP2gW5Y3CrOrDue2bIkUn36f2W2W2TP/5ntpy/+6N9+f3mIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASydLOuS1LEedmNyUK9+2oFO5bCCl4Or7rvgWb+66mt1gASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYDEmqWdLas4s59e7FTY0/iu2Wu0Zbno3JY9ojdf9y3/QyztAMAaEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBIJEs7cwu2JyzOjLlvt2PWVtWXN68DDNry//k+3iLBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASPwUB53d6CgUn15sicyeT+sofMuW/yFbPn32mOe2XPdz3mIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASn+d5vn7QYqthy05F4b71iVm2RL776W9233rPrPt+u7dYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAxM/sx29ZSzhX7KjM2rL3cv7pW+662XvpvvWe4nze9xTP2rJDdc5bLAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQGJ4aefcll2FYtFi9phv3g4qbNnPue/Tt1z3WbNbN1v+z5/zFgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJBYs7SzZVdhy6bE+afft31x3/e8b0Nmy3NU8Itu4i0WABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgsWZpZ8tWQ7F5suW3n9vyi7Z8z/uuOydm/9sUiidu9in2FgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJD4PM8z/R34D7PbF1tWXLaY3f0o7qUtd8iW375l38mdfMJbLAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQOKnOOjsMswW56sO5385e+a3bF8UCyFbjnluy/ecPfNbWO+Z4i0WABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgkSztnNuylnCu2Oi4b/ejYJfmpmNueY62PJtb/tNueY7OeYsFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABIDC/tnJtdtNiyU3HuvsWV2Y2O2WNucf7bZ8/S7PN+/ovuu0Nm15CK6+4tFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBILFmaQf+3ZaNjvuOWdiyIfPmnZ/Z+3MLb7EAkJBYAEhILAAkJBYAEhILAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJSztXefP2xZZdmtmtmy3XfcsiUOHN9+d9vMUCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAk1iztbNl7KRS/fcv5nP3ts7s0WzZPLMOcKL7nfWfp3JbNKG+xAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsAic/zPF8/6Jathllb9l7OzX7PLZ9+bss6ijv51z/mufvO/CxvsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAIlkaQcA8BYLAAmJBYCExAJAQmIBICGxAJCQWABISCwAJCQWABISCwAJiQWAhMQCQEJiASAhsQCQkFgASEgsACQkFgASEgsACYkFgITEAkBCYgEgIbEAkJBYAEhILAAkJBYAEhILAAmJBYCExAJA4h+OT7F8+B/B/QAAAABJRU5ErkJggg==";
 const QR_899 = "data:image/png;base64,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3/M8+UG/PD981+6M91ue+8Qdnbtlz++uEicm9tK5W96Oc3byN03sOl+tAAAy0goAICOtAAAy0goAICOtAAAy0goAICOtAAAy0goAICOtAAAy0goAICOtAAAy0goAICOtAAAyf8/zbF/Dkd2Z5O+bx35+R+dnn1il3Xs/d8v+vOU6J7xvJ0/YfUa7PKMT7/tNnji7r1YAABlpBQCQkVYAABlpBQCQkVYAABlpBQCQkVYAABlpBQCQkVYAABlpBQCQkVYAABlpBQCQkVYAAJnfxEF3J06fH3Nigvct975rd5V259vf8ox27e6QcxN7afcX7Nzu2Se879fmlvfo3C135KsVAEBGWgEAZKQVAEBGWgEAZKQVAEBGWgEAZKQVAEBGWgEAZKQVAEBGWgEAZKQVAEBGWgEAZKQVAEDmt30Bb3PL/PBzX76jian1t0xu312lW3bdxHXu7pCJs+8e89zEdXqPWrfcka9WAAAZaQUAkJFWAAAZaQUAkJFWAAAZaQUAkJFWAAAZaQUAkJFWAAAZaQUAkJFWAAAZaQUAkJFWAACZ38RBd2d9T3jfdd4yP5wTE899Ys+/7z2acMu7ecvT3F3PL79HE782t7wdvloBAGSkFQBARloBAGSkFQBARloBAGSkFQBARloBAGSkFQBARloBAGSkFQBARloBAGSkFQBARloBAGT+nufJDzoxl3ti3vXudb5vevmE3Yno79shVulNbnk3z91yRxP785Z7n7D7uzRxdl+tAAAy0goAICOtAAAy0goAICOtAAAy0goAICOtAAAy0goAICOtAAAy0goAICOtAAAy0goAICOtAAAyf8/z5Af98kT0Cbv3vut9s+h334733fs5q9R632/yLTtkl5U/4asVAEBGWgEAZKQVAEBGWgEAZKQVAEBGWgEAZKQVAEBGWgEAZKQVAEBGWgEAZKQVAEBGWgEAZKQVAEDm73me/KATs6l3p21PuGWVzu1OL7/l3s/tzni/ZcL87l665d4n7N77ud3/Hbec/ZbfkFtKwFcrAICMtAIAyEgrAICMtAIAyEgrAICMtAIAyEgrAICMtAIAyEgrAICMtAIAyEgrAICMtAIAyEgrAIDMb/f0t0yYP7c7i37C7pT1Wya333Kd5255Ruduuc5b7L7v55y9PfvuL9juep7z1QoAICOtAAAy0goAICOtAAAy0goAICOt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";
@@ -1690,6 +1946,31 @@ function refreshBalanceDisplay(){
   }
 }
 
+function copyUpiId(){
+  const text = document.getElementById('upi-id-text').textContent.trim();
+  const btn = document.getElementById('upi-copy-btn');
+  const icon = document.getElementById('upi-copy-icon');
+  const doCopiedUI = ()=>{
+    icon.innerHTML = '<path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>';
+    btn.classList.add('copied');
+    btn.title = 'Copied!';
+    setTimeout(()=>{
+      icon.innerHTML = '<rect x="9" y="9" width="12" height="12" rx="2" stroke="currentColor" stroke-width="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" stroke="currentColor" stroke-width="2"/>';
+      btn.classList.remove('copied');
+      btn.title = 'Copy UPI ID';
+    }, 1800);
+  };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(doCopiedUI).catch(()=>{
+      const ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta);
+      ta.select(); document.execCommand('copy'); document.body.removeChild(ta); doCopiedUI();
+    });
+  } else {
+    const ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy'); document.body.removeChild(ta); doCopiedUI();
+  }
+}
+
 function selectPlan(el){
   document.querySelectorAll('.plan').forEach(p => p.classList.remove('selected'));
   el.classList.add('selected');
@@ -1709,10 +1990,16 @@ function updateSummaries(){
 }
 
 function goToPage(n){
-  if(currentPage === 5 && n !== 5){
-    document.getElementById('admin-gate').classList.remove('hidden');
-    document.getElementById('admin-content').classList.add('hidden');
-    document.getElementById('admin-pin').value = '';
+  if(n === 5){
+    if(localStorage.getItem('bt_admin_unlocked') === '1'){
+      document.getElementById('admin-gate').classList.add('hidden');
+      document.getElementById('admin-content').classList.remove('hidden');
+      loadAdminOrders();
+    } else {
+      document.getElementById('admin-gate').classList.remove('hidden');
+      document.getElementById('admin-content').classList.add('hidden');
+      document.getElementById('admin-pin').value = '';
+    }
   }
   document.getElementById('page-' + currentPage).classList.remove('active');
   document.getElementById('page-' + n).classList.add('active');
@@ -2190,9 +2477,17 @@ function unlockAdmin(){
     return;
   }
   errorBox.textContent = "";
+  localStorage.setItem('bt_admin_unlocked', '1');
   document.getElementById('admin-gate').classList.add('hidden');
   document.getElementById('admin-content').classList.remove('hidden');
   loadAdminOrders();
+}
+function logoutAdmin(){
+  localStorage.removeItem('bt_admin_unlocked');
+  document.getElementById('admin-pin').value = '';
+  document.getElementById('admin-error').textContent = '';
+  document.getElementById('admin-content').classList.add('hidden');
+  document.getElementById('admin-gate').classList.remove('hidden');
 }
 
 async function loadAdminOrders(){
@@ -2244,6 +2539,20 @@ async function loadAdminOrders(){
 //      Approve reviews by changing Status to "Approved" in the Sheet directly, or add a button
 //      to the Owner Dashboard here later that flips it via another action (e.g. "approveReview").
 let reviewRating = 0;
+
+function openLedgerInfo(){
+  document.getElementById('ledgerinfo-overlay').classList.remove('hidden');
+}
+function closeLedgerInfo(){
+  document.getElementById('ledgerinfo-overlay').classList.add('hidden');
+}
+
+function openHowToImport(){
+  document.getElementById('howto-overlay').classList.remove('hidden');
+}
+function closeHowToImport(){
+  document.getElementById('howto-overlay').classList.add('hidden');
+}
 
 function openReviewForm(){
   document.getElementById('review-overlay').classList.remove('hidden');
